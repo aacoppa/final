@@ -1,0 +1,89 @@
+Team Cards Against a manatee
+
+Team members: 
+     Timotius Sitorus
+     Kevin Sun
+
+Project Description: 
+     We are recreating the multiplayer card game "Cards against Humanity"
+     which is similar to the classic game Apples to Apples but for a more 
+     adult demographic. 
+
+     Game elements:
+     	 - There will be two types of cards, 
+	    "Prompt" cards and "Answer" cards
+	 - Prompt cards will contain prompts which can include things 
+	    such as questions, fill in the blank, etc.
+	 - 10 Answer cards will be given to each players.
+	 - There will be a "Card Czar" randomly chosen from the players
+	    ans he/she not be playing for the round but will instead determine
+	    who wins the round. 
+	 - The rounds will be 30 (testing?) seconds each
+
+      Game Flow:
+	 1. At the beginning of the round the Card Czar is chosen and the 
+	    prompt card is shown to all the players. 
+	 2. Each players will choose 1 (or 2 depending on the prompt)
+	    anwer card from their hands. 
+	 3. Each player will then receive another answer card. 
+	 4. After all players answer, the answers are revealed to all players. 
+	    All answer cards are anonymous. 
+	 5. The Card Czar then chooses the best response out of the available 
+	    choices
+	 6. The winner of the round will receive one point. 
+	 
+      How to win:
+      	 First person to 10 points win
+
+User interface:
+     Everyone:
+	- When connecting to the game, everyone is asked to enter their name
+	- Each round everyone is able to see the prompt on the command line
+	  and the card Czar's name will be announced.
+	- Each round will last 30 seconds (Testing?) and will be indicated 
+	  by an internal timer. The timer will print the time every 10 seconds.
+	- After every player enters their answer(s), the prompt and all 
+	  submitted answer will be shown. 
+	- After card Czar chooses who wins, there will be s score board like 
+	  	     	  Points
+	  | Player 1        2       |   note: "Player x" will be replaced 
+	  | Player 2        3       |   by name
+	  | Player 3        7       |
+	  | Player 4        4 + 1   | <--- indicates winner of round
+	  
+     Players:
+	- Players are able to see their 10 answer cards which will have 
+	  numbers corresponding from 1-10 
+	- Players enter a number that will correspond to their card 
+	  (two numbers seperated by a space if promopt needs 2 answers)
+	- After entering a number, players are draw a new card in the space
+	  of the card(s) they used. 
+	- Player are unable to do anything while they wait for the timer 
+	  to run out or until everyone plays a card(s).
+
+  Ex: | What's that sound?
+      | 1. A tiny horse  2. centaurs  3. a balanced breakfast  4.grave 
+      | robbing 5. Being on fire 6. Extremely tight pants 7. Barack Obama
+      | 8. puppies! 9. The Kool-aid man 10. Sunshine and Rainbows
+      |
+      |	20
+      | 10
+      | 3                         <-- entered choice
+      | Time's up
+      
+     Card Czar: 
+        - The card Czar will only be able to see the prompt card
+	  as well as the timer counting down. Note: Even though they 
+	  cannot see their answer cards, they will retain the same ones 
+	  in the next round. 
+	- They will choose a winner by entering a number 1-4 that correponds 
+	  with the card
+	  
+      | What's that sound?
+      |
+      |	20
+      | 10
+      | Time's up
+      | 
+      |Reponses:
+      |1 Old people smell  2. puppies! 3. Poor Life choices
