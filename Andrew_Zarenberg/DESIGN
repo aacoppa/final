@@ -1,0 +1,70 @@
+
+Andrew Zarenberg
+
+=====================
+==                 ==
+==  Whack-A-Math!  ==
+==                 ==
+=====================
+
+
+
+The Game
+========
+
+This game is similar to the popular Whack-A-Mole game with a small math twist to it.  
+All of the computers in the room will be connected, all in the "idle" state.  One random
+computer will change into the "active" state and will have a simple math problem on it.
+The player must get to that computer AND type in the correct answer to the problem within
+a certain amount of time.  Each time ther player does this correctly another random
+computer will change into the "active" state and the amount of time will decrease slightly
+until the player runs out of lives.
+
+The layout of the room should work perfectly for this game because the player will be able
+to see every computer screen wherever they are in the room.
+
+When a computer is in the "idle" state, the screen will be completely filled with the # character
+so that it will appear all white, and a computer in the "active" state will only contain a timer
+and a math problem, so it will appear all purple (or whatever the terminal background color is.
+This way it's easy for the player to identify which computer is currently in the "active" state
+from anywhere in the room.
+
+There will also be one "master" computer that isn't being used in the game that will display
+the player's score, amount of lives left, and current timer.  If this project is presented to
+the class, this computer should be hooked up to the projector so everyone can see.
+
+
+
+Class Topics Used
+=================
+Semaphores:
+	Sempaphores will be used to ensure that only one computer is in the "active" state
+	at once.  Also since the order of semaphores cannot be guaranteed, the built-in 
+	randomness gets rid of the need to make a separate random function.
+
+Networking:
+	All of the computers will need to be connected together
+       
+Forking:
+	Each time a new client connects it will fork off a subprocess
+
+Signals:
+	The client forks a subprocess to print out the current time left while select waits
+	for user input.  Once the user input comes in a signal is sent to kill the subprocess.
+
+
+
+
+Timeline
+========
+Monday 1/13 = Get semaphores working so that only one computer is in the "active" state at once.
+       	      Timers working
+
+Friday 1/17 = Amount of lives
+              Player score
+       	      Math problems
+
+Monday 1/20 = Everything finished
+
+
+

@@ -1,0 +1,16 @@
+
+=====================
+==                 ==
+==  Whack-A-Math!  ==
+==                 ==
+=====================
+
+Andrew Zarenberg
+
+
+
+How to use
+==========
+Run ./server on one computer
+Run ./master on the computer you want to display the game stats
+Run ./client on every other computer you want to be part of the game
