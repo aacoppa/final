@@ -32,3 +32,9 @@ Topics:
 	Each time a client connects, a subprocess will be forked off.
     Shared Memory/Semaphores:
     	The rankings list will be memory shared among the subprocesses. After every round, the clients will update their points in the rankings list. A semaphore will be used to ensure only one client will be updating the list at the time so memory is not accidentally overwritten due to sorting.
+
+Timeline:
+	Create clients, server, and network by the end of this week. 
+	Figure out the algorithm needed to generate random mazes and have the program working by the end of next week. 
+	Debug and fix over that weekend. 
+	
