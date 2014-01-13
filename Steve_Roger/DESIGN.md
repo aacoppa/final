@@ -1,3 +1,6 @@
+DW APPROVED
+Make sure you implement some of your pipe/shared memory/netowrk ideas listed below
+
 Text Based Adventure Game
 =========================
 
