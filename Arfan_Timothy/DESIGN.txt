@@ -1,0 +1,34 @@
+Arfan Rehab and Timothy Ong
+===========================
+
+
+BlackJack
+=========
+
+There will be one computer acting as the "house" by being the server.
+Clients will connect to the server and the server will decide when to start the game.
+Then you play the game and players can join a game in progress but will not fully connect until a turn is done.
+Player will play in the terminal with a text-based interface.
+
+
+Class Topics Used
+=================
+
+Semaphores:
+	Because of the nature of blackjack, it will not matter what order players make their moves.
+	Thus semaphores will be able to just keep track of when a turn is over.
+
+Networking:
+	Connect players and the house.
+
+Processes:
+	Forking for each turn.
+
+Structs:
+	An array of structs to be the deck(s).
+
+
+Timeline
+========
+
+???
