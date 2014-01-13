@@ -1,0 +1,28 @@
+DESIGN
+
+Team Members:
+George Liu
+Ronald Balchand
+Jason Zhen
+
+Statement:
+We will be creating a multi-client interface where multiple clients connect to a server and play several card games together. Currently, games discussed are Blackjack, Chinese Poker, and Texas Hold' Em.  
+
+User interface:
+After enough clients connect to the server, the game will start. Each player's hand will be shown either graphically or through the terminal. When it is that player's turn, he will be given a prompt with several options for their move. (ie, for Blackjack, they will have the option to Hit, Stand, Double Down, or Split). Other players will be shown what is necessary for gameplay and the turns will progress. 
+
+Topics Covered:
+Networking (several clients will connect to a server)
+Forking (each client will be a subprocess)
+Structures (Decks and hands will be arrays of strings and ints, cards will take the form of suit followed by number, ie D3 = three of diamonds, HA = ace of hearts, SJ = jack of spades)
+
+Roles (temporary):
+Game Design - George Liu
+Networking - Ronald Balchand
+User Interface - Jason Zhen
+
+Timeline: 
+Finish game design by 1/17.
+Work on networking and complete by 1/20.
+Complete user interface and rest of project by 1/24. 
+
