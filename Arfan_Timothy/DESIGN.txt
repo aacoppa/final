@@ -30,5 +30,6 @@ Structs:
 
 Timeline
 ========
-
-???
+Create clients, server, and network by the start of next week. 
+Figure out the algorithms needed for the rules of blackjack and have the program working by the end of next week. 
+Debug and fix over that weekend. 
