@@ -15,3 +15,27 @@ typedef enum Continent {
   RISK_AFRICA,	// Africa
   RISK_AUS	// Australia (Oceania)
 } Continent;
+
+/* 
+   Defines a move made, which can be abstracted as
+   movement of some number of units from one territory
+   to the next. This structure is intended to be a simple
+   update to the server on each player's turn.
+   
+   CASES:
+   origin == destination && units < 0	: territory lost units,
+                                          but didn't change hands
+   
+   origin.owner != destination.owner	: destination lost a battle,
+                                          units to be moved
+
+   origin.owner == destination.owner	: owner is moving troops
+   
+   origin == NULL			: owner is resupplying destination
+*/
+
+typedef struct RISK_move {
+  int units;
+  territory origin;
+  territory destination;
+}
