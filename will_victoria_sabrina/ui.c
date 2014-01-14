@@ -4,7 +4,7 @@ SDL_Window *win;
 SDL_Renderer *ren;
 
 void log_SDL_error(const char *op) {
-  printf("%s failed:\n\t%s", op, SDL_GetError());
+  printf("%s failed:\n\t%s\n", op, SDL_GetError());
 }
 
 int init_SDL() {
@@ -38,6 +38,11 @@ void cleanup_SDL() {
   SDL_Quit();
 }
 
+/*
+void draw_circle(circle c) {
+
+}*/
+
 SDL_Texture *load_texture(const char *path) {
   SDL_Texture *tex = NULL;
   SDL_Surface *img = SDL_LoadBMP(path);
@@ -64,6 +69,10 @@ int main() {
 	done = 1;
       if (event.type == SDL_MOUSEBUTTONDOWN) {
 	printf("mouse down at (%d, %d)\n", event.button.x, event.button.y);
+	SDL_SetRenderDrawColor(ren, 255, 0, 0, 100);
+	if (!SDL_RenderDrawPoint(ren, event.button.x, event.button.y))
+	  log_SDL_error("draw rect");
+	SDL_RenderPresent(ren);
       }
     }
   }
