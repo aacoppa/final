@@ -1,0 +1,27 @@
+Project Members:
+	Haoxin Luo
+	Brian Chuk
+
+Project Goal:
+	To create a multiple player game similar to "Luigi's Ghost Mansion" on the Wii U. In the game there is(are) 1 to 4 humans who will wander around on a 2D map filled with narrow corridors and obstacles. There will be one play who will play as the ghost. The ghost's objective is to sneak up on the players to make them faint, while the player's goal is to have at least one human still conscious at the end of the time limit or to kill the ghost. The players carry with them a magical flashlight that shines in front of them that can reveal and damage the ghost, and can wake fainted teammates up.
+
+User Interface:
+
+##################
+# a set stage    #    Timer: xx:xx
+# (maze) that    #    (maybe battery amount for the players, then players would 
+# all players    #     also have to find batteries that appear randomly through
+# move around on #     out the map)
+# the ghost is   #
+# only visible on#
+# his own screen #
+##################
+
+Topics Incorporated: 
+       * Networking - using sockets and maybe also pipes so the game can be played on one computer
+       * Clients & Servers - one computer will be the server and others the clients
+       
+Timeline:
+	* create the map, enable at least one avatar to move around, set up the timer by the weekend.
+	* setup the networking(socket/pipe) to enable multiplayer by the end of the weekend
+	* debug over remaining time
