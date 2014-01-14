@@ -54,10 +54,18 @@ SDL_Texture *load_texture(const char *path) {
 int main() {
   if (init_SDL())
     return 1;
-  
-  while (0) {
-    
+
+  SDL_Event event;
+  char done = 0;
+
+  while (!done) {
+    while(SDL_PollEvent(&event)) {
+      if (event.type == SDL_QUIT)
+	done = 1;
+      if (event.type == SDL_MOUSEBUTTONDOWN) {
+	printf("mouse down at (%d, %d)\n", event.button.x, event.button.y);
+      }
+    }
   }
-  SDL_Delay(3000);
   cleanup_SDL();
 }
