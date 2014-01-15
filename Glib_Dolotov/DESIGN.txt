@@ -1,0 +1,81 @@
+DESIGN
+Group: Glib Dolotov (flying solo)
+
+Problem: Inability to manipulate number values beyond
+	 a certain value. The inability to manipulate values
+	 of cryptographic size (constantly evolving key-length
+	 standard). RSA cryptosystem keys are being increased
+	 in length as computers increase in computing
+	 capability. Security is no longer guaranteed for
+	 1024-bit (for reference, an unsigned long long in C,
+	 the largest data type, is a 64-bit value) keys. But
+	 even for older versions of RSA are keys of lengths far
+	 greater than those that can be manipulated by simple
+	 programming languages.
+
+Project: Develop a program that would allow to store and 
+	 manipulate numbers of cryptographic size. Because of
+	 different compilation and data-type size standards,
+	 this project will be based on the 32-bit Ubuntu 12.10
+	 operating system. "crypt-int" is what I'll be calling
+	 values of cryptographic size that this program will
+	 allow for the direct usage of.
+
+Operations:
+ - Read and store crypt-ints in memory
+   > from stdin
+   > from file accessed by read
+ - Manipulation of stored crypt-int and int
+   > + , - , * , % , / , ^
+ - Manipulation of multiple stored crypt-int
+   > + , - , * , % , / , ^
+ - Output of new crypt-int
+   > Store new crypt-int
+   > Print to stdout
+   > Print to file
+
+Interface:
+ - Stdio will be used to issue commands and will return outputs
+   of called commands
+ - A txt file will become a "database" for the stored
+   crypt-ints. It will contain two logs:
+   1) Crypt-ints stored, the pointers that point to them (will
+      be shmem)
+   2) The command history (all actions will be logged to make
+      it easier to keep track of what crypt-ints).
+
+Usage Of What Was Learned In Class:
+ - Allocation of memory:
+    Every new crypt-int will be stored in arrays. The size of
+    these arrays will be appropriately allocated for every
+    crypt-int that is created, whether by direct input or by
+    the manipulation of other crypt-ints.
+ - Working with files:
+    Two files will be maintained (see "Interface") based on
+    user activity to allow for easier usage.
+ - Finding information about files:
+    N/A
+ - Processes (forking, exec, etc.):
+    Because we're working with extremely large values, this 
+    program will not be multi-threaded. It will only allow for
+    one operation at a time. The fact that the processes will
+    be relatively memory-intensive, it would be unwise to work
+    with more than is necessary
+ - Signals:
+    Signals will be used for debugging and development
+    purposes. Maybe will include specific signals to indicate
+    user error.
+ - Pipes (named and unnamed):
+    N/A
+ - Shared memory, semaphores:
+    All interaction will be based in shared memory.
+ - Networking:
+    N/A (see "Extension")
+
+Extension:
+ Upon completion of primary objectives, these are some
+ secondary objectives that I will work on:
+ - Large-prime-number sieve / generator (RSA key generator)
+ - RSA cryptosystem program
+ - Networking the RSA cryptosystem program to allow for basic
+   networked machines to send "encrypted" files
