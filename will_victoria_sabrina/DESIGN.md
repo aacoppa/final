@@ -16,13 +16,15 @@ possesion, with bonuses for continents controlled and cards turned
 in. Basically, RISK.
 
 ##UI
-Text based in the terminal, unless there is time to figure out a
+~~Text based in the terminal, unless there is time to figure out a
 graphical display/we are allowed to use another language to write the
-interface.
+interface.~~
+SDL2 used to create a graphical interface. A map will be displayed,
+with a label displaying number of units on each territory.
 
 ##Tech Design
 ###Specific technologies:
-- ncurses to deal with displaying menus, etc.
+~~- ncurses to deal with displaying menus, etc.~~
 - there will be a server that handles game state, game logic, etc.
 
 ###Server details 
