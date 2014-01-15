@@ -1,6 +1,6 @@
-#ifndef SERVER_SIDE_DEF
+#ifndef __SERVER_SIDE_AJS
+#define __SERVER_SIDE_AJS 1
 
-#define SERVER_SIDE_AJS 1
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
