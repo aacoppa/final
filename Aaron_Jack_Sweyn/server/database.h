@@ -22,7 +22,9 @@
 
 #define USER_EXISTS 123
 
-int semd; //Semaphore for writing data
+int createsem; //Semaphore for creating user 
+int writesem; //Semaphore for writing
+int readsem; //Semaphore for readers
 int userExists(char * name);
 int usersTurn(char * name, char * opponent); //Returns true or false
 int createUser(char * name, int passhash);
