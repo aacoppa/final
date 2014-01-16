@@ -26,8 +26,8 @@ typedef struct game_data {
     char from[50];
     char to[50];
     u_int32_t genkey;
-    time_t time;
-}
+    int time;
+} game_data;
 typedef struct cli_out_creat_acc {
     int type;
     char name[30];
@@ -38,7 +38,7 @@ typedef struct cli_out_game_data {
     int type;
     char from[30];
     char to[30];
-}
+} cli_out_game_data;
 
 //Data server sends out / Client receives
 typedef struct serv_out_creat_acc {
@@ -46,6 +46,6 @@ typedef struct serv_out_creat_acc {
     char name[30];
     char passwd[30];
     int success; //Whether or not we created correctly
-}
+} serv_out_creat_acc;
 
 #endif

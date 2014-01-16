@@ -7,12 +7,13 @@
   *
   */
 #include <server_side.h>
+#include "database.h"
 int main(int argc, char ** argv) {
     start();
 }
 void start() {
     //Begins the back end server
-    
+    init(); //Init database
 }
 void listenForNewConnections() {
     //Listen for a request
