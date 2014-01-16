@@ -1,3 +1,25 @@
 DW: Please provide more information, see the website for a description of what you should have in this document at the proposal stage.
 
-Multiplayer Texas Hold'em game
+DESIGN DOCUMENT
+===============
+
+Classic Texas Hold'em
+=====================
+
+There will be one main computer that will keep track of all information about the current hand such as the current amount of players, the current pot, how much money each player has, who is playing the hand, the shown cards, etc. etc. Clients will be run on other computers and they will be able to type in commands during their turn to do the various possible moves such as checking, calling, raising, or folding. Games will not start until at least two people are currently at the table. 
+
+TOPICS TO BE USED
+=================
+
+Networking
+        Used to connect the players to the table.
+        
+Processes
+        Used to handle all the player commands.
+        
+Structs
+        Used to create the cards.
+
+
+TIMELINE
+========
