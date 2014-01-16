@@ -85,6 +85,7 @@ int main(){
 
   printf("\nConnected to master.  Run ./client on all computers you wish to be part of this game.\n");
 
+  char send_text[MAX_LEN];
 
   while(1){
 
@@ -125,9 +126,10 @@ int main(){
 	}
 
 	printf("Score: %d\nLives: %d\n",game->score,game->lives);
+	sprintf(send_text,"Score: %d\nLives: %d\n",game->score,game->lives);
 
 	write(master_socket,"good",8);
-	write(master_socket,game,sizeof(struct GAME_MEM));
+	write(master_socket,send_text,sizeof(send_text));
 
 	sb.sem_op = 1;
 	semop(semd,&sb,1);
@@ -184,7 +186,6 @@ void create_shmem(){
   game = (struct GAME_MEM *)shmat(sd,NULL,0);
   game->lives = DEFAULT_LIVES;
   game->score = 0;
-  game->child_pid = -1;
 }
 void delete_shmem(){
   int sd = shmget(SHM_KEY, sizeof(int), 0666);

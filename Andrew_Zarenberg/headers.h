@@ -37,5 +37,4 @@
 struct GAME_MEM {
   int score;
   int lives;
-  int child_pid;
 };

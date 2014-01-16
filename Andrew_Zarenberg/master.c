@@ -30,16 +30,19 @@ int main(){
   read(socket_id,buf,sizeof(buf));
   /* socket end */
 
-  struct GAME_MEM game_stats;
+  /*struct GAME_MEM *game_stats;*/
+  char send_text[MAX_LEN];
 
   while(1){
     read(socket_id,buf,sizeof(buf));
     if(!strcmp(buf,"exit")) exit(0);
     else {
-      read(socket_id,&game_stats,sizeof(struct GAME_MEM));
+      /*      read(socket_id,game_stats,sizeof(struct GAME_MEM)+1);*/
+      read(socket_id,send_text,sizeof(send_text));
 
       system("clear");
-      printf("Score: %d\nLives: %d\n",game_stats.score,game_stats.lives);
+      printf("%s\n",send_text);
+      /*      printf("Score: %d\nLives: %d\n",game_stats->score,game_stats->lives);*/
     }
   }
 
