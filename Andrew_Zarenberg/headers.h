@@ -1,4 +1,3 @@
-1;3402;0c
 #define HEADER
 
 #include <stdlib.h>
