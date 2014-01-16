@@ -93,6 +93,7 @@ int main(){
     socket_client = accept(socket_id,(struct sockaddr *)&server,&socket_length);
     /* socket end */
     
+    printf("Accepted connection to %d\n",socket_client);
 
     int f = fork();
     if(f == 0){
@@ -107,15 +108,12 @@ int main(){
 	sb.sem_op = -1;
 	semop(semd,&sb,1);
 
+	printf("In: %d\n",socket_client);
+
 	math_problem(math_string,&math_answer,10);
 
 	write(socket_client,math_string,MAX_LEN);
-
 	read(socket_client,stuff,MAX_LEN);
-
-	if(game->child_pid > 0) kill(game->child_pid,9);
-
-
 
 
 	if(math_answer == atoi(stuff)){
@@ -126,15 +124,19 @@ int main(){
 	  game->lives--;
 	}
 
+	printf("Score: %d\nLives: %d\n",game->score,game->lives);
+
 	write(master_socket,"good",8);
 	write(master_socket,game,sizeof(struct GAME_MEM));
 
 	sb.sem_op = 1;
 	semop(semd,&sb,1);
 	  
+	printf("Out: %d\n",socket_client);
 
       }
       exit(0);
+      close(socket_client);
     }
     
 

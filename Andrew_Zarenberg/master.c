@@ -21,7 +21,7 @@ int main(){
   
   sock.sin_family = AF_INET;
   sock.sin_port = htons(SERVER_PORT);
-  inet_aton("127.0.0.1",&(sock.sin_addr));
+  inet_aton(SERVER_IP,&(sock.sin_addr));
 
   connect(socket_id,(struct sockaddr *)&sock,sizeof(sock));
 
