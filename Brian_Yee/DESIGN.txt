@@ -6,7 +6,11 @@ DESIGN DOCUMENT
 Classic Texas Hold'em
 =====================
 
-There will be one main computer that will keep track of all information about the current hand such as the current amount of players, the current pot, how much money each player has, who is playing the hand, the shown cards, etc. etc. Clients will be run on other computers and they will be able to type in commands during their turn to do the various possible moves such as checking, calling, raising, or folding. Games will not start until at least two people are currently at the table. 
+There will be one main computer that will keep track of all information about the current hand such as the current amount
+of players, the current pot, how much money each player has, who is playing the hand, the shown cards, etc. etc. Clients
+will be run on other computers and they will be able to type in commands during their turn to do the various possible
+moves such as checking, calling, raising, or folding. Games will not start until at least two people are currently at the
+table. 
 
 TOPICS TO BE USED
 =================
