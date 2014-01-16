@@ -174,7 +174,7 @@ void delete_sem(){
 }
 
 void create_shmem(){
-  int sd = shmget(SHM_KEY, sizeof(int)*3, IPC_CREAT | 0666);
+  int sd = shmget(SHM_KEY, sizeof(struct GAME_MEM), IPC_CREAT | 0666);
   if(sd > 0){
     printf("Shared memory created successfully! [%d]\n",sd);
   } else {

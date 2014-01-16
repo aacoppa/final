@@ -24,6 +24,10 @@ int *child_pid;
 static void sighandler(int signo){
   if(signo == SIGINT){
     close(socket_id);
+
+    struct shmid_ds d;
+    shmctl(sd,IPC_RMID,&d);
+
     system("clear");
     exit(0);
   }
@@ -54,8 +58,10 @@ int main() {
 
 
   /* shmem */
-  sd = shmget(SHM_KEY,sizeof(struct GAME_MEM),0666);
+  sd = shmget(SHM_KEY,sizeof(int), IPC_CREAT | 0666);
+  printf("sd: %d\n",sd);
   child_pid = (int *)shmat(sd,NULL,0);
+  *child_pid = -1;
 
   while(1) {
 
@@ -67,15 +73,10 @@ int main() {
 
     printf("Read: %s\n",buffer);
 
+
     /* fork off to display have timer */
-    int f = fork();
-    printf("Fork: %d\n",f);
-    if(f == 0){
-      printf("Inside fork");
-
+    if(fork() == 0){
       *child_pid = getpid();
-
-      printf("After pid\n");
 
       for(;timer>0;timer--){
 	system("clear");
@@ -89,7 +90,9 @@ int main() {
 	fflush(stdout);
 	sleep(1);
       }
+
     } else {
+
       /* SELECT */
       timeout.tv_sec = timer;
       timeout.tv_usec = 0;

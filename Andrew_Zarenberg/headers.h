@@ -29,7 +29,7 @@
 #define DEFAULT_LIVES 5
 #define SERVER_PORT 27643
 
-#define SERVER_IP "149.89.150.125"
+#define SERVER_IP "149.89.150.105"
 
 
 
