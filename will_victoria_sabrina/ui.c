@@ -3,7 +3,7 @@
 SDL_Window *win;
 SDL_Renderer *ren;
 SDL_Texture *maptex;
-territory terrs[50]; // need number of territories, should be NULL terminated
+
 
 void log_SDL_error(const char *op) {
   printf("%s failed:\n\t%s\n", op, SDL_GetError());

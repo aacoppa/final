@@ -1,5 +1,6 @@
 // A territory to be held by a given player (owner)
 typedef struct territory {
+  char *name;				// name
   int owner;				// A player id
   Continent cont;			// Continent it belongs to
   struct territory ** neighbors;	// array of pointers to all neighbors
@@ -36,6 +37,15 @@ typedef enum Continent {
 
 typedef struct RISK_move {
   int units;
-  territory origin;
-  territory destination;
-}
+  territory *origin;
+  territory *destination;
+} RISK_move;
+  
+typedef struct net_move {
+  int units;
+  char *origin;
+  char *destination;
+} net_move;
+
+net_move rtonetmove(RISK_move m);
+RISK_move nettormove(net_move m);
