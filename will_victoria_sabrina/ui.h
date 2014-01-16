@@ -1,16 +1,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <SDL2/SDL.h>
+#include "model.h"
 
-const int SCREEN_WIDTH = 640;
-const int SCREEN_HEIGHT = 480;
-
-/*
-typedef struct circle {
-  int x, y, r;
-  char *label;
-} circle;
-*/
+const int SCREEN_WIDTH = 952;
+const int SCREEN_HEIGHT = 631;
 
 // logs any SDL error, taking op as the operation that failed
 void log_SDL_error(const char *op);

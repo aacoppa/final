@@ -1,2 +1,2 @@
-ui: ui.c ui.h
-	gcc ui.c -lSDL2
+gui: ui.c ui.h
+	gcc ui.c -lSDL2 -lSDL2_gfx

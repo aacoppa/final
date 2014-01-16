@@ -2,6 +2,8 @@
 
 SDL_Window *win;
 SDL_Renderer *ren;
+SDL_Texture *maptex;
+territory terrs[50]; // need number of territories, should be NULL terminated
 
 void log_SDL_error(const char *op) {
   printf("%s failed:\n\t%s\n", op, SDL_GetError());
@@ -24,24 +26,36 @@ int init_SDL() {
     log_SDL_error("SDL renderer creation");
     return 1;
   }
-  SDL_Texture *maptex = load_texture("maptex.bmp");
+  maptex = load_texture("maptex.bmp");
   SDL_RenderClear(ren);
   SDL_RenderCopy(ren, maptex, NULL, NULL);
   SDL_RenderPresent(ren);
-  SDL_DestroyTexture(maptex);
   return 0;
 }
 
 void cleanup_SDL() {
+  SDL_DestroyTexture(maptex);
   SDL_DestroyRenderer(ren);
   SDL_DestroyWindow(win);
   SDL_Quit();
 }
 
 /*
-void draw_circle(circle c) {
+SDL_Texture *circle_texture(int r, int g, int b) {
+  SDL_Texture *tex = load_texture("circle.bmp");
+  if (SDL_SetTextureColorMod(tex, r, g, b) != 0)
+    log_SDL_error("modifying circle color");
+  return tex;
+}
+*/
 
-}*/
+void draw_terr(territory t, SDL_Surface *s) {
+  // lookup t coordinates here
+  SDL_Rect rect = {0, 0, 20, 20};
+  // lookup player color here v
+  SDL_FillRect(&s, &rect, 0xFFB3);
+  // add text here
+}
 
 SDL_Texture *load_texture(const char *path) {
   SDL_Texture *tex = NULL;
@@ -56,6 +70,7 @@ SDL_Texture *load_texture(const char *path) {
   return tex;
 }
 
+
 int main() {
   if (init_SDL())
     return 1;
@@ -69,11 +84,11 @@ int main() {
 	done = 1;
       if (event.type == SDL_MOUSEBUTTONDOWN) {
 	printf("mouse down at (%d, %d)\n", event.button.x, event.button.y);
-	SDL_SetRenderDrawColor(ren, 255, 0, 0, 100);
-	if (!SDL_RenderDrawPoint(ren, event.button.x, event.button.y))
-	  log_SDL_error("draw rect");
-	SDL_RenderPresent(ren);
+	//	mark_location(event.button.x, event.button.y);
       }
+      SDL_RenderClear(ren);
+      SDL_RenderCopy(ren, maptex, NULL, NULL);
+      //SDL_Surface *surface = 
     }
   }
   cleanup_SDL();
