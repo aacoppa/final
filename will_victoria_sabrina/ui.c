@@ -40,20 +40,23 @@ void cleanup_SDL() {
   SDL_Quit();
 }
 
-/*
+
 SDL_Texture *circle_texture(int r, int g, int b) {
   SDL_Texture *tex = load_texture("circle.bmp");
   if (SDL_SetTextureColorMod(tex, r, g, b) != 0)
     log_SDL_error("modifying circle color");
   return tex;
 }
-*/
+
 
 void draw_terr(territory t, SDL_Surface *s) {
   // lookup t coordinates here
-  SDL_Rect rect = {0, 0, 20, 20};
+  int x, y;
+  SDL_Rect dest_pos = {x, y, 40, 40};
   // lookup player color here v
-  SDL_FillRect(&s, &rect, 0xFFB3);
+  int r, g, b;
+  SDL_Texture *circle = circle_texture(r, g, b);
+  SDL_RenderCopy(ren, circle, NULL, dest_pos);
   // add text here
 }
 
