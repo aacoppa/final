@@ -4,4 +4,11 @@
 - Draw circles
 - Attach labels
 - Clickable circles/labels
-- Interface with rest of client
+- Hooks for game logic
+
+
+# Logic
+- simulate battle
+- deal with troop movements
+- roll dice
+- pass data from network to ui
