@@ -52,13 +52,14 @@ char rune(int c){
 }
 
 //divides string-represented even value by two
-void divByTwo(char* val){
-  int temp = 0;
-  int i;
+char* divByTwo(char* val){
+  int temp,i;
+  temp = 0;
   for(i = 0; i < strlen(val);i++){
     temp = (temp%2)*10 + digit(val[i]);
     val[i] = rune(temp/2);
   }
+  return val;
 }
 
 
@@ -73,6 +74,7 @@ int binaryDigits(int digits){
 char* decToBin(char* val){
   int b,i;
   b = binaryDigits(strlen(val));
+  printf("%d\n",b);
   char* final = (char*) calloc(b+1,sizeof(char));
   for(i=0;i<b;i++){
     if (digit(val[strlen(val)-1])%2 == 0)
@@ -80,15 +82,28 @@ char* decToBin(char* val){
     else{
       final[i] = '1';
       val[strlen(val)-1]=rune(val[strlen(val)-1]-1);
+      printf("%s\n",val); 
     }
+    printf("%s ",final);
     divByTwo(val);
+    printf("%s\n",val);
   }
   return final;
 }
 
 void main(){
+  /*
   char* buff = (char*) calloc(1000,sizeof(char));
   fgets(buff, 1000, stdin);
+
+  //test fgets: SUCCESS
+  // printf("%s\n",buff);
+
   char* bin = decToBin(buff);
-  printf("%s \n %s\n",buff,bin);
+  printf("%s\n%s\n",buff,bin);
+  */
+  //test divByTwo: SUCCESS
+  char x[] = "22222";
+  decToBin(x);
+  printf("%s\n",x);
 }
