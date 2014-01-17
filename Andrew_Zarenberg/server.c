@@ -9,18 +9,14 @@ union semun {
 };
 
 
-struct GAME_MEM {
-  int score;
-  int lives;
-  int computer[34];
-  int computer_len;
-};
-
+int score;
+int lives;
 
 int computer[34];
 int computer_len;
 int last_computer = -1;
 
+int timer;
 
 
 void create_shmem();
@@ -67,8 +63,11 @@ int main(){
 
   start_game = 0;
 
-  create_shmem();
+  /*create_shmem();*/
 
+  lives = 5;
+  score = 0;
+  timer = 10;
 
   int semd = create_sem();
   /* semaphore*/
@@ -138,6 +137,11 @@ int main(){
   }
 
 
+  sprintf(send_text,"\n\n\n\n\t\tScore: %d\n\n\t\tLives: %d\n",score,lives);
+
+  write(master_socket,send_text,sizeof(send_text));
+
+
   while(1){
     sleep(1);
     if(computer_len > 1){
@@ -164,15 +168,15 @@ int main(){
 
       if(math_answer == atoi(stuff)){
 	write(socket_client,"idle",MAX_LEN);
-	game->score++;
+	score++;
       } else {
 	write(socket_client,"fail",MAX_LEN);
-	game->lives--;
+	lives--;
       }
-
-      sprintf(send_text,"\n\n\n\n\t\tScore: %d\n\n\t\tLives: %d\n",game->score,game->lives);
+      sprintf(send_text,"\n\n\n\n\t\tScore: %d\n\n\t\tLives: %d\n",score,lives);
 
       write(master_socket,send_text,sizeof(send_text));
+
     }
   }
   
@@ -254,7 +258,7 @@ void delete_sem(){
   int semd = semget(SEM_KEY, 1, 0666);
   semctl(semd, 0, IPC_RMID);
 }
-
+/*
 void create_shmem(){
   int sd = shmget(SHM_KEY, sizeof(struct GAME_MEM), IPC_CREAT | 0666);
   if(sd > 0){
@@ -266,7 +270,8 @@ void create_shmem(){
   game = (struct GAME_MEM *)shmat(sd,NULL,0);
   game->lives = DEFAULT_LIVES;
   game->score = 0;
-}
+  }*/
+
 void delete_shmem(){
   int sd = shmget(SHM_KEY, sizeof(int), 0666);
   

@@ -4,9 +4,10 @@ void miss();
 void idle();
 void print_fail();
 void print_full(char);
+void end_process();
 
-int rows = 20;
-int cols = 20;
+int rows = 53;
+int cols = 134;
 
 int timer;
 int mycount;
@@ -23,13 +24,7 @@ int *child_pid;
 */
 static void sighandler(int signo){
   if(signo == SIGINT){
-    close(socket_id);
-
-    struct shmid_ds d;
-    shmctl(sd,IPC_RMID,&d);
-
-    system("clear");
-    exit(0);
+    end_process();
   }
 }
 
@@ -63,22 +58,18 @@ int main() {
   child_pid = (int *)shmat(sd,NULL,0);
   *child_pid = -1;
 
+  idle();
+
   while(1) {
 
-    timer = 5;
+    timer = 15;
 
     /* get previous line from server */
-    b = read( socket_id, buffer,MAX_LEN);    
-    buffer[b] = 0; /* ensure there's a null at the end */
+    b = read( socket_id, buffer,MAX_LEN);
 
-    if(!strcmp(buffer,"exit") || b <= 0){
-      close(socket_id);
 
-      struct shmid_ds d;
-      shmctl(sd,IPC_RMID,&d);
-
-      system("clear");
-      exit(0);
+    if(b <= 0){
+      end_process();
     }
 
     printf("Read: %s\n",buffer);
@@ -167,4 +158,15 @@ void print_full(char a){
     for(y=0;y<cols;y++) printf("%c",a);
     printf("\n");
   }
+}
+
+
+void end_process(){
+  close(socket_id);
+
+  struct shmid_ds d;
+  shmctl(sd,IPC_RMID,&d);
+
+  system("clear");
+  exit(0);
 }

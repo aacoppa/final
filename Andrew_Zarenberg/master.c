@@ -29,21 +29,22 @@ int main(){
 
   /* socket end */
 
-  printf("Waiting for clients to connect.  Press ENTER to start the game\n");
+  system("clear");
+  printf("Waiting for clients to connect.\nPress ENTER to start the game\n");
 
   fgets(buf,MAX_LEN,stdin);
   write(socket_id,"start",8);
   
-  printf("Starting...\n");
-
   /*struct GAME_MEM *game_stats;*/
   char send_text[MAX_LEN];
 
   while(1){
     read(socket_id,buf,sizeof(buf));
     system("clear");
-    if(!strcmp(buf,"exit")) exit(0);
-    else printf("%s\n",buf);
+    if(!strcmp(buf,"exit")){
+      close(socket_id);
+      exit(0);
+    } else printf("%s\n",buf);
   }
 
   return 0;
