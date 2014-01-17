@@ -15,8 +15,7 @@ int socket_id;
 
 /* shmem */
 int sd;
-struct GAME_MEM *game;
-
+int *child_pid;
 
 /* SIGUSR1:
    Because the program is waiting for user input through fgets, the timer is
@@ -24,6 +23,11 @@ struct GAME_MEM *game;
 */
 static void sighandler(int signo){
   if(signo == SIGINT){
+    close(socket_id);
+
+    struct shmid_ds d;
+    shmctl(sd,IPC_RMID,&d);
+
     system("clear");
     exit(0);
   }
@@ -38,9 +42,9 @@ int main() {
   
   sock.sin_family = AF_INET;
   sock.sin_port = htons(SERVER_PORT);
-  inet_aton("127.0.0.1",&(sock.sin_addr));
+  inet_aton(SERVER_IP,&(sock.sin_addr));
 
-  int i = connect(socket_id,(struct sockaddr *)&sock,sizeof(sock));
+  connect(socket_id,(struct sockaddr *)&sock,sizeof(sock));
   /* socket end */
   
   char buffer[MAX_LEN];
@@ -54,9 +58,10 @@ int main() {
 
 
   /* shmem */
-  sd = shmget(SHM_KEY,sizeof(struct GAME_MEM),0666);
-  game = (struct GAME_MEM *)shmat(sd,NULL,0);
-
+  sd = shmget(SHM_KEY,sizeof(int), IPC_CREAT | 0666);
+  printf("sd: %d\n",sd);
+  child_pid = (int *)shmat(sd,NULL,0);
+  *child_pid = -1;
 
   while(1) {
 
@@ -66,10 +71,22 @@ int main() {
     b = read( socket_id, buffer,MAX_LEN);    
     buffer[b] = 0; /* ensure there's a null at the end */
 
+    if(!strcmp(buffer,"exit") || b <= 0){
+      close(socket_id);
+
+      struct shmid_ds d;
+      shmctl(sd,IPC_RMID,&d);
+
+      system("clear");
+      exit(0);
+    }
+
+    printf("Read: %s\n",buffer);
+
 
     /* fork off to display have timer */
     if(fork() == 0){
-      game->child_pid = getpid();
+      *child_pid = getpid();
 
       for(;timer>0;timer--){
 	system("clear");
@@ -83,6 +100,7 @@ int main() {
 	fflush(stdout);
 	sleep(1);
       }
+
     } else {
 
       /* SELECT */
@@ -100,13 +118,17 @@ int main() {
 	/* timeout */
 	strcpy(buffer,"time");
       }
+      kill(*child_pid,9);
 
     
       if ( strncmp(buffer, "exit", sizeof(buffer)) == 0 )
 	break;
     
       write(socket_id, buffer, MAX_LEN);
+
       read(socket_id,buffer,MAX_LEN);
+
+
 
       if(!strcmp(buffer,"fail")){
 	print_fail();

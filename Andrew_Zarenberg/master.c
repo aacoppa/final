@@ -21,26 +21,29 @@ int main(){
   
   sock.sin_family = AF_INET;
   sock.sin_port = htons(SERVER_PORT);
-  inet_aton("127.0.0.1",&(sock.sin_addr));
+  inet_aton(SERVER_IP,&(sock.sin_addr));
 
   connect(socket_id,(struct sockaddr *)&sock,sizeof(sock));
 
-  char buf[8];
-  write(socket_id,"hello",8);
-  read(socket_id,buf,sizeof(buf));
+  char buf[MAX_LEN];
+
   /* socket end */
 
-  struct GAME_MEM game_stats;
+  printf("Waiting for clients to connect.  Press ENTER to start the game\n");
+
+  fgets(buf,MAX_LEN,stdin);
+  write(socket_id,"start",8);
+  
+  printf("Starting...\n");
+
+  /*struct GAME_MEM *game_stats;*/
+  char send_text[MAX_LEN];
 
   while(1){
     read(socket_id,buf,sizeof(buf));
+    system("clear");
     if(!strcmp(buf,"exit")) exit(0);
-    else {
-      read(socket_id,&game_stats,sizeof(struct GAME_MEM));
-
-      system("clear");
-      printf("Score: %d\nLives: %d\n",game_stats.score,game_stats.lives);
-    }
+    else printf("%s\n",buf);
   }
 
   return 0;
