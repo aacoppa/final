@@ -125,10 +125,8 @@ int main(){
 	  game->lives--;
 	}
 
-	printf("Score: %d\nLives: %d\n",game->score,game->lives);
-	sprintf(send_text,"Score: %d\nLives: %d\n",game->score,game->lives);
+	sprintf(send_text,"\n\n\n\n\t\tScore: %d\n\n\t\tLives: %d\n",game->score,game->lives);
 
-	write(master_socket,"good",8);
 	write(master_socket,send_text,sizeof(send_text));
 
 	sb.sem_op = 1;

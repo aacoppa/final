@@ -25,7 +25,7 @@ int main(){
 
   connect(socket_id,(struct sockaddr *)&sock,sizeof(sock));
 
-  char buf[8];
+  char buf[MAX_LEN];
   write(socket_id,"hello",8);
   read(socket_id,buf,sizeof(buf));
   /* socket end */
@@ -35,15 +35,9 @@ int main(){
 
   while(1){
     read(socket_id,buf,sizeof(buf));
+    system("clear");
     if(!strcmp(buf,"exit")) exit(0);
-    else {
-      /*      read(socket_id,game_stats,sizeof(struct GAME_MEM)+1);*/
-      read(socket_id,send_text,sizeof(send_text));
-
-      system("clear");
-      printf("%s\n",send_text);
-      /*      printf("Score: %d\nLives: %d\n",game_stats->score,game_stats->lives);*/
-    }
+    else printf("%s\n",buf);
   }
 
   return 0;
