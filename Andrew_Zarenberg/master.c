@@ -26,9 +26,15 @@ int main(){
   connect(socket_id,(struct sockaddr *)&sock,sizeof(sock));
 
   char buf[MAX_LEN];
-  write(socket_id,"hello",8);
-  read(socket_id,buf,sizeof(buf));
+
   /* socket end */
+
+  printf("Waiting for clients to connect.  Press ENTER to start the game\n");
+
+  fgets(buf,MAX_LEN,stdin);
+  write(socket_id,"start",8);
+  
+  printf("Starting...\n");
 
   /*struct GAME_MEM *game_stats;*/
   char send_text[MAX_LEN];

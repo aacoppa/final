@@ -21,20 +21,17 @@
 
 #define MAX_LEN 64
 #define SEM_KEY 24601
-#define SHM_KEY 10642
+#define SHM_KEY 10641
 #define SEM_ID 0
 #define SHM_ID 1
 #define WKP "mario"
 #define MASTER_PIPE "master_pipe"
 #define DEFAULT_LIVES 5
-#define SERVER_PORT 27643
+#define SERVER_PORT 27649
 
-#define SERVER_IP "149.89.150.105"
-
-
+#define SERVER_IP "127.0.0.1"
 
 
-struct GAME_MEM {
-  int score;
-  int lives;
-};
+
+
+

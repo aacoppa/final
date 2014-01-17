@@ -71,6 +71,16 @@ int main() {
     b = read( socket_id, buffer,MAX_LEN);    
     buffer[b] = 0; /* ensure there's a null at the end */
 
+    if(!strcmp(buffer,"exit") || b <= 0){
+      close(socket_id);
+
+      struct shmid_ds d;
+      shmctl(sd,IPC_RMID,&d);
+
+      system("clear");
+      exit(0);
+    }
+
     printf("Read: %s\n",buffer);
 
 

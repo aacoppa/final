@@ -9,7 +9,17 @@ union semun {
 };
 
 
+struct GAME_MEM {
+  int score;
+  int lives;
+  int computer[34];
+  int computer_len;
+};
 
+
+int computer[34];
+int computer_len;
+int last_computer = -1;
 
 
 
@@ -18,21 +28,33 @@ void delete_shmem();
 int create_sem();
 void delete_sem();
 void math_problem(char[8],int *,int);
-void end_process();
 
 
 int count; /* how many times user has made it*/
-
+int start_game; /* boolean value, signal to start game */
 
 struct GAME_MEM *game;
-int master_socket;
+int master_socket, socket_id;
 
 
 static void sighandler(int signo){
   
   if(signo == SIGINT){
     write(master_socket,"exit",8);
-    end_process();
+
+    int x;
+    for(x=0;x<computer_len;x++){
+      /*      write(computer[0],"exit",8);*/
+      close(computer[0]);
+    }
+
+    delete_sem();
+
+    shmdt(game);
+    delete_shmem();
+    close(master_socket);
+    close(socket_id);
+
     exit(0);
   }
 }
@@ -42,7 +64,9 @@ static void sighandler(int signo){
 
 int main(){
   signal(SIGINT, sighandler);
-  
+
+  start_game = 0;
+
   create_shmem();
 
 
@@ -57,7 +81,7 @@ int main(){
   char stuff[MAX_LEN];
 
   /* socket stuff */
-  int socket_id, socket_client;
+  int socket_client;
   struct sockaddr_in server;
   socklen_t socket_length;
 
@@ -68,7 +92,7 @@ int main(){
   server.sin_port = htons(SERVER_PORT);
 
   int i = bind(socket_id,(struct sockaddr *)&server,sizeof(server));
-  printf("Result: %d\n",i);
+  printf("Socket: %d\n",i);
   listen(socket_id,0);
   /* socket end */
 
@@ -81,21 +105,79 @@ int main(){
   socket_length = sizeof(server);
   master_socket = accept(socket_id,(struct sockaddr *)&server,&socket_length);
   printf("Accepted\n");
-  read(socket_id,stuff,sizeof(stuff));
+
 
   printf("\nConnected to master.  Run ./client on all computers you wish to be part of this game.\n");
 
   char send_text[MAX_LEN];
 
+
+
   while(1){
+    /* use select to break out of it when master starts the game */
+    fd_set fds;
 
-    /* socket */
-    socket_length = sizeof(server);
-    socket_client = accept(socket_id,(struct sockaddr *)&server,&socket_length);
-    /* socket end */
+    FD_ZERO(&fds);
+    FD_SET(master_socket,&fds);
+    FD_SET(socket_id,&fds); 
+    select(master_socket+1,&fds,NULL,NULL,NULL);
+
+    if(FD_ISSET(socket_id,&fds)){
+
+      /* socket */
+      socket_length = sizeof(server);
+      socket_client = accept(socket_id,(struct sockaddr *)&server,&socket_length);
+      /* socket end */
+	
+      computer[computer_len++] = socket_client;
     
-    printf("Accepted connection to %d\n",socket_client);
+      printf("Accepted connection to %d\n",socket_client);
+    } else if(FD_ISSET(master_socket,&fds)){
+      break;
+    }
+  }
 
+
+  while(1){
+    sleep(1);
+    if(computer_len > 1){
+      srand(time(NULL));
+
+      /* Make sure it's not the same computer twice in a row */
+      while(socket_client == last_computer){
+	socket_client = computer[rand()%computer_len];
+      }
+      last_computer = socket_client;
+
+      strcpy(stuff,"");
+      math_answer = -1;
+
+
+      math_problem(math_string,&math_answer,10);
+
+      printf("Writing to socket: %d\nSent: %s\n",socket_client,math_string);
+
+      write(socket_client,math_string,MAX_LEN);
+      int b = read(socket_client,stuff,MAX_LEN);
+
+      printf("Read from socket: %d\nReceived: %s\nSize: %d\n",socket_client,stuff,b);
+
+      if(math_answer == atoi(stuff)){
+	write(socket_client,"idle",MAX_LEN);
+	game->score++;
+      } else {
+	write(socket_client,"fail",MAX_LEN);
+	game->lives--;
+      }
+
+      sprintf(send_text,"\n\n\n\n\t\tScore: %d\n\n\t\tLives: %d\n",game->score,game->lives);
+
+      write(master_socket,send_text,sizeof(send_text));
+    }
+  }
+  
+
+  /*
     int f = fork();
     if(f == 0){
 
@@ -141,7 +223,7 @@ int main(){
     
 
     
-  }
+    }*/
   
   close(socket_id);
   end_process();
@@ -263,10 +345,4 @@ void math_problem(char math_string[8], int *answer, int max){
 
   
 
-void end_process(){
-  delete_sem();
 
-  shmdt(game);
-  delete_shmem();
-
-}
