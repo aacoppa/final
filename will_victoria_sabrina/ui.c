@@ -56,7 +56,7 @@ void draw_terr(territory t, SDL_Surface *s) {
   // lookup player color here v
   int r, g, b;
   SDL_Texture *circle = circle_texture(r, g, b);
-  SDL_RenderCopy(ren, circle, NULL, dest_pos);
+  SDL_RenderCopy(ren, circle, NULL, &dest_pos);
   // add text here
 }
 
@@ -80,7 +80,9 @@ int main() {
 
   SDL_Event event;
   char done = 0;
-
+  // Not working
+  SDL_Texture *circ = circle_texture(255, 0, 0);
+  SDL_RenderCopy(ren, circ, NULL, NULL);
   while (!done) {
     while(SDL_PollEvent(&event)) {
       if (event.type == SDL_QUIT)

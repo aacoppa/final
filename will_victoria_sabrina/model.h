@@ -1,12 +1,3 @@
-// A territory to be held by a given player (owner)
-typedef struct territory {
-  char *name;				// name
-  int owner;				// A player id
-  Continent cont;			// Continent it belongs to
-  struct territory ** neighbors;	// array of pointers to all neighbors
-					// each neighbor will have a link back
-} territory;
-
 // Continent enum, each territory will belong to one Continent
 typedef enum Continent {
   RISK_ASIA,	// Asia
@@ -16,6 +7,15 @@ typedef enum Continent {
   RISK_AFRICA,	// Africa
   RISK_AUS	// Australia (Oceania)
 } Continent;
+
+// A territory to be held by a given player (owner)
+typedef struct territory {
+  char *name;				// name
+  int owner;				// A player id
+  Continent cont;			// Continent it belongs to
+  struct territory ** neighbors;	// array of pointers to all neighbors
+					// each neighbor will have a link back
+} territory;
 
 /* 
    Defines a move made, which can be abstracted as
