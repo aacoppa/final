@@ -5,16 +5,19 @@
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
 #include "server_protocols.h"
 
+#define SUCC_REQ 1
+#define INVALID_USER 2 
+#define NOT_MY_TURN 3
+
 int global_sock_id; //Accepts new connections
-socklen_t sockLength;
 
 void start();
 void listenForNewConnections();
+void handleConnection();
 void acceptNewConnection();
 void handleConnectionFault();
-void handleRequestType();
+int handleRequestType();
+int hashPassword(char *);
 #endif

@@ -25,7 +25,11 @@ int main(int argc, char ** argv) {
     } 
 }
 
-void playGame() {
+void startGame() {
+    t1 = clock();
+    runGame(mapKey); //Runs the game in game.c
+    t2 = clock();
 
+    time = (t2 - t1) / CLOCKS_PER_SEC;
 }
 
