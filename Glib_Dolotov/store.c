@@ -93,15 +93,15 @@ char* decToBin(char* val){
   return final;
 }
 
-int binToDec(char* val, int start){
-  int result = 0;
+unsigned int binToDec(char* val, int start){
+  unsigned int result = 0;
   int i;
   for(i=0;i<32;i++)
     if (val[start+i]=='1')
       result += (int) pow(2,i);
   return result;
 }
-
+/*
 void main(){
   //get value and store it as a string of binary:
   char* buff = (char*) calloc(1000,sizeof(char));
@@ -118,10 +118,15 @@ void main(){
   //take the binary and break it up into unsigned ints
   //which would store the value bitwise
   unsigned int* final = 
-    (unsigned int*) calloc(strlen(bin)/32,sizeof(unsigned int));
+    (unsigned int*) calloc(strlen(bin)/32+1,sizeof(unsigned int));
+  //first element of the unsigned int array will be the number of
+  //unsigned ints (sets of 32 bits) that compose the value
+  final[0]=strlen(bin)/32;
   int i;
-  for(i=0; i<strlen(bin)/32 ;i++){
-    final[i]=binToDec(bin,i*32);
-    printf("%d\n",final[i]);
+  for(i=1; i<strlen(bin)/32+1;i++){
+    final[i]=binToDec(bin,(i-1)*32);
+    printf("%u\n",final[i]);
   }
+  printf("%d\n", final[0]);
 }
+*/
