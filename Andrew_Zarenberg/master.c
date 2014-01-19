@@ -3,7 +3,6 @@
 
 
 int socket_id;
-int sd;
 
 static void sighandler(int signo){
   if(signo == SIGINT){

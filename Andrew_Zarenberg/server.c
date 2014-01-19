@@ -19,10 +19,6 @@ int last_computer = -1;
 int timer;
 
 
-void create_shmem();
-void delete_shmem();
-int create_sem();
-void delete_sem();
 void math_problem(char[8],int *,int);
 
 
@@ -39,15 +35,11 @@ static void sighandler(int signo){
     write(master_socket,"exit",8);
 
     int x;
-    for(x=0;x<computer_len;x++){
-      /*      write(computer[0],"exit",8);*/
-      close(computer[0]);
+    /*    for(x=0;x<computer_len;x++){*/
+    for(x=computer_len-1;x>=0;x--){
+      close(computer[x]);
     }
 
-    delete_sem();
-
-    shmdt(game);
-    delete_shmem();
     close(master_socket);
     close(socket_id);
 
@@ -63,18 +55,9 @@ int main(){
 
   start_game = 0;
 
-  /*create_shmem();*/
-
   lives = 5;
   score = 0;
   timer = 10;
-
-  int semd = create_sem();
-  /* semaphore*/
-  struct sembuf sb;
-  sb.sem_num = 0;
-  sb.sem_flg = SEM_UNDO;
-
 
 
   char stuff[MAX_LEN];
@@ -180,103 +163,12 @@ int main(){
     }
   }
   
-
-  /*
-    int f = fork();
-    if(f == 0){
-
-      while(1){
-
-	sleep(1);
-
-	strcpy(stuff,"");
-	math_answer = -1;
-
-	sb.sem_op = -1;
-	semop(semd,&sb,1);
-
-	printf("In: %d\n",socket_client);
-
-	math_problem(math_string,&math_answer,10);
-
-	write(socket_client,math_string,MAX_LEN);
-	read(socket_client,stuff,MAX_LEN);
-
-
-	if(math_answer == atoi(stuff)){
-	  write(socket_client,"idle",MAX_LEN);
-	  game->score++;
-	} else {
-	  write(socket_client,"fail",MAX_LEN);
-	  game->lives--;
-	}
-
-	sprintf(send_text,"\n\n\n\n\t\tScore: %d\n\n\t\tLives: %d\n",game->score,game->lives);
-
-	write(master_socket,send_text,sizeof(send_text));
-
-	sb.sem_op = 1;
-	semop(semd,&sb,1);
-	  
-	printf("Out: %d\n",socket_client);
-
-      }
-      exit(0);
-      close(socket_client);
-    }
-    
-
-    
-    }*/
   
   close(socket_id);
   end_process();
 
 
   return 0;
-}
-
-
-
-int create_sem(){
-  delete_sem();
-  int semd = semget(SEM_KEY, 1, IPC_CREAT | IPC_EXCL | 0666);
-  if(semd > 0){
-    printf("Semaphore created successfully! [%d]\n",semd);
-  } else {
-    printf("Error creating semaphore. [%d]\n",semd);
-  }
-  
-  union semun su;
-  su.val = 1;
-  semctl(semd, 0, SETVAL, su);
-
-  return semd;
-}
-
-void delete_sem(){
-  int semd = semget(SEM_KEY, 1, 0666);
-  semctl(semd, 0, IPC_RMID);
-}
-/*
-void create_shmem(){
-  int sd = shmget(SHM_KEY, sizeof(struct GAME_MEM), IPC_CREAT | 0666);
-  if(sd > 0){
-    printf("Shared memory created successfully! [%d]\n",sd);
-  } else {
-    printf("Error creating shared memory. [%d]\n",sd);
-  }
-   
-  game = (struct GAME_MEM *)shmat(sd,NULL,0);
-  game->lives = DEFAULT_LIVES;
-  game->score = 0;
-  }*/
-
-void delete_shmem(){
-  int sd = shmget(SHM_KEY, sizeof(int), 0666);
-  
-  struct shmid_ds d;
-  shmctl(sd,IPC_RMID,&d);
 }
 
 
