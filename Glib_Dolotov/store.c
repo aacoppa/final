@@ -1,7 +1,7 @@
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <math.h>
 
 //converts char (digit by digit) into integer value
 int digit(char c){
@@ -75,6 +75,8 @@ char* decToBin(char* val){
   int b,i;
   b = binaryDigits(strlen(val));
   //printf("%d\n",b);
+  while(!(b%32==0))
+    b++;
   char* final = (char*) calloc(b+1,sizeof(char));
   for(i=0;i<b;i++){
     if (digit(val[strlen(val)-1])%2 == 0)
@@ -91,7 +93,17 @@ char* decToBin(char* val){
   return final;
 }
 
+int binToDec(char* val, int start){
+  int result = 0;
+  int i;
+  for(i=0;i<32;i++)
+    if (val[start+i]=='1')
+      result += (int) pow(2,i);
+  return result;
+}
+
 void main(){
+  //get value and store it as a string of binary:
   char* buff = (char*) calloc(1000,sizeof(char));
   fgets(buff, 1000, stdin);
   //remove the new-line byte
@@ -99,4 +111,17 @@ void main(){
   //printf("%s\n",buff);
   char* bin = decToBin(buff);
   printf("%s\n",bin);
+
+
+  //test binToDec: CHECK
+  //printf("%d\n",binToDec(bin,0));
+  //take the binary and break it up into unsigned ints
+  //which would store the value bitwise
+  unsigned int* final = 
+    (unsigned int*) calloc(strlen(bin)/32,sizeof(unsigned int));
+  int i;
+  for(i=0; i<strlen(bin)/32 ;i++){
+    final[i]=binToDec(bin,i*32);
+    printf("%d\n",final[i]);
+  }
 }
