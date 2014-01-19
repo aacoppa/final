@@ -27,6 +27,12 @@
 #define USERNAME_TAKEN 1
 #define INVALID_UPASS 2
 #define NOT_MY_TURN 3
+#define FIRST_TURN 4
+#define NOT_LOGGED_IN 5
+#define CONNECTION_ERROR 6
+#define NOT_VALID_OPPONENT 7
+
+
 
 #define MAIN_PORT 35412
 //Data server receives / Client sends out

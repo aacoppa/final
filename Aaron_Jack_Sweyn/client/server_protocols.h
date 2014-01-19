@@ -27,14 +27,39 @@
 #define USERNAME_TAKEN 1
 #define INVALID_UPASS 2
 #define NOT_MY_TURN 3
+#define FIRST_TURN 4
+#define NOT_LOGGED_IN 5
+#define CONNECTION_ERROR 6
+#define NOT_VALID_OPPONENT 7
+char error_messages = {
+   "",
+   "Username already taken",
+   "Invalid username and password combination. Run race login",
+   "Sorry, but its not your turn"
+   "",
+   "No user is logged in. Please run race login or race create",
+   "There was an error with the connecting with the server",
+   "Sorry but the user you challenged doesn't exist"
+}
 
+
+
+#define MAIN_PORT 35412
 //Data server receives / Client sends out
+//
 typedef struct serv_response {
-    int type;
+    int type; //If type is game_data then it'll wait
     int success;
     int reason;
     int key;
 } serv_response;
+typedef struct serv_out_games {
+    int type;
+    char u1[50];
+    char u2[50];
+    int turn;
+    int distance;
+} serv_out_games;
 typedef struct client_out {
     int type;
 } client_out;

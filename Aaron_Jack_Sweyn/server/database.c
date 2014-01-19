@@ -1,29 +1,25 @@
 #include "database.h"
 
 static int callback(void * comm, int argc, char **argv, char **azColName) {
-    //Callback function...
-    int type = *(int *) comm;
+    // This function is only called when there is something in the database
+    // that matches the query
+    
+    //Called multiple times if there are multiple matches 
+
+    int type = *(int *) comm; //Instead of user comm as a void * we use it
+    //As a placeholder to say what kind of action to take
+    //
     if( type == NO_CALLBACK ) {
         return 0;
     }
     else if( type == U_EXISTS_CALLBACK ) {
-        //Only calls back on successful SELECT
-        //The user exists so we change comm
-        *(int *)comm = USER_EXISTS;
+        *(int *)comm = USER_EXISTS; 
     } else if( type == GAME_EXISTS_CALLBACK ) {
         *(int *)comm = GAME_EXISTS;  
     } else if( type == GAME_INFO_CALLBACK ) {
+        //Fill out the global LOCKED game_info * gi struct
         free(comm);
-        /*
-           comm = (game_info *) calloc( sizeof(game_info), 1);
-           ((game_info *) comm)->turn = atoi(argv[2]);
-           ((game_info *) comm)->u1wins = atoi(argv[3]);
-           ((game_info *) comm)->u2wins = atoi(argv[4]);
-           ((game_info *) comm)->dist = atoi(argv[6]);
-           printf("%d %d comms\n",  
-           ((game_info *) comm)->u1wins, ((game_info *) comm)->u2wins );
-           */
-        gi.turn = atoi(argv[2]);
+        gi.turn = atoi(argv[2]); 
         gi.u1wins = atoi(argv[3]);
         gi.u2wins = atoi(argv[4]);
         gi.dist = atoi(argv[6]);
@@ -34,7 +30,8 @@ static int callback(void * comm, int argc, char **argv, char **azColName) {
     } else if( type == VALIDATE_USER_CALLBACK ) {
         *(int *)comm = VALID;
     } else if( type == GET_GAMES_IN_PROGRESS_CALLBACK ) {
-
+        //gip_hold is also global LOCKED
+        //update it everytime with another game
         int i = gip_hold->number_of_games;
         db_game_data ** temp_games = calloc(i+1, sizeof(db_game_data *));
         int j = 0;
@@ -59,7 +56,7 @@ void db_init() {
     int rc;
     rc = sqlite3_open("data.db",&db);
     assert( !rc );
-    char * execStr = composeInitTables();
+    char * execStr = compose_init_tables();
     rc = sqlite3_exec(db, execStr, callback, NO_CALLBACK, &zErrMsg);
     free(execStr);
     if( rc != SQLITE_OK ){
@@ -94,7 +91,9 @@ void close_sems() {
     semctl(createsem, 0, IPC_RMID);
     semctl(readsem, 0, IPC_RMID);
 }
-int db_create_user(char * name, char * password) {
+int db_create_user(char * name, char * pass) {
+    char * password = malloc(50);
+    strcpy(password, pass);
     //Aquire the create lock
     struct sembuf sb;
     sb.sem_num = 0;
@@ -138,7 +137,9 @@ int db_create_user(char * name, char * password) {
     int rc;
     rc = sqlite3_open("data.db",&db);
     assert( !rc );
-    char * execStr = composeAddUser(name, password);
+    printf("pass %s\n", password);
+    char * execStr = compose_add_user(name, password);
+    printf("%s\n", execStr);
     rc = sqlite3_exec(db, execStr, callback, NO_CALLBACK, &zErrMsg);
     free(execStr);
     if( rc != SQLITE_OK ){
@@ -147,7 +148,6 @@ int db_create_user(char * name, char * password) {
     }
     sqlite3_close(db);
     //Release the lock
-    printf("Releasing create and write lock\n");
     sb.sem_op = 1;
     semop(createsem, &sb, 1);
 
@@ -212,7 +212,8 @@ int db_user_exists(char * name) {
     //Type is sent with information about whose callback routine to call
     void * type = malloc(sizeof(int));
     *(int *)type = U_EXISTS_CALLBACK;
-    char * execStr = composeUserExists(name);
+    char * execStr = compose_user_exists(name);
+    printf("%s\n", execStr);
     rc = sqlite3_exec(db, execStr, callback, type, &zErrMsg);
     free(execStr);
     //Type returns containing whether the user exists or not
@@ -246,7 +247,7 @@ db_game_data_wr * db_games_in_progress(char * name) {
     //Type is sent with information about whose callback routine to call
     void * type = malloc(sizeof(int));
     *(int *)type = GET_GAMES_IN_PROGRESS_CALLBACK;
-    char * execStr = composeGetGamesOf(name);
+    char * execStr = compose_get_games_of(name);
     printf("%s\n", execStr);
     rc = sqlite3_exec(db, execStr, callback, type, &zErrMsg);
     free(execStr);
@@ -296,7 +297,7 @@ int db_get_key( char * name, char * opponent ) {
     //Type is sent with information about whose callback routine to call
     void * type = malloc(sizeof(int));
     *(int *)type = GET_KEY_CALLBACK;
-    char * execStr = composeGetGameInfo(name, opponent);
+    char * execStr = compose_get_game_info(name, opponent);
     rc = sqlite3_exec(db, execStr, callback, type, &zErrMsg);
     free(execStr);
     //Type returns containing whether the user exists or not
@@ -346,7 +347,7 @@ int db_my_turn( char * name, char * opponent ) {
     //Type is sent with information about whose callback routine to call
     void * type = malloc(sizeof(int));
     *(int *)type = GET_TURN_CALLBACK;
-    char * execStr = composeGetGameInfo(name, opponent);
+    char * execStr = compose_get_game_info(name, opponent);
     rc = sqlite3_exec(db, execStr, callback, type, &zErrMsg);
     free(execStr);
     //Type returns containing whether the user exists or not
@@ -389,7 +390,7 @@ void db_update_game( struct game_data * gd ) {
         //Type is sent with information about whose callback routine to call
         void * type = malloc(sizeof(int));
         *(int *)type = GAME_INFO_CALLBACK; 
-        char * execStr = composeGetGameInfo(u1, u2); 
+        char * execStr = compose_get_game_info(u1, u2); 
         rc = sqlite3_exec(db, execStr, callback, type, &zErrMsg);
         free(execStr);
         if( rc != SQLITE_OK ){
@@ -415,7 +416,7 @@ void db_update_game( struct game_data * gd ) {
             }
         }
         gi.turn = !gi.turn;
-        execStr = composeUpdateWins(u1, u2, gi.u1wins, gi.u2wins);
+        execStr = compose_update_wins(u1, u2, gi.u1wins, gi.u2wins);
         void * t = malloc(sizeof(int));
         *(int *) t = NO_CALLBACK;
         rc = sqlite3_exec(db, execStr, callback, t, &zErrMsg);
@@ -425,7 +426,7 @@ void db_update_game( struct game_data * gd ) {
         }
         free(execStr);
         *(int *) t = NO_CALLBACK;
-        execStr = composeAddChallenge(u1, u2, gd->nextdist, gi.turn, gd->genkey);
+        execStr = compose_add_challenge(u1, u2, gd->nextdist, gi.turn, gd->genkey);
         rc = sqlite3_exec(db, execStr, callback, t, &zErrMsg);
         if( rc != SQLITE_OK ){
             fprintf(stderr, "SQL error: %s\n", zErrMsg);
@@ -453,7 +454,7 @@ int db_game_exists(char * a, char * b) {
     //Type is sent with information about whose callback routine to call
     void * type = malloc(sizeof(int));
     *(int *)type = GAME_EXISTS_CALLBACK; 
-    char * execStr = composeGameExists(a, b); 
+    char * execStr = compose_game_exists(a, b); 
     rc = sqlite3_exec(db, execStr, callback, type, &zErrMsg);
     free(execStr);
     if( rc != SQLITE_OK ){
@@ -474,7 +475,7 @@ void db_create_game( struct game_data * gd ) {
     //Type is sent with information about whose callback routine to call
     void * type = malloc(sizeof(int));
     *(int *)type = NO_CALLBACK; //Don't need a callback
-    char * execStr = composeNewGameEntry(gd);
+    char * execStr = compose_new_game_entry(gd);
     rc = sqlite3_exec(db, execStr, callback, type, &zErrMsg);
     free(execStr);
     if( rc != SQLITE_OK ){
