@@ -20,7 +20,7 @@ unsigned int* product(unsigned int* a, unsigned int* b);
 unsigned int* quotient(unsigned int* a, unsigned int* b);
 
 //returns a%b
-unsigned int* remainder(unsigned int* a, unsigned int* b);
+unsigned int* remain(unsigned int* a, unsigned int* b);
 
 //returns a raised to the b power
 unsigned int* power(unsigned int* a, unsigned int* b);

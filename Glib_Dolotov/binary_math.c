@@ -7,15 +7,15 @@ int compare(unsigned int* a, unsigned int* b){
 unsigned int* sum(unsigned int* a, unsigned int* b){
   int a_count = a[0];
   int b_count = b[0];
-
+  unsigned int* final;
   //assume that there will be a carry-over into another unsigned int rep.
   //first value can always be adjusted to less if that's how it turns out.
   if(a[0]>b[0]){
-    unsigned int* final = (unsigned int*)calloc(a[0]+2,sizeof(unsigned int));
+    final = (unsigned int*)calloc(a[0]+2,sizeof(unsigned int));
     final[0]=a[0]+1;
   }
   else{
-    unsigned int* final = (unsigned int*)calloc(b[0]+2,sizeof(unsigned int));
+    final = (unsigned int*)calloc(b[0]+2,sizeof(unsigned int));
     final[0]=b[0]+1;
   }
 
@@ -72,7 +72,7 @@ unsigned int* product(unsigned int* a, unsigned int* b){
 unsigned int* quotient(unsigned int* a, unsigned int* b){
 }
 
-unsigned int* remainder(unsigned int* a, unsigned int* b){
+unsigned int* remain(unsigned int* a, unsigned int* b){
 }
 
 unsigned int* power(unsigned int* a, unsigned int* b){
