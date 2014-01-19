@@ -1,10 +1,10 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
-#include <string.h>
-#include <limits.h>
+//binary_math.h already includes libc h-files
+#include "binary_math.h"
 
-unsigned int* add(unsigned int* a, unsigned int* b){
+int compare(unsigned int* a, unsigned int* b){
+}
+
+unsigned int* sum(unsigned int* a, unsigned int* b){
   int a_count = a[0];
   int b_count = b[0];
 
@@ -60,5 +60,20 @@ unsigned int* add(unsigned int* a, unsigned int* b){
     final[i]=carry;
   else
     final[0]=final[0]-1;
+  return final;
 }
 
+unsigned int* difference(unsigned int* a, unsigned int* b){
+}
+
+unsigned int* product(unsigned int* a, unsigned int* b){
+}
+
+unsigned int* quotient(unsigned int* a, unsigned int* b){
+}
+
+unsigned int* remainder(unsigned int* a, unsigned int* b){
+}
+
+unsigned int* power(unsigned int* a, unsigned int* b){
+}

@@ -1,7 +1,4 @@
-#include <math.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include "store.h"
 
 //converts char (digit by digit) into integer value
 int digit(char c){
@@ -101,22 +98,10 @@ unsigned int binToDec(char* val, int start){
       result += (int) pow(2,i);
   return result;
 }
-/*
-void main(){
-  //get value and store it as a string of binary:
-  char* buff = (char*) calloc(1000,sizeof(char));
-  fgets(buff, 1000, stdin);
-  //remove the new-line byte
-  buff[strlen(buff)-1]=0;
-  //printf("%s\n",buff);
-  char* bin = decToBin(buff);
-  printf("%s\n",bin);
 
-
-  //test binToDec: CHECK
-  //printf("%d\n",binToDec(bin,0));
-  //take the binary and break it up into unsigned ints
-  //which would store the value bitwise
+//take the binary and break it up into unsigned ints
+//which would store the value bitwise
+unsigned int* binaryStore(char* bin){
   unsigned int* final = 
     (unsigned int*) calloc(strlen(bin)/32+1,sizeof(unsigned int));
   //first element of the unsigned int array will be the number of
@@ -125,8 +110,23 @@ void main(){
   int i;
   for(i=1; i<strlen(bin)/32+1;i++){
     final[i]=binToDec(bin,(i-1)*32);
-    printf("%u\n",final[i]);
+    //printf("%u\n",final[i]);
   }
-  printf("%d\n", final[0]);
+  //printf("%d\n", final[0]);
+  return final;
 }
-*/
+
+unsigned int* decimalStore(char* dec){
+  char* bin = decToBin(dec);
+  //printf("%s\n",bin);
+  return binaryStore(bin);
+}
+
+unsigned int* stdinStore(){
+  //get value and store it as a string of binary:
+  char* buff = (char*) calloc(1000,sizeof(char));
+  fgets(buff, 1000, stdin);
+  //remove the new-line byte
+  buff[strlen(buff)-1]=0;
+  return decimalStore(buff);
+}
