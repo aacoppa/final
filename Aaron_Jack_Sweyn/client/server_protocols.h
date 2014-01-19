@@ -22,16 +22,18 @@
 #define GAMES_IN_PROG 3
 #define GAME_STATS 4
 #define LOGIN 5
-
+#define REQUEST_TO_PLAY 6
 //Reasons...
-#define DONT_USE_AS_REASON 0
 #define USERNAME_TAKEN 1
+#define INVALID_UPASS 2
+#define NOT_MY_TURN 3
 
 //Data server receives / Client sends out
 typedef struct serv_response {
     int type;
     int success;
     int reason;
+    int key;
 } serv_response;
 typedef struct client_out {
     int type;
@@ -40,8 +42,10 @@ typedef struct client_out {
 typedef struct game_data {
     char from[50];
     char to[50];
-    u_int32_t genkey;
-    int time;
+    int u1wins;
+    int genkey;
+    int dist; //For response to the challenge
+    int nextdist; //For the second recording...
 } game_data;
 
 typedef struct cli_creat_acc {
@@ -53,7 +57,17 @@ typedef struct cli_creat_acc {
 typedef struct cli_upload_game {
     int type;
     char name[50];
-    int passHash;
-
+    char pass[50];
+    char opponent[50];
+    int first_dist;
+    int second_dist;
+    int key;
 } cli_upload_game;
+
+typedef struct cli_request_game {
+    int type;
+    char name[50];
+    char pass[50];
+    char opponent[50];
+} cli_request_game;
 #endif

@@ -1,5 +1,5 @@
 server: database.o compose.o
-	gcc -llibssl -llibcrypto -lsqlite3 database.o compose.o server_side.c
+	gcc -lsqlite3 database.o compose.o server_side.c
 database.o:
 	gcc -c database.c
 compose.o: compose.c compose.h

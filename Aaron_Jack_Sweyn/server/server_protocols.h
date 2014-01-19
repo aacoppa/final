@@ -22,19 +22,28 @@
 #define GAMES_IN_PROG 3
 #define GAME_STATS 4
 #define LOGIN 5
-
+#define REQUEST_TO_PLAY 6
 //Reasons...
 #define USERNAME_TAKEN 1
 #define INVALID_UPASS 2
 #define NOT_MY_TURN 3
 
+#define MAIN_PORT 35412
 //Data server receives / Client sends out
+//
 typedef struct serv_response {
-    int type;
+    int type; //If type is game_data then it'll wait
     int success;
     int reason;
     int key;
 } serv_response;
+typedef struct serv_out_games {
+    int type;
+    char u1[50];
+    char u2[50];
+    int turn;
+    int distance;
+} serv_out_games;
 typedef struct client_out {
     int type;
 } client_out;

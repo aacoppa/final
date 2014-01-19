@@ -28,6 +28,15 @@ char * composeAddUser(char * name, char * password) {
     strcat(execStr, ");");
     return execStr;
 }
+char * composeGetGamesOf(char * name) {
+    char * execStr = malloc(200);
+    strcpy(execStr, "SELECT * FROM game_data WHERE u1=\"");
+    strcat(execStr, name);
+    strcat(execStr, "\" or u2=\"");
+    strcat(execStr, name);
+    strcat(execStr, "\";");
+    return execStr;
+}
 char * composeGameExists(char * u1, char * u2) {
     char * execStr = malloc(200);
     strcpy(execStr, "SELECT * FROM game_data WHERE u1=\"");

@@ -14,10 +14,10 @@
 int global_sock_id; //Accepts new connections
 
 void start();
-void listenForNewConnections();
-void handleConnection();
-void acceptNewConnection();
-void handleConnectionFault();
-int handleRequestType();
-int hashPassword(char *);
+void listen_for_new_connections();
+void handle_connection();
+void handle_connection_fault();
+int handle_request_type();
+int hash_password(char *);
+int is_my_turn(char * name, serv_out_games *);
 #endif

@@ -15,6 +15,7 @@ char * composeAddChallenge(char *, char *, int, int, int);
 char * composeGameExists(char *, char *);
 char * composeUserExists(char *);
 char * composeAddUser(char *, char *);
+char * composeGetGamesOf(char *);
 char * compose_validate_user(char *, char *);
 char * composeNewGameEntry(struct game_data *);
 #endif
