@@ -15,6 +15,8 @@ typedef struct territory {
   Continent cont;			// Continent it belongs to
   struct territory ** neighbors;	// array of pointers to all neighbors
 					// each neighbor will have a link back
+  int units;				// units in territory
+  int x, y;				// coordinates of circle
 } territory;
 
 /* 
@@ -37,15 +39,17 @@ typedef struct territory {
 
 typedef struct RISK_move {
   int units;
-  territory *origin;
-  territory *destination;
+  territory *origin; //pointer to territory
+  territory *destination; //pointer to territory
 } RISK_move;
   
 typedef struct net_move {
   int units;
-  char *origin;
-  char *destination;
+  char *origin; //name of territory
+  char *destination; //name of territory
 } net_move;
 
 net_move rtonetmove(RISK_move m);
 RISK_move nettormove(net_move m);
+
+territory *terrs; // need number of territories, should be NULL terminated
