@@ -341,7 +341,7 @@ void db_create_game( cli_upload_game * gd ) {
     *type = NO_CALLBACK; 
     db_execute(compose_new_game_entry(gd), (void **) &type);
 }   
-/*
+
 int main() {
     db_init();
     db_create_user("aaron", "coppa");
@@ -351,6 +351,8 @@ int main() {
     } else printf("Error with user_exists\n");
     db_close();
 }
+
+/*
 int main(int argc, char ** argv) {
     db_init();
     strcpy(gd->to, "adaron");

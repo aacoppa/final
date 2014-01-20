@@ -11,8 +11,8 @@
 #include <stdlib.h>
 #include <sqlite3.h>
 #include <assert.h>
-#include <sys/sem.h>
-#include <sys/ipc.h>
+#include <linux/sem.h>
+#include <linux/ipc.h>
 #include <unistd.h>
 #include "server_protocols.h"
 #include "compose.h"
