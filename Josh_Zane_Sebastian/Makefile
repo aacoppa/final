@@ -21,7 +21,7 @@ dirs:
 	done
 
 clean:
-	rm -r cv.out $(OBJS)
+	rm -r tst.out $(OBJS)
 
 run: main
 	./tst.out
