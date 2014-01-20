@@ -44,8 +44,6 @@ char * XOR( char, char );
 
 int main(int argc, char ** argv) {
     init();
-    login_user("aaron", "coppa");
-    exit(0);
     //Parse arguments for what to do
     if(argc < 2) {
         //Print help message...
@@ -99,7 +97,6 @@ void init() {
     char * input = load_input();
     user = get_name(input);
     pass = get_password(input); 
-    printf("User: %s\nPass: %s\n", user, pass);
 }
 int exec_action(int type, char * name, char * password) {  
     if(!name || !password) {
@@ -186,7 +183,7 @@ char * load_input() {
     struct passwd *pw = getpwuid(getuid());
     char * u_file= malloc(400);
     strcpy(u_file, pw->pw_dir);
-    strcat(u_file, "/udata");
+    strcat(u_file, "/.rxc/udata");
     int fd = open(u_file, O_RDONLY);
     char * input = malloc(400);
     read(fd, input, 400);
@@ -246,9 +243,7 @@ void login_user(char * name, char * password) {
     strcat(u_file, "/.rxc/udata");
     int fd = open(u_file, O_RDWR | O_CREAT | O_TRUNC, 0666);
     char * output = get_output(name, password);
-    printf("file: %s output %s\n", u_file, output);
     int s = write(fd, output, 101); 
-    printf("success %d\n", s);
     close( fd );
 }
 int generate_key() {
