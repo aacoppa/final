@@ -2,7 +2,8 @@
 #include "store.h"
 
 void main(){
-  unsigned char* a,b;
+  unsigned int* a;
+  unsigned int* b;
   a = stdinStore();
   b = stdinStore();
   int i;
