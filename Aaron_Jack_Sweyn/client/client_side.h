@@ -17,7 +17,7 @@
 #define U1_TURN 1
 #define U2_TURN 2
 
-#define IP "198.211.104.102"
+#define IP "127.0.0.1"
 
 int key_to_play;
 int global_sock_id; //connect

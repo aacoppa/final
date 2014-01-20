@@ -34,30 +34,35 @@ void listen_for_new_connections() {
         if( !fork() ){
             handle_connection(fd); 
         }
+        close( fd );
     }
 }
 void handle_connection(int fd) {
     while( 1 ) {
         void * in = malloc(400);
-        int bytesRead = read(fd, in, sizeof(in));
-        int response = handle_request_type((client_out *) in);
-        free(in);
+        int bytesRead = read(fd, in, 400);
+        printf("%d\n read\n", bytesRead);
+        int response = handle_request_type((client_out *) in, fd);
+         //free(in);
         if( response == SUCC_REQ ) {
             close(fd);
             exit(0);
         }
+
     }
 }
 int handle_request_type(client_out * in, int fd) {
-
+    printf("Type: %d\n", in->type);
     if( in->type == CREATE_ACCOUNT ) {
         cli_creat_acc * request = (cli_creat_acc *) in;
         //int passHash = hashPassword(request->pass);
+        printf("Creating account...\n");
         if( db_create_user( request->name, request->pass)) {
             serv_response * sr = malloc(sizeof(serv_response));
             sr->type = CREATE_ACCOUNT;
             sr->success = 1;
-            write( fd, sr, sizeof(sr) );
+            int s = write( fd, sr, sizeof(serv_response));
+            printf("Created account...%d\n", s);
             return SUCC_REQ;
         }
         //Failure
@@ -65,7 +70,8 @@ int handle_request_type(client_out * in, int fd) {
         sr->type = CREATE_ACCOUNT;
         sr->success = 0;
         sr->reason = USERNAME_TAKEN;
-        write( fd, sr, sizeof(sr) );
+        int s = write( fd, sr, sizeof(serv_response));
+        printf("Account taken... %d\n", s);
         return SUCC_REQ;
 
     } else if( in->type == REQUEST_TO_PLAY ) {
@@ -178,6 +184,6 @@ int is_my_turn( char * name, serv_out_games * s ) {
         return (s->turn == U2_TURN);
     }
 }
-void log(char * str) {
+void logger(char * str) {
     
 }

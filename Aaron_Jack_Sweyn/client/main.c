@@ -1,7 +1,10 @@
 #include <stdlib.h>
+#include <pwd.h>
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
+#include <fcntl.h>
+#include <sys/stat.h>
 #include <time.h>
 
 #include "game.h"
@@ -11,7 +14,7 @@ const char * const error_messages[] = {
    " ",
    "Username already taken",
    "Invalid username and password combination. Run race login",
-   "Sorry, but its not your turn"
+   "Sorry, but its not your turn",
    " ",
    "No user is logged in. Please run race login or race create",
    "There was an error with the connecting with the server",
@@ -27,17 +30,22 @@ games   \t                      \t Displays games in progress\n\
 stats   \t                      \t Displays statistics\n\
 help    \t                      \t Print this help message\n";
 
-
+char * user;
+char * pass;
 
 void init();
 int exec_action(int, char *, char *);
 int generate_key();
-char * load_user_name();
-char * load_password();
-char * login_user(char *, char *);
+char * load_input();
+void login_user(char *, char *);
+char * get_name( char * );
+char * get_password( char * );
+char * XOR( char, char );
 
 int main(int argc, char ** argv) {
     init();
+    login_user("aaron", "coppa");
+    exit(0);
     //Parse arguments for what to do
     if(argc < 2) {
         //Print help message...
@@ -88,17 +96,23 @@ int main(int argc, char ** argv) {
 void init() {
     srand(time(NULL));
     to_be_sent = malloc( sizeof(request_info) );
+    char * input = load_input();
+    user = get_name(input);
+    pass = get_password(input); 
+    printf("User: %s\nPass: %s\n", user, pass);
 }
 int exec_action(int type, char * name, char * password) {  
     if(!name || !password) {
-        name = load_user_name();
-        password = load_password();
+        name = user; //These two are loaded in init
+        password = pass;
+
         if( !name || !password) {
             printf("%s\n", error_messages[NOT_LOGGED_IN]);
             return 0;
         }
     }
     int ret = init_connection(type, name, password);
+    printf("%d\n", ret);
     if( ret == FIRST_TURN ) {
         goto first_game;
     }
@@ -167,18 +181,75 @@ int exec_action(int type, char * name, char * password) {
 }   
 /* Store this data in a file
 */
-char * login_user(char * name, char * password) {
 
-    return NULL;
+char * load_input() {
+    struct passwd *pw = getpwuid(getuid());
+    char * u_file= malloc(400);
+    strcpy(u_file, pw->pw_dir);
+    strcat(u_file, "/udata");
+    int fd = open(u_file, O_RDONLY);
+    char * input = malloc(400);
+    read(fd, input, 400);
+    close( fd );
+    return input;
 }
-char * load_user_name() {
-
-    return NULL;
+char * XOR(char val, char key) {
+    char * a = (char *) malloc(sizeof(char));
+    *a = val ^ key;
+    return a;
 }
-
-char * load_password() {
-
-    return NULL;
+char * get_output(char * name, char * password) {
+    char * output = malloc(101);
+    int i = 0;
+    while(name[i]) {
+        output[i] = *( XOR(name[i], 'z') );
+        i++;
+    }
+    output[i] = '\0';
+    int j = 1;
+    while(password[j-1]) {
+        output[i+j] = *( XOR(password[j-1], 'z'));
+        j++;
+    }
+    return output;
+}
+char * get_name( char * input ) {
+    if( input == NULL ) return NULL;
+    char * name = malloc(strlen(input) + 1);
+    int i = 0;
+    while(input[i] != '\0') {
+        name[i] = *( XOR(input[i], 'z') );
+        i++;
+    }
+    return name;
+}
+char * get_password( char * input ) {
+    if( input == NULL ) return NULL;
+    char * password = malloc(strlen(input) + 1);
+    int i = 0;
+    while(input[i] != '\0') {
+        i++;
+    }
+    int j = 0;
+    i++;
+    while( input[i] ) {
+        password[j] = *( XOR(input[i], 'z') );
+        j++;
+        i++;
+    }
+    return password;
+}
+void login_user(char * name, char * password) {
+    struct passwd *pw = getpwuid(getuid());
+    char * u_file= malloc(400);
+    strcpy(u_file, pw->pw_dir);
+    strcat(u_file, "/.rxc/udata");
+    int fd = open(u_file, O_RDWR | O_CREAT | O_TRUNC, 0666);
+    char * output = get_output(name, password);
+    printf("file: %s output %s\n", u_file, output);
+    int s = write(fd, output, 101); 
+    printf("success %d\n", s);
+    close( fd );
 }
 int generate_key() {
     return rand();

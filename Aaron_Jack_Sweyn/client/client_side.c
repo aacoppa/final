@@ -9,26 +9,32 @@ int init_connection(int type, char * name, char * passwd) {
     inet_aton( IP, &(sock.sin_addr) );
     sock.sin_port = htons(MAIN_PORT);
     int c = connect( global_sock_id, (struct sockaddr *)&sock, sizeof(sock) );
+    printf("Connected...\n");
     int s = send_request(type, name, passwd);
-    return 0;
+    return s;
 }
 int send_request(int type, char * name, char * passwd) {
+    printf("Here %d\n", type);
     if( type == CREATE_ACCOUNT ) {
         cli_creat_acc * cl = malloc( sizeof(cli_creat_acc) );
         cl->type = type;
         strcpy(cl->name, name);
         strcpy(cl->pass, passwd);
-        write( global_sock_id, cl, sizeof(cl) );
+
+        int s = write( global_sock_id, (char *) cl, sizeof(cli_creat_acc) );
+        printf("Sent data... %d bytes\n", s);
         //Now wait for response
         void * buff = malloc( 400 );
-        int bytes_read = read( global_sock_id, buff, sizeof(buff) );
-        serv_response * sr = (serv_response *)&buff;
+        int bytes_read = read( global_sock_id, buff, 400 );
+        printf("Response read in %d bytes", bytes_read);
+        serv_response * sr = (serv_response *)buff;
         if( sr->type != CREATE_ACCOUNT ) {
             return CONNECTION_ERROR;
         }
         if( sr->success ) {
             return QUERY_SUCC;
         }
+        printf("Bad\n");
         return sr->reason;
     } else if( type == REQUEST_TO_PLAY ) {
         cli_request_game * cl = malloc( sizeof(cli_request_game) );
@@ -38,8 +44,10 @@ int send_request(int type, char * name, char * passwd) {
         write( global_sock_id, cl, sizeof(cl) );
         //Now wait for response
         void * buff = malloc( 400 );
+        printf("reading\n");
         int bytes_read = read( global_sock_id, buff, sizeof(buff) );
-        serv_response * sr = (serv_response *)&buff;
+        printf("done reading\n");
+        serv_response * sr = (serv_response *)buff;
         if( sr->type != REQUEST_TO_PLAY) {
             return CONNECTION_ERROR;
         }
