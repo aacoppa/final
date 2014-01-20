@@ -10,13 +10,7 @@
 #include "database.h"
 
 int main(int argc, char ** argv) {
-    db_init();
-    cli_creat_acc * i = malloc(sizeof(client_out) );
-    i->type = CREATE_ACCOUNT;
-    strcpy(i->name, "aaron");
-    strcpy(i->pass, "tol");
-    handle_request_type(i, 200);
-    handle_request_type(i, 200);
+    start();
     db_close();
 }
 void start() {
@@ -63,8 +57,7 @@ int handle_request_type(client_out * in, int fd) {
             serv_response * sr = malloc(sizeof(serv_response));
             sr->type = CREATE_ACCOUNT;
             sr->success = 1;
-            //write( fd, sr, sizeof(sr) );
-            printf("Success\n");
+            write( fd, sr, sizeof(sr) );
             return SUCC_REQ;
         }
         //Failure
@@ -72,8 +65,7 @@ int handle_request_type(client_out * in, int fd) {
         sr->type = CREATE_ACCOUNT;
         sr->success = 0;
         sr->reason = USERNAME_TAKEN;
-        //write( fd, sr, sizeof(sr) );
-        printf("Failure: name taken");
+        write( fd, sr, sizeof(sr) );
         return SUCC_REQ;
 
     } else if( in->type == REQUEST_TO_PLAY ) {
@@ -173,7 +165,7 @@ int handle_request_type(client_out * in, int fd) {
     } else if ( in->type == GAME_STATS ) {
     
     }
-    return 0;
+    return SUCC_REQ;
 }
 int hash_password(char * passwd) {
     int ret;
@@ -185,4 +177,7 @@ int is_my_turn( char * name, serv_out_games * s ) {
     } else {
         return (s->turn == U2_TURN);
     }
+}
+void log(char * str) {
+    
 }

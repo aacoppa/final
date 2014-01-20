@@ -32,18 +32,6 @@
 #define NOT_LOGGED_IN 5
 #define CONNECTION_ERROR 6
 #define NOT_VALID_OPPONENT 7
-char error_messages = {
-   "",
-   "Username already taken",
-   "Invalid username and password combination. Run race login",
-   "Sorry, but its not your turn"
-   "",
-   "No user is logged in. Please run race login or race create",
-   "There was an error with the connecting with the server",
-   "Sorry but the user you challenged doesn't exist"
-}
-
-
 
 #define MAIN_PORT 35412
 //Data server receives / Client sends out
@@ -85,8 +73,7 @@ typedef struct cli_upload_game {
     char name[50];
     char pass[50];
     char opponent[50];
-    int first_dist;
-    int second_dist;
+    int dist;
     int key;
 } cli_upload_game;
 

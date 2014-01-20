@@ -1,21 +1,21 @@
 #include "database.h"
 
-static int callback(void * comm, int argc, char **argv, char **azColName) {
+static int callback(void * in, int argc, char **argv, char **azColName) {
     // This function is only called when there is something in the database
     // that matches the query
     
     //Called multiple times if there are multiple matches 
-
-    int type = *(int *) comm; //Instead of user comm as a void * we use it
+    int type = *(int *)in; //Instead of user comm as a void * we use it
     //As a placeholder to say what kind of action to take
     //
+    int * comm = in;
     if( type == NO_CALLBACK ) {
         return 0;
     }
     else if( type == U_EXISTS_CALLBACK ) {
-        *(int *)comm = USER_EXISTS; 
+        *comm = USER_EXISTS; 
     } else if( type == GAME_EXISTS_CALLBACK ) {
-        *(int *)comm = GAME_EXISTS;  
+        *comm = GAME_EXISTS;  
     } else if( type == GAME_INFO_CALLBACK ) {
         //Fill out the global LOCKED game_info * gi struct
         free(comm);
@@ -24,11 +24,11 @@ static int callback(void * comm, int argc, char **argv, char **azColName) {
         gi.u2wins = atoi(argv[4]);
         gi.dist = atoi(argv[6]);
     } else if( type == GET_TURN_CALLBACK ) {
-        *(int *)comm = atoi(argv[2]);
+        *comm = atoi(argv[2]);
     } else if( type == GET_KEY_CALLBACK ) {
-        *(int *)comm = atoi(argv[5]);
+        *comm = atoi(argv[5]);
     } else if( type == VALIDATE_USER_CALLBACK ) {
-        *(int *)comm = VALID;
+        *comm = VALID;
     } else if( type == GET_GAMES_IN_PROGRESS_CALLBACK ) {
         //gip_hold is also global LOCKED
         //update it everytime with another game
@@ -50,21 +50,27 @@ static int callback(void * comm, int argc, char **argv, char **azColName) {
     }
     return 0;
 }
-void db_init() {
+void db_execute(char * exec_str, void ** t) {
+    void * type = *t;
     sqlite3 *db;
     char *zErrMsg = 0;
     int rc;
     rc = sqlite3_open("data.db",&db);
     assert( !rc );
-    char * execStr = compose_init_tables();
-    rc = sqlite3_exec(db, execStr, callback, NO_CALLBACK, &zErrMsg);
-    free(execStr);
+    printf("%s\n", exec_str);
+    rc = sqlite3_exec(db, exec_str, callback, type, &zErrMsg);
+    free(exec_str);
     if( rc != SQLITE_OK ){
         fprintf(stderr, "SQL error: %s\n", zErrMsg);
         sqlite3_free(zErrMsg);
     }
     sqlite3_close(db);
-    //Set up lock, allows one thread in critical section at a time
+}
+void db_init() {
+        //Set up lock, allows one thread in critical section at a time
+    void * t = NO_CALLBACK;
+    db_execute(compose_init_tables(), &t);
+
     int semkey = 7141;
     createsem = semget(semkey, 1, IPC_CREAT | IPC_CREAT | 0666);
     union semun su;
@@ -104,7 +110,6 @@ int db_create_user(char * name, char * pass) {
     //printf("Have create lock\n");
     if( db_user_exists(name) ) {
         //Release create lock
-        printf("Released create lock, exists\n");
         sb.sem_op = 1;
         semop(createsem, &sb, 1);
         return CREAT_FAILED;
@@ -112,8 +117,7 @@ int db_create_user(char * name, char * pass) {
 
     //Now we aquire writing lock since we are writing
     //No more readers may enter critical section
-
-    //printf("Waiting for write lock\n");
+    
     struct sembuf sbT;
     sbT.sem_num = 0;
     sbT.sem_flg = SEM_UNDO;
@@ -128,25 +132,11 @@ int db_create_user(char * name, char * pass) {
     sbR.sem_op = 0;
     semop(readsem, &sbR, 1);
 
-    //printf("All readers clear\n");
     //Wait for all readers to be clear
     //Now we can write, we are the only one here
 
-    sqlite3 *db;
-    char *zErrMsg = 0;
-    int rc;
-    rc = sqlite3_open("data.db",&db);
-    assert( !rc );
-    printf("pass %s\n", password);
-    char * execStr = compose_add_user(name, password);
-    printf("%s\n", execStr);
-    rc = sqlite3_exec(db, execStr, callback, NO_CALLBACK, &zErrMsg);
-    free(execStr);
-    if( rc != SQLITE_OK ){
-        fprintf(stderr, "SQL error: %s\n", zErrMsg);
-        sqlite3_free(zErrMsg);
-    }
-    sqlite3_close(db);
+    void * t = (void *) NO_CALLBACK;
+    db_execute(compose_add_user(name, password), &t);
     //Release the lock
     sb.sem_op = 1;
     semop(createsem, &sb, 1);
@@ -157,24 +147,9 @@ int db_create_user(char * name, char * pass) {
     return CREAT_SUCC;
 }
 int db_validate_user(char * name, char * password) {
-    sqlite3 *db;
-    char *zErrMsg = 0;
-    int rc;
-    rc = sqlite3_open("data.db",&db);
-    assert( !rc );
-    //Type is sent with information about whose callback routine to call
-    void * type = malloc(sizeof(int));
-    *(int *)type = VALIDATE_USER_CALLBACK;
-    char * execStr = compose_validate_user(name, password);
-    rc = sqlite3_exec(db, execStr, callback, type, &zErrMsg);
-    free(execStr);
-    //Type returns containing whether the user exists or not
-    if( rc != SQLITE_OK ){
-        fprintf(stderr, "SQL error: %s\n", zErrMsg);
-        sqlite3_free(zErrMsg);
-    }
-    sqlite3_close(db);
-
+    int * type = malloc(sizeof(int));
+    *type = VALIDATE_USER_CALLBACK;
+    db_execute(compose_validate_user(name, password), (void **) &type);
     return ( *(int *)type == VALID );
 }
 
@@ -195,39 +170,18 @@ int db_user_exists(char * name) {
 
     //Wait for no writer to have writing lock
     semop(writesem, &sbT, 1);
-    //printf("Temp got write\n");
     //Add to reading semaphore
     semop(readsem, &sbR, 1);
 
-    //printf("Temp got write\n");
     sbT.sem_op = 1;
     semop(writesem, &sbT, 1);
-    //printf("Aquired reader lock and no writer\n");
-    //printf("%s\n", execStr);
-    sqlite3 *db;
-    char *zErrMsg = 0;
-    int rc;
-    rc = sqlite3_open("data.db",&db);
-    assert( !rc );
-    //Type is sent with information about whose callback routine to call
-    void * type = malloc(sizeof(int));
-    *(int *)type = U_EXISTS_CALLBACK;
-    char * execStr = compose_user_exists(name);
-    printf("%s\n", execStr);
-    rc = sqlite3_exec(db, execStr, callback, type, &zErrMsg);
-    free(execStr);
-    //Type returns containing whether the user exists or not
-    if( rc != SQLITE_OK ){
-        fprintf(stderr, "SQL error: %s\n", zErrMsg);
-        sqlite3_free(zErrMsg);
-    }
-    sqlite3_close(db);
-    //One less writer
+    int * type = malloc(sizeof(int));
+    *type = U_EXISTS_CALLBACK;
+    db_execute(compose_user_exists(name), (void **) &type);
+
     sbR.sem_op = -1;
     semop(readsem, &sbR, 1);
-    //printf("Decrementing read lock\n");
-
-    return (*(int *)type == USER_EXISTS);
+    return (*(int *) type == USER_EXISTS);
 }
 db_game_data_wr * db_games_in_progress(char * name) {
     struct sembuf sbT;
@@ -237,27 +191,11 @@ db_game_data_wr * db_games_in_progress(char * name) {
 
     //Wait for no writer to have writing lock
     semop(writesem, &sbT, 1);
-    //printf("Temp got write\n");
 
-    sqlite3 *db;
-    char *zErrMsg = 0;
-    int rc;
-    rc = sqlite3_open("data.db",&db);
-    assert( !rc );
     //Type is sent with information about whose callback routine to call
-    void * type = malloc(sizeof(int));
-    *(int *)type = GET_GAMES_IN_PROGRESS_CALLBACK;
-    char * execStr = compose_get_games_of(name);
-    printf("%s\n", execStr);
-    rc = sqlite3_exec(db, execStr, callback, type, &zErrMsg);
-    free(execStr);
-    //Type returns containing whether the user exists or not
-    if( rc != SQLITE_OK ){
-        fprintf(stderr, "SQL error: %s\n", zErrMsg);
-        sqlite3_free(zErrMsg);
-    }
-    sqlite3_close(db);
-    //Games in progress are stored in gip_hold
+    int * type = malloc(sizeof(int));
+    *type = GET_GAMES_IN_PROGRESS_CALLBACK;
+    db_execute(compose_get_games_of(name), (void **) &type);
 
     db_game_data_wr * ret = gip_hold;
     gip_hold = NULL;
@@ -280,32 +218,16 @@ int db_get_key( char * name, char * opponent ) {
 
     //Wait for no writer to have writing lock
     semop(writesem, &sbT, 1);
-    //printf("Temp got write\n");
     //Add to reading semaphore
     semop(readsem, &sbR, 1);
 
-    //printf("Temp got write\n");
     sbT.sem_op = 1;
     semop(writesem, &sbT, 1);
 
+    int * type = malloc(sizeof(int));
+    *type = GET_KEY_CALLBACK;
+    db_execute(compose_get_game_info(name, opponent), (void **) &type);
 
-    sqlite3 *db;
-    char *zErrMsg = 0;
-    int rc;
-    rc = sqlite3_open("data.db",&db);
-    assert( !rc );
-    //Type is sent with information about whose callback routine to call
-    void * type = malloc(sizeof(int));
-    *(int *)type = GET_KEY_CALLBACK;
-    char * execStr = compose_get_game_info(name, opponent);
-    rc = sqlite3_exec(db, execStr, callback, type, &zErrMsg);
-    free(execStr);
-    //Type returns containing whether the user exists or not
-    if( rc != SQLITE_OK ){
-        fprintf(stderr, "SQL error: %s\n", zErrMsg);
-        sqlite3_free(zErrMsg);
-    }
-    sqlite3_close(db);
     sbR.sem_op = -1;
     semop(readsem, &sbR, 1);
 
@@ -330,48 +252,32 @@ int db_my_turn( char * name, char * opponent ) {
 
     //Wait for no writer to have writing lock
     semop(writesem, &sbT, 1);
-    //printf("Temp got write\n");
     //Add to reading semaphore
     semop(readsem, &sbR, 1);
 
-    //printf("Temp got write\n");
     sbT.sem_op = 1;
     semop(writesem, &sbT, 1);
 
+    int * type = malloc(sizeof(int));
+    *type = GET_TURN_CALLBACK;
+    db_execute(compose_get_game_info(name, opponent), (void *) &type);
 
-    sqlite3 *db;
-    char *zErrMsg = 0;
-    int rc;
-    rc = sqlite3_open("data.db",&db);
-    assert( !rc );
-    //Type is sent with information about whose callback routine to call
-    void * type = malloc(sizeof(int));
-    *(int *)type = GET_TURN_CALLBACK;
-    char * execStr = compose_get_game_info(name, opponent);
-    rc = sqlite3_exec(db, execStr, callback, type, &zErrMsg);
-    free(execStr);
-    //Type returns containing whether the user exists or not
-    if( rc != SQLITE_OK ){
-        fprintf(stderr, "SQL error: %s\n", zErrMsg);
-        sqlite3_free(zErrMsg);
-    }
-    sqlite3_close(db);
     sbR.sem_op = -1;
     semop(readsem, &sbR, 1);
 
-    return ( *(int *)type == my_turn);
+    return ( *(int *) type == my_turn);
 
 }
 void db_update_game( struct cli_upload_game * gd, int update_turn) {
     char u1[50];
     char u2[50];
 
-    if( strcmp(gd->from, gd->to) > 0 ) {
-        strcpy(u1, gd->to);
-        strcpy(u2, gd->from);
+    if( strcmp(gd->name, gd->opponent) > 0 ) {
+        strcpy(u1, gd->name);
+        strcpy(u2, gd->opponent);
     } else {
-        strcpy(u2, gd->to);
-        strcpy(u1, gd->from);
+        strcpy(u2, gd->name);
+        strcpy(u1, gd->opponent);
     }   
     if( db_game_exists(u1, u2) ) {
         struct sembuf sbT;
@@ -385,25 +291,13 @@ void db_update_game( struct cli_upload_game * gd, int update_turn) {
 
         semop(writesem, &sbT, 1);
         //Aquired writing lock
-        rc = sqlite3_open("data.db",&db);
-        assert( !rc );
-        //Type is sent with information about whose callback routine to call
-        void * type = malloc(sizeof(int));
-        *(int *)type = GAME_INFO_CALLBACK; 
-        char * execStr = compose_get_game_info(u1, u2); 
-        rc = sqlite3_exec(db, execStr, callback, type, &zErrMsg);
-        free(execStr);
-        if( rc != SQLITE_OK ){
-            fprintf(stderr, "SQL error: %s\n", zErrMsg);
-            sqlite3_free(zErrMsg);
-        }
-        //turn = 0, u1 submitted
-        //
-        //printf("%lu\n", type);
-        //game_info * gi = (game_info *) type;
+        int * type = malloc(sizeof(int));
+        *type = GAME_INFO_CALLBACK; 
+        db_execute(compose_get_game_info(u1, u2), (void **) &type);
+
         if( !update_turn ) {
             //gi is the last player
-            if( gi.turn == U2TURN ){
+            if( gi.turn == U2_TURN ){
                 if( gi.dist > gd->dist ){
                     gi.u2wins++;
                 } else {
@@ -420,26 +314,12 @@ void db_update_game( struct cli_upload_game * gd, int update_turn) {
         else {
             gi.turn = !gi.turn; 
         }
-        execStr = compose_update_wins(u1, u2, gi.u1wins, gi.u2wins);
-        void * t = malloc(sizeof(int));
+
+        void * t = NO_CALLBACK;
+        db_execute(compose_update_wins(u1, u2, gi.u1wins, gi.u2wins), &t);
         *(int *) t = NO_CALLBACK;
-        rc = sqlite3_exec(db, execStr, callback, t, &zErrMsg);
-        if( rc != SQLITE_OK ){
-            fprintf(stderr, "SQL error: %s\n", zErrMsg);
-            sqlite3_free(zErrMsg);
-        }
-        free(execStr);
-        *(int *) t = NO_CALLBACK;
-        execStr = compose_add_challenge(u1, u2, gd->nextdist, gi.turn, gd->genkey);
-        rc = sqlite3_exec(db, execStr, callback, t, &zErrMsg);
-        if( rc != SQLITE_OK ){
-            fprintf(stderr, "SQL error: %s\n", zErrMsg);
-            sqlite3_free(zErrMsg);
-        }
-        free(execStr);
-        sqlite3_close(db);
-        //Release lock
-        //
+        db_execute(compose_add_challenge(u1, u2, gd->dist, gi.turn, gd->key), &t);
+
         sbT.sem_op = 1;
         semop(writesem, &sbT, 1);
 
@@ -450,59 +330,39 @@ void db_update_game( struct cli_upload_game * gd, int update_turn) {
 }
 
 int db_game_exists(char * a, char * b) {
-    sqlite3 *db;
-    char *zErrMsg = 0;
-    int rc;
-    rc = sqlite3_open("data.db",&db);
-    assert( !rc );
-    //Type is sent with information about whose callback routine to call
-    void * type = malloc(sizeof(int));
-    *(int *)type = GAME_EXISTS_CALLBACK; 
-    char * execStr = compose_game_exists(a, b); 
-    rc = sqlite3_exec(db, execStr, callback, type, &zErrMsg);
-    free(execStr);
-    if( rc != SQLITE_OK ){
-        fprintf(stderr, "SQL error: %s\n", zErrMsg);
-        sqlite3_free(zErrMsg);
-    }
-    sqlite3_close(db);
-
-    return ( *(int *)type == GAME_EXISTS);
+    int * type = malloc(sizeof(int));
+    *type = GAME_EXISTS_CALLBACK; 
+    db_execute(compose_game_exists(a, b), (void **) &type);
+    return ( *(int *) type == GAME_EXISTS);
 }
 
-void db_create_game( struct game_data * gd ) {
-    sqlite3 *db;
-    char *zErrMsg = 0;
-    int rc;
-    rc = sqlite3_open("data.db",&db);
-    assert( !rc );
-    //Type is sent with information about whose callback routine to call
-    void * type = malloc(sizeof(int));
-    *(int *)type = NO_CALLBACK; //Don't need a callback
-    char * execStr = compose_new_game_entry(gd);
-    rc = sqlite3_exec(db, execStr, callback, type, &zErrMsg);
-    free(execStr);
-    if( rc != SQLITE_OK ){
-        fprintf(stderr, "SQL error: %s\n", zErrMsg);
-        sqlite3_free(zErrMsg);
-    }
-    sqlite3_close(db);
+void db_create_game( cli_upload_game * gd ) {
+    int * type = malloc(sizeof(int));
+    *type = NO_CALLBACK; 
+    db_execute(compose_new_game_entry(gd), (void **) &type);
 }   
-
+/*
+int main() {
+    db_init();
+    db_create_user("aaron", "coppa");
+    db_create_user("john", "coppa");
+    if( !db_create_user("aaron", "pass") ) {
+        printf("Couldn't recreate aaron, good!!!\n");
+    } else printf("Error with user_exists\n");
+    db_close();
+}
 int main(int argc, char ** argv) {
-    struct game_data * gd = malloc(sizeof(struct game_data));
     db_init();
     strcpy(gd->to, "adaron");
     strcpy(gd->from, "john");
     gd->genkey = 1231;
     gd->dist = 123;
-    db_update_game(gd);
+    db_update_game(gd, 0);
     strcpy(gd->to, "john");
     strcpy(gd->from, "phillip");
     gd->dist = 12763;
     db_update_game(gd);
 
-    printf("%d\n", db_game_exists("adaron", "john"));
     db_games_in_progress("john");
 
     
@@ -522,4 +382,4 @@ int main(int argc, char ** argv) {
     printf("Exists %d\n", db_user_exists("aaron"));
     close_sems();
     return 0;
-}
+}*/

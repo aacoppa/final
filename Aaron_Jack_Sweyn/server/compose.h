@@ -59,5 +59,5 @@ char * compose_validate_user(char *, char *);
 /* Creates a new game between two users
  *
  */
-char * compose_new_game_entry(struct game_data *);
+char * compose_new_game_entry(cli_upload_game *);
 #endif
