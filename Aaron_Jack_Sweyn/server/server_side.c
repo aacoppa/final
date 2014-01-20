@@ -99,17 +99,21 @@ int handle_request_type(client_out * in, int fd) {
         write( fd, sr, sizeof(sr));
         return SUCC_REQ; //Closes socket
 
-    } else if( in->type == UPLOAD_GAME ) {
+    } else if( in->type == UPLOAD_GAME_FIRST || in->type == UPLOAD_GAME_RESPONSE ) {
         cli_upload_game * request = (cli_upload_game *) in;
         serv_response * sr = malloc(sizeof(serv_response));
-        sr->type = UPLOAD_GAME;
+        sr->type = in->type;
         if( !db_validate_user(request->name, request->pass) ) {
             sr->success = 0;
             sr->reason = INVALID_UPASS;
-        }
+        } else {
         sr->success = 1;
-        db_update_game((game_data *) in);
+        }
+        //Second argument will be false if in->type is UPLOAD_GAME_FIRST
+        //So then we don't change the turn
+        db_update_game(request, in->type - UPLOAD_GAME_FIRST);
         write(fd, sr, sizeof(serv_response));
+        return SUCC_REQ;
     } else if ( in->type == CHECK_FOR_GAME ) {
         cli_request_game * request = (cli_request_game *) in;    
         serv_response * sr = malloc(sizeof(serv_response));

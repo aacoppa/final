@@ -362,7 +362,7 @@ int db_my_turn( char * name, char * opponent ) {
     return ( *(int *)type == my_turn);
 
 }
-void db_update_game( struct game_data * gd ) {
+void db_update_game( struct cli_upload_game * gd, int update_turn) {
     char u1[50];
     char u2[50];
 
@@ -401,21 +401,25 @@ void db_update_game( struct game_data * gd ) {
         //
         //printf("%lu\n", type);
         //game_info * gi = (game_info *) type;
-        if( gi.turn ){
-            //User two is gi
-            if( gi.dist > gd->dist ){
-                gi.u2wins++;
+        if( !update_turn ) {
+            //gi is the last player
+            if( gi.turn == U2TURN ){
+                if( gi.dist > gd->dist ){
+                    gi.u2wins++;
+                } else {
+                    gi.u1wins++;
+                }
             } else {
-                gi.u1wins++;
-            }
-        } else {
-            if( gi.dist > gd->dist ){
-                gi.u1wins++;
-            } else {
-                gi.u2wins++;
+                if( gi.dist > gd->dist ){
+                    gi.u1wins++;
+                } else {
+                    gi.u2wins++;
+                }
             }
         }
-        gi.turn = !gi.turn;
+        else {
+            gi.turn = !gi.turn; 
+        }
         execStr = compose_update_wins(u1, u2, gi.u1wins, gi.u2wins);
         void * t = malloc(sizeof(int));
         *(int *) t = NO_CALLBACK;
@@ -484,7 +488,7 @@ void db_create_game( struct game_data * gd ) {
     }
     sqlite3_close(db);
 }   
-/*
+
 int main(int argc, char ** argv) {
     struct game_data * gd = malloc(sizeof(struct game_data));
     db_init();
@@ -501,6 +505,8 @@ int main(int argc, char ** argv) {
     printf("%d\n", db_game_exists("adaron", "john"));
     db_games_in_progress("john");
 
+    
+    db_close();
     exit(0);
     //printf("Initing\n");
     //createUser("aaron", 2013);
@@ -516,4 +522,4 @@ int main(int argc, char ** argv) {
     printf("Exists %d\n", db_user_exists("aaron"));
     close_sems();
     return 0;
-}*/
+}

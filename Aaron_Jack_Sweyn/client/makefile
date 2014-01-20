@@ -1,3 +1,9 @@
-client:
-	#should run seperate from client, client is wrapper
-	gcc client_side.c
+main: client.o game.o
+	gcc game.o client_side.o main.c
+client.o: client_side.c client_side.h
+	gcc -c client_side.c
+game.o:	game.c game.h
+	gcc -c game.c
+clean:
+	rm *.o
+	rm a.out

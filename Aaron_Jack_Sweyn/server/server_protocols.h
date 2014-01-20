@@ -17,12 +17,13 @@
 
 //Define different types of data we can send/receive
 #define CREATE_ACCOUNT 0
-#define UPLOAD_GAME 1
+#define UPLOAD_GAME_FIRST 1
 #define CHECK_FOR_GAME 2
 #define GAMES_IN_PROG 3
 #define GAME_STATS 4
 #define LOGIN 5
 #define REQUEST_TO_PLAY 6
+#define UPLOAD_GAME_RESPONSE 7
 //Reasons...
 #define USERNAME_TAKEN 1
 #define INVALID_UPASS 2
@@ -31,6 +32,16 @@
 #define NOT_LOGGED_IN 5
 #define CONNECTION_ERROR 6
 #define NOT_VALID_OPPONENT 7
+char error_messages = {
+   "",
+   "Username already taken",
+   "Invalid username and password combination. Run race login",
+   "Sorry, but its not your turn"
+   "",
+   "No user is logged in. Please run race login or race create",
+   "There was an error with the connecting with the server",
+   "Sorry but the user you challenged doesn't exist"
+}
 
 
 

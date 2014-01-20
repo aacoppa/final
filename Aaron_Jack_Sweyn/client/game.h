@@ -11,6 +11,6 @@ typedef struct map {
      *
      */
 } map;
-void startGame();
+int game_start(int);
 void run();
 #endif
