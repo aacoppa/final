@@ -212,7 +212,12 @@ int main(){
 
 
 
+/* Function game_setup():
+   Arguments: None
+   Returns:   N/A
 
+   Purpose:   Sets up game variables and writes to ./master to display game stats
+*/
 void game_setup(){
   lives = 5;
   score = 0;
@@ -227,7 +232,14 @@ void game_setup(){
 
 
 
-/* math problem*/
+/* Function math_problem():
+   Arguments: 
+   - char math_string[8] : Stores the math problem as a string
+   - int *answer         : Stores the answer to the math problem as an int
+   - int max             : Difficulty of the math problem, related to the max number in the problem
+
+   Purpose: Provides a randomly generated mental math problem
+*/
 void math_problem(char math_string[8], int *answer, int max){
   srand(time(NULL));
   int op = rand()%4;

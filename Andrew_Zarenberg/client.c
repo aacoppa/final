@@ -150,24 +150,28 @@ int main() {
 }
 
 
-void idle(){ print_full('#'); }
-/*
-void print_fail(){ 
-  print_full('.'); 
-  sleep(1);
-  idle();
-  }*/
+/* Function idle():
+   Arguments: None
+   Returns:   N/A
 
-
-void print_full(char a){
+   Purpose: Displays the computer in the "idle" state
+*/
+void idle(){ 
   system("clear");
   int x,y;
   for(x=0;x<rows;x++){
-    for(y=0;y<cols;y++) printf("%c",a);
+    for(y=0;y<cols;y++) printf("#");
     printf("\n");
   }
 }
 
+
+/* Function print_fail():
+   Arguments: None
+   Returns:   N/A
+
+   Purpose: Displays a large X to alert the user they were wrong
+*/
 void print_fail(){
   system("clear");
 
@@ -189,7 +193,12 @@ void print_fail(){
   }
 }
 
+/* Function end_process():
+   Arguments: None
+   Returns:   N/A
 
+   Purpose: Ends the client program
+*/
 void end_process(){
   close(socket_id);
 
