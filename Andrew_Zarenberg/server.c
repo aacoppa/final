@@ -13,6 +13,7 @@ int timer;
 int score;
 int lives;
 int math_dif;
+int last_life;
 
 int computer[34];
 int computer_len;
@@ -161,7 +162,10 @@ int main(){
       }
 
       /* extra life at each 10 right */
-      if(score%10 == 0) lives++;
+      if(score%10 == 0 && score != last_life){
+	lives++;
+	last_life = score;
+      }
 
 
 
@@ -214,6 +218,7 @@ void game_setup(){
   score = 0;
   timer = 20;
   math_dif = 5;
+  last_life = 0;
 
   sprintf(send_text,"\n\n\n\n\t\tScore: %d\n\n\t\tLives: %d\n",score,lives);
   write(master_socket,send_text,sizeof(send_text));
