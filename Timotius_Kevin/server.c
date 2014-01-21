@@ -2,25 +2,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-
+#include <fcntl.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 
-
-char * capitalize(char *s) {
-
-  char *p;
-  p = s;
-  
-  while ( *p ) {
-    
-    if ( *p >= 'a' && *p <= 'z' )
-      *p = *p - ('a' - 'A');
-    p = p + 1;
-  }
-  return s;
-}
 
 void subserver( int socket_client ) {
 
@@ -38,9 +24,6 @@ void subserver( int socket_client ) {
       if ( strncmp(buffer, "exit", sizeof(buffer)) == 0 )
 	break;
 
-      //processand write back
-      capitalize( buffer );
-
       write( socket_client, buffer, strlen(buffer));
     }
     
@@ -52,9 +35,38 @@ void subserver( int socket_client ) {
 int main() {
 
   int socket_id, socket_client;
-  char buffer[256];
+  char buffer[417];
   int i, b;
+  int fdw,fdb;
+  char *s;
+  char *cardsw;
+  char *cardsb;
+  char** white;
+  char** black;
+  char** temp;
+    
+  //reading from files to get black and white card set up
+  /* fdw = open("white.txt",O_RDONLY,0664);
+  read(fdw,cardsw,sizeof(cardsw));
+  temp = white;
+  while(s = strsep(&cardsw,",")){
+    *temp = s;
+    *temp++;
+  }
+  close(fdw);
+  printf("%s\n",*white);
+  */
+  fdb = open("black.txt",O_RDONLY,0664);
+  read(fdw,cardsb,sizeof(cardsb));
+  temp = black;
+  while(s = strsep(&cardsb,",")){
+    *temp = s;
+    *temp++;
+  }
+  close(fdb);
+  printf("%s\n",*black);
   
+  /*
   struct sockaddr_in server;
   socklen_t socket_length;
 
@@ -101,5 +113,6 @@ int main() {
 
     printf("Waiting for new connection\n");
   }
+  */
 
 }
