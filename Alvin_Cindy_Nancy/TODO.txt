@@ -1,0 +1,8 @@
+- Server
+  - Allow clients to create rooms?
+- Client
+  - Connect to Server
+  - Create Rooms?
+  - GUI
+- Random Maze Generator
+- Timer

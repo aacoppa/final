@@ -1,0 +1,11 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+#include <string.h>
+
+void main(){
+  int a =(int)pow(2,32)-1;
+  printf("%d %u\n", a+a, a+a);
+  a++;
+  printf("%d %u\n",a,a);
+}

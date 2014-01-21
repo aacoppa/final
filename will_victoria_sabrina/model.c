@@ -1,27 +1,30 @@
 #include "model.h"
 #include <string.h>
 
-territory terrs[50]; // need number of territories, should be NULL terminated
+territory *terr_lookup(char *);
 
 net_move rtonetmove(RISK_move m) {
-  net_move ret = {m.units, m.origin.name, m.desitnation.name};
+  net_move ret = {m.units, m.origin->name, 
+		  m.destination->name};
   return ret;
 }
 
 RISK_move nettormove(net_move m) {
   RISK_move ret = {
     m.units, 
-    terr_lookup(m.origin.name),
-    terr_lookup(m.destination.name)
+    terr_lookup(m.origin),
+    terr_lookup(m.destination)
   };
   return ret;
 }
 
 territory *terr_lookup(char *name) {
   int i = 0;
-  for (; terrs[i]; i++) {
-    if (strcomp(name, terrs[i].name) == 0)
-      return &terrs[i]
+  int max = sizeof(terrs)/sizeof(territory);
+  for(; i < max; i++) {
+    if (strcmp(name, terrs[i].name) == 0)
+      return &terrs[i];
+    i++;
   }
   return NULL;
 }

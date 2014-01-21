@@ -1,7 +1,8 @@
 # UI
-~~- Render some image~~
-- Find appropriate map image
-- Draw circles
+- Render some image [DONE]
+- Find appropriate map image [DONE]
+- Draw circles [DONE]
+- Fix circle outline
 - Attach labels
 - Clickable circles/labels
 - Hooks for game logic
@@ -12,3 +13,6 @@
 - deal with troop movements
 - roll dice
 - pass data from network to ui
+
+# Server
+- ??? fill out todo
