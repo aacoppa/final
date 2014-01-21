@@ -13,4 +13,13 @@ void main(){
   for(i=0;i<=b[0];i++)
     printf("%u ",b[i]);
   printf("\n");
+
+  printf("%d\n",compare(a,b));
+
+  unsigned int* c;
+  c = sum(a,b);
+  for(i=0;i<=b[0];i++)
+    printf("%u ",c[i]);
+  printf("\n");
+
 }

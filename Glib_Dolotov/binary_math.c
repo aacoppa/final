@@ -2,11 +2,22 @@
 #include "binary_math.h"
 
 int compare(unsigned int* a, unsigned int* b){
+  if (a[0]>b[0])
+    return 1;
+  if (a[0]<b[0])
+    return -1;
+  int i;
+  for(i=0;i<a[0];i++){
+      if (a[a[0]-i]>b[b[0]-i])
+	return 1;
+      if (a[a[0]-i]<b[b[0]-i])
+	return -1;
+  }
+  return 0;
 }
 
 unsigned int* sum(unsigned int* a, unsigned int* b){
-  int a_count = a[0];
-  int b_count = b[0];
+
   unsigned int* final;
   //assume that there will be a carry-over into another unsigned int rep.
   //first value can always be adjusted to less if that's how it turns out.
@@ -19,10 +30,10 @@ unsigned int* sum(unsigned int* a, unsigned int* b){
     final[0]=b[0]+1;
   }
 
-
+  int a_count = a[0];
+  int b_count = b[0];
   int i = 1;
-  long long temp;
-  long long carry = 0;
+  unsigned long long temp, carry = 0;
   while(a_count>0 || b_count>0){
     if(a_count>0 && b_count>0){
       temp = a[i];
