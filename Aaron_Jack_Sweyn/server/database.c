@@ -31,9 +31,10 @@ static int callback(void * in, int argc, char **argv, char **azColName) {
         *comm = VALID;
     } else if( type == GET_GAMES_IN_PROGRESS_CALLBACK ) {
         //gip_hold is also global LOCKED
-        //update it everytime with another game
+        //update it everytime with another game 
         int i = gip_hold->number_of_games;
         db_game_data ** temp_games = calloc(i+1, sizeof(db_game_data *));
+        printf("Number of games: %d\n", i);
         int j = 0;
         while(j < i) {
             temp_games[j] = gip_hold->games[j];
@@ -192,6 +193,9 @@ db_game_data_wr * db_games_in_progress(char * name) {
     //Wait for no writer to have writing lock
     semop(writesem, &sbT, 1);
 
+    gip_hold = malloc(sizeof(db_game_data_wr));
+    gip_hold->number_of_games = 0;
+
     //Type is sent with information about whose callback routine to call
     int * type = malloc(sizeof(int));
     *type = GET_GAMES_IN_PROGRESS_CALLBACK;
@@ -342,7 +346,7 @@ void db_create_game( cli_upload_game * gd ) {
     db_execute(compose_new_game_entry(gd), (void **) &type);
 }   
 
-int main() {
+/*int main() {
     db_init();
     db_create_user("aaron", "coppa");
     db_create_user("john", "coppa");

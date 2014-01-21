@@ -92,6 +92,8 @@ int main(int argc, char ** argv) {
 }
 
 void init() {
+    to_be_sent = malloc(sizeof(request_info));
+    games_returned = calloc(sizeof(cli_game_data *), 1);
     srand(time(NULL));
     to_be_sent = malloc( sizeof(request_info) );
     char * input = load_input();
@@ -109,7 +111,6 @@ int exec_action(int type, char * name, char * password) {
         }
     }
     int ret = init_connection(type, name, password);
-    printf("%d\n", ret);
     if( ret == FIRST_TURN ) {
         goto first_game;
     }
@@ -128,23 +129,28 @@ int exec_action(int type, char * name, char * password) {
 
 
     } else if( type == GAMES_IN_PROG) {
-        printf("Games in progress for %s\n", name);
-        printf("USER\tTURN\n");
-        int i = 0;
-        while(  games_returned[i] ) {
-            if(strcmp(name, games_returned[i]->u1) == 0) {
-                
-                printf("%s\t", games_returned[i]->u2);
-                if(games_returned[i]-> turn == U1_TURN) {
-                    printf("My Turn\n");
-                } else printf("Their Turn\n");
-            } else {
-                printf("%s\t", games_returned[i]->u1);
-                if(games_returned[i]-> turn == U2_TURN) {
-                    printf("My Turn\n");
-                } else printf("Their Turn\n");
+
+        if( !games_returned[0] ) {
+            printf("No games in progress\n");
+        } else {
+            printf("Games in progress for %s\n", name);
+            printf("USER\tTURN\n");
+            int i = 0;
+            while(  games_returned[i] ) {
+                if(strcmp(name, games_returned[i]->u1) == 0) {
+
+                    printf("%s\t", games_returned[i]->u2);
+                    if(games_returned[i]-> turn == U1_TURN) {
+                        printf("My Turn\n");
+                    } else printf("Their Turn\n");
+                } else {
+                    printf("%s\t", games_returned[i]->u1);
+                    if(games_returned[i]-> turn == U2_TURN) {
+                        printf("My Turn\n");
+                    } else printf("Their Turn\n");
+                }
+                i++;
             }
-            i++;
         }
     } else if(type == CHECK_FOR_GAME) {
         if( !games_returned[0] ) {
