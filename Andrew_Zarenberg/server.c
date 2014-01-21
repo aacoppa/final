@@ -12,8 +12,9 @@ union semun {
 int timer;
 int score;
 int lives;
-int math_dif;
 int last_life;
+int math_dif;
+
 
 int computer[34];
 int computer_len;
@@ -156,8 +157,8 @@ int main(){
       
       /* Gets progressively harder */
       count++;
-      if(count < 3 || count%5) math_dif++;
-      if(count > 3 && count%3 == 0 && timer > 5){
+      if(count < 3 || count%3 == 0) math_dif++;
+      if(count%3 == 0 && timer > 5){
 	timer--;
       }
 
@@ -223,8 +224,8 @@ int main(){
 void game_setup(){
   lives = 5;
   score = 0;
-  timer = 20;
-  math_dif = 5;
+  timer = 15;
+  math_dif = 11;
   last_life = 0;
 
   sprintf(send_text,"\n\n\n\n\t\tScore: %d\n\n\t\tLives: %d\n",score,lives);
@@ -249,8 +250,8 @@ void math_problem(char math_string[8], int *answer, int max){
 
   if(op == 0){ 
     /* addition */
-    n1 = rand()%(max*2)+2;
-    n2 = rand()%(max*2)+2;
+    n1 = rand()%(max*4)+2;
+    n2 = rand()%(max*4)+2;
     sprintf(math_string,"%d + %d",n1,n2);
     *answer = n1+n2;
   
@@ -281,7 +282,7 @@ void math_problem(char math_string[8], int *answer, int max){
     /* division
        answer will ALWAYS be an integer
     */
-    n1 = rand()%(max*2)+4;
+    n1 = rand()%(max*3)+4;
     n2 = n1/2-4;
     if(n2 < 2) n2 = 2;
     
