@@ -20,7 +20,6 @@ int computer_len;
 int last_computer = -1;
 
 
-
 void game_setup();
 void math_problem(char[8],int *,int);
 
@@ -112,6 +111,7 @@ int main(){
     } else if(FD_ISSET(master_socket,&fds)){
       break;
     }
+
   }
 
 
@@ -193,7 +193,7 @@ int main(){
 	printf("Read: %s\nSize: %d\n",send_text,b);
 
 	for(x=0;x<computer_len;x++){
-	  write(computer[x],"idle",8);
+	  write(computer[x],"start",8);
 	}
 
 	game_setup();
@@ -209,6 +209,8 @@ int main(){
 
   return 0;
 }
+
+
 
 
 

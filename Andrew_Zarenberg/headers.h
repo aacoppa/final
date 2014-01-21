@@ -27,10 +27,10 @@
 #define WKP "mario"
 #define MASTER_PIPE "master_pipe"
 #define DEFAULT_LIVES 5
-#define SERVER_PORT 27656
+#define SERVER_PORT 27636
 
-#define SERVER_IP2 "127.0.0.1"
-#define SERVER_IP "149.89.150.101"
+#define SERVER_IP "127.0.0.1"
+#define SERVER_IP2 "149.89.150.101"
 
 
 struct SERVER_TO_CLIENT {

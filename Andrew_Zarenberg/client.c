@@ -72,7 +72,18 @@ int main() {
     }
 
     if(!strcmp(buffer,"end")){
-      print_fail();
+      if(fork() == 0){
+	*child_pid = getpid();
+	while(1){
+	  print_fail();
+	  sleep(1);
+	  system("clear");
+	  sleep(1);
+	}
+      }
+    } else if(!strcmp(buffer,"start")){
+      kill(*child_pid,9);
+      idle();
     } else if(!strcmp(buffer,"idle")){
       idle();
     } else {
