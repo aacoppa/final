@@ -33,14 +33,15 @@ unsigned int* sum(unsigned int* a, unsigned int* b){
   int a_count = a[0];
   int b_count = b[0];
   int i = 1;
-  unsigned long long temp, carry = 0;
+  unsigned long long temp;
+  short carry = 0;
   while(a_count>0 || b_count>0){
     if(a_count>0 && b_count>0){
       temp = a[i];
       temp+= b[i];
       temp+= carry;
-      if (temp > (long long)UINT_MAX){
-	temp-=(long long)UINT_MAX;
+      if (temp > (unsigned long long)UINT_MAX){
+	temp-=(unsigned long long)UINT_MAX;
 	carry=1;
 	final[i]=(unsigned int)temp;
       }
