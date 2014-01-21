@@ -222,7 +222,7 @@ int main(){
    Purpose:   Sets up game variables and writes to ./master to display game stats
 */
 void game_setup(){
-  lives = 5;
+  lives = 3;
   score = 0;
   timer = 15;
   math_dif = 11;
@@ -250,8 +250,8 @@ void math_problem(char math_string[8], int *answer, int max){
 
   if(op == 0){ 
     /* addition */
-    n1 = rand()%(max*4)+2;
-    n2 = rand()%(max*4)+2;
+    n1 = rand()%(max*5)+2;
+    n2 = rand()%(max*5)+2;
     sprintf(math_string,"%d + %d",n1,n2);
     *answer = n1+n2;
   
@@ -259,8 +259,8 @@ void math_problem(char math_string[8], int *answer, int max){
     /* subtraction
        answer will ALWAYS be positive
     */
-    n1 = rand()%(max*2)+2;
-    n2 = rand()%(max*2)+2;
+    n1 = rand()%(max*5)+2;
+    n2 = rand()%(max*5)+2;
 
     if(n1 > n2){
       sprintf(math_string,"%d - %d",n1,n2);
