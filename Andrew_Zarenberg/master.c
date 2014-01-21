@@ -38,14 +38,31 @@ int main(){
   char send_text[MAX_LEN];
 
   while(1){
-    read(socket_id,buf,sizeof(buf));
-    system("clear");
-    if(!strcmp(buf,"exit")){
+    int b = read(socket_id,buf,sizeof(buf));
+    if(b <= 0){
       close(socket_id);
       exit(0);
-    } else printf("%s\n",buf);
+    } else {
+      system("clear");
+      if(!strcmp(buf,"exit")){
+	close(socket_id);
+	exit(0);
+
+      } else if(!strcmp(buf,"end")){
+	/* end game - put into idle state */
+	read(socket_id,buf,sizeof(buf));
+	printf("%s\nPress ENTER to start new game\n",buf);
+
+	fgets(buf,MAX_LEN,stdin);
+	printf("Read something\n");
+	write(socket_id,"start",8);
+      } else { 
+	printf("%s\n",buf);
+      }
+    }
   }
 
   return 0;
 }
+
 

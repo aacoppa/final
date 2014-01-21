@@ -51,6 +51,8 @@ int main() {
   int max_fd;
   int select_result;
 
+  struct SERVER_TO_CLIENT *game;
+
 
   /* shmem */
   sd = shmget(SHM_KEY,sizeof(int), IPC_CREAT | 0666);
@@ -62,17 +64,25 @@ int main() {
 
   while(1) {
 
-    timer = 15;
-
     /* get previous line from server */
     b = read( socket_id, buffer,MAX_LEN);
-
 
     if(b <= 0){
       end_process();
     }
 
+    if(!strcmp(buffer,"end")){
+      print_fail();
+    } else if(!strcmp(buffer,"idle")){
+      idle();
+    } else {
+
+    read(socket_id,&timer,sizeof(int));
+
+
+
     printf("Read: %s\n",buffer);
+
 
 
     /* fork off to display have timer */
@@ -123,6 +133,8 @@ int main() {
 
       if(!strcmp(buffer,"fail")){
 	print_fail();
+	sleep(2);
+	idle();
       } else {
 	idle();
       }
@@ -130,6 +142,7 @@ int main() {
     }
   }
 
+  }
 
   close(socket_id);
 
@@ -137,18 +150,13 @@ int main() {
 }
 
 
-
-void miss(){
-  char buf[MAX_LEN];
-  write(socket_id,"fail",MAX_LEN);
-}
-
 void idle(){ print_full('#'); }
+/*
 void print_fail(){ 
   print_full('.'); 
   sleep(1);
   idle();
-}
+  }*/
 
 
 void print_full(char a){
@@ -156,6 +164,27 @@ void print_full(char a){
   int x,y;
   for(x=0;x<rows;x++){
     for(y=0;y<cols;y++) printf("%c",a);
+    printf("\n");
+  }
+}
+
+void print_fail(){
+  system("clear");
+
+  int x,y,first;
+
+  int size = 10,move=cols/rows;
+
+  for(x=1;x<rows;x++){
+    first = abs(x*move-(rows*move)/2);
+    for(y=0;y<(rows*move)/2-first;y++) printf(" ");
+    for(y=0;y<size;y++) printf("@");
+    if(first > size){
+      for(y=0;y<first*2-size;y++) printf(" ");
+      for(y=0;y<size;y++) printf("@");
+    } else {
+      for(y=0;y<first*2;y++) printf("@");
+    }
     printf("\n");
   }
 }
