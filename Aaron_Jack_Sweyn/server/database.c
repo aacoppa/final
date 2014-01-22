@@ -35,7 +35,6 @@ static int callback(void * in, int argc, char **argv, char **azColName) {
         //update it everytime with another game 
         int i = gip_hold->number_of_games;
         db_game_data ** temp_games = calloc(i+1, sizeof(db_game_data *));
-        printf("Number of games: %d\n", i);
         int j = 0;
         while(j < i) {
             temp_games[j] = gip_hold->games[j];
@@ -52,7 +51,9 @@ static int callback(void * in, int argc, char **argv, char **azColName) {
     }
     return 0;
 }
+
 void db_execute(char * exec_str, void ** t) {
+    //Execute sql statements
     void * type = *t;
     sqlite3 *db;
     char *zErrMsg = 0;
@@ -68,8 +69,9 @@ void db_execute(char * exec_str, void ** t) {
     }
     sqlite3_close(db);
 }
+
 void db_init() {
-        //Set up lock, allows one thread in critical section at a time
+    //Set up lock, allows one thread in critical section at a time
     void * t = NO_CALLBACK;
     db_execute(compose_init_tables(), &t);
 
@@ -91,14 +93,18 @@ void db_init() {
     suTT.val = 0;
     semctl(readsem, 0, SETVAL, suTT);
 }
+
 void db_close() {
     close_sems();
 }
+
 void close_sems() {
     semctl(writesem, 0, IPC_RMID);
     semctl(createsem, 0, IPC_RMID);
     semctl(readsem, 0, IPC_RMID);
 }
+
+//Validity checking done inside
 int db_create_user(char * name, char * pass) {
     char * password = malloc(50);
     strcpy(password, pass);
@@ -347,54 +353,3 @@ void db_create_game( cli_upload_game * gd ) {
     *type = NO_CALLBACK; 
     db_execute(compose_new_game_entry(gd), (void **) &type);
 }   
-/*
-int main() {
-    db_init();
-    cli_upload_game gd;
-    strcpy(gd.name, "alpha");
-    strcpy(gd.opponent, "zeta");
-    gd.dist = 2876;
-    gd.key = 123456;
-    db_update_game(&gd, 0);
-    //db_create_user("aaron", "coppa");
-    //db_create_user("john", "coppa");
-    //if( !db_create_user("aaron", "pass") ) {
-    //    printf("Couldn't recreate aaron, good!!!\n");
-    //} else printf("Error with user_exists\n");
-    //printf( "Game exists %d\n", db_game_exists("alpha", "zeta") );
-    db_close();
-}
-
-
-int main(int argc, char ** argv) {
-    db_init();
-    strcpy(gd->to, "adaron");
-    strcpy(gd->from, "john");
-    gd->genkey = 1231;
-    gd->dist = 123;
-    db_update_game(gd, 0);
-    strcpy(gd->to, "john");
-    strcpy(gd->from, "phillip");
-    gd->dist = 12763;
-    db_update_game(gd);
-
-    db_games_in_progress("john");
-
-    
-    db_close();
-    exit(0);
-    //printf("Initing\n");
-    //createUser("aaron", 2013);
-    int i = 0;
-    for(int i = 0; i < 10; i++) {
-        int p = fork();
-        if(p == 0) {
-            db_create_user("aaron", "yolo");
-            db_user_exists("aaron");
-            exit(0);
-        }
-    }
-    printf("Exists %d\n", db_user_exists("aaron"));
-    close_sems();
-    return 0;
-}*/

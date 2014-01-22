@@ -24,7 +24,8 @@
 #define LOGIN 5
 #define REQUEST_TO_PLAY 6
 #define UPLOAD_GAME_RESPONSE 7
-//Reasons...
+
+//Reasons for failure...
 #define USERNAME_TAKEN 1
 #define INVALID_UPASS 2
 #define NOT_MY_TURN 3
@@ -34,25 +35,26 @@
 #define NOT_VALID_OPPONENT 7
 
 #define MAIN_PORT 35412
-//Data server receives / Client sends out
+
+//Structs
 //
+
+/* Typical response to be sent to client for 
+ * play, login, register requests
+ *
+ * Client also uses this struct
+ */
 typedef struct serv_response {
     int type; //If type is game_data then it'll wait
     int success;
     int reason;
     int key;
 } serv_response;
-typedef struct serv_out_games {
-    int type;
-    char u1[50];
-    char u2[50];
-    int turn;
-    int distance;
-} serv_out_games;
-typedef struct client_out {
-    int type;
-} client_out;
 
+
+/* Reponse to games, pull request
+ *
+ */
 typedef struct game_data {
     char from[50];
     char to[50];

@@ -7,7 +7,6 @@
  *
  */
 #include "server_side.h"
-#include "database.h"
 
 int main(int argc, char ** argv) {
     start();
@@ -38,40 +37,38 @@ void listen_for_new_connections() {
     }
 }
 void handle_connection(int fd) {
-    while( 1 ) {
-        void * in = malloc(400);
-        int bytesRead = read(fd, in, 400);
-        printf("%d bytes read\n", bytesRead);
-        int response = handle_request_type((client_out *) in, fd);
-         //free(in);
-        if( response == SUCC_REQ ) {
-            close(fd);
-            exit(0);
-        }
-
+    void * in = malloc(400);
+    int bytesRead = read(fd, in, 400);
+    printf("%d bytes read\n", bytesRead);
+    //Client / server discussion occers in handle_request_type
+    int response = handle_request_type((client_out *) in, fd);
+    //free(in);
+    if( response == SUCC_REQ ) {
+        close(fd);
+        exit(0);
     }
 }
+
 int handle_request_type(client_out * in, int fd) {
-    //printf("Type: %d\n", in->type);
+
+    //Figure out what type of data we are getting and act accordingly
+    //Always returns SUCC_REQ... 
+    //Client notification and server handling of invalid requests happen here
     if( in->type == CREATE_ACCOUNT ) {
         cli_creat_acc * request = (cli_creat_acc *) in;
-        //int passHash = hashPassword(request->pass);
-        //printf("Creating account...\n");
         if( db_create_user( request->name, request->pass)) {
             serv_response * sr = malloc(sizeof(serv_response));
             sr->type = CREATE_ACCOUNT;
             sr->success = 1;
             int s = write( fd, sr, sizeof(serv_response));
-            //printf("Created account...%d\n", s);
             return SUCC_REQ;
         }
-        //Failure
+        //Username taken...
         serv_response * sr = malloc(sizeof(serv_response));
         sr->type = CREATE_ACCOUNT;
         sr->success = 0;
-        sr->reason = USERNAME_TAKEN;
+        sr->reason = USERNAME_TAKEN; //Checked by client for why failure
         int s = write( fd, sr, sizeof(serv_response));
-        //printf("Account taken... %d\n", s);
         return SUCC_REQ;
 
     } else if( in->type == REQUEST_TO_PLAY ) {
@@ -79,12 +76,14 @@ int handle_request_type(client_out * in, int fd) {
         serv_response * sr = malloc(sizeof(serv_response));
         sr->type = REQUEST_TO_PLAY;
         if( !db_validate_user(request->name, request->pass) ) {
+            //Confirm proper password username combo
             sr->success = 0;
             sr->reason = INVALID_UPASS;
         } else if( !db_user_exists(request->opponent) ) {
             sr->reason = NOT_VALID_OPPONENT;
             sr->success = 0;
         } else if( !db_game_exists(request->name, request->opponent)) {
+            //No game between the two so skip to UPLOAD_GAME_RESPONSE in client
             sr->success = 0;
             sr->reason = FIRST_TURN;
         } else if( !db_my_turn(request->name, request->opponent) ) {
@@ -95,14 +94,12 @@ int handle_request_type(client_out * in, int fd) {
             sr->key = db_get_key(request->name, request->opponent);
         }
         int w = write( fd, sr, sizeof(serv_response));
-        printf("Wrote %d bytes\n", w);
         return SUCC_REQ; //Closes socket
 
     } else if( in->type == UPLOAD_GAME_FIRST || in->type == UPLOAD_GAME_RESPONSE ) {
         cli_upload_game * request = (cli_upload_game *) in;
         serv_response * sr = malloc(sizeof(serv_response));
         sr->type = in->type;
-        printf("Name %s + pass %s\n", request->name, request->pass);
         if( !db_validate_user(request->name, request->pass) ) {
             sr->success = 0;
             sr->reason = INVALID_UPASS;
@@ -130,7 +127,7 @@ int handle_request_type(client_out * in, int fd) {
             //printf("validated\n");
             while( i < gd->number_of_games ) {
                 //printf("i: %d \n", i);
-                if( is_my_turn(request->name, (serv_out_games *) gd->games[i]) ) {
+                if( is_my_turn(request->name, gd->games[i]) ) {
                     //printf("Tololo\n");
                     gd_proper[sr->reason] = gd->games[i];
                     sr->reason++;
@@ -181,11 +178,7 @@ int handle_request_type(client_out * in, int fd) {
     }
     return SUCC_REQ;
 }
-int hash_password(char * passwd) {
-    int ret;
-    return ret;
-}
-int is_my_turn( char * name, serv_out_games * s ) {
+int is_my_turn( char * name, db_game_data * s ) {
     if( strcmp(name, s->u1) == 0) {
         return (s->turn == U1_TURN);
     } else {
