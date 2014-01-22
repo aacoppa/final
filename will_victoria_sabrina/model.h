@@ -13,8 +13,9 @@ typedef struct territory {
   char *name;				// name
   int owner;				// A player id
   Continent cont;			// Continent it belongs to
-  struct territory ** neighbors;	// array of pointers to all neighbors
-					// each neighbor will have a link back
+  int *neighbors;			// indices of neighbor territories
+  /* struct territory ** neighbors;	// array of pointers to all neighbors */
+  /* 					// each neighbor will have a link back */
   int units;				// units in territory
   int x, y;				// coordinates of circle
 } territory;
@@ -53,4 +54,3 @@ net_move rtonetmove(RISK_move m);
 RISK_move nettormove(net_move m);
 
 territory *terrs; // need number of territories, should be NULL terminated
-

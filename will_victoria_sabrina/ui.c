@@ -137,6 +137,10 @@ int main() {
   }
   printf("done drawing terrs\n");
   SDL_RenderPresent(ren);
+  terrs[1].owner = 2;
+  draw_terr(terrs[1]);
+  RISK_move moo = (RISK_move){3, terrs+1, terrs+2};
+  move_queue[0] = moo;
   while (!done) {
     while(SDL_PollEvent(&event)) {
       if (event.type == SDL_QUIT)
