@@ -41,7 +41,7 @@ void handle_connection(int fd) {
     while( 1 ) {
         void * in = malloc(400);
         int bytesRead = read(fd, in, 400);
-        //printf("%d bytes read\n", bytesRead);
+        printf("%d bytes read\n", bytesRead);
         int response = handle_request_type((client_out *) in, fd);
          //free(in);
         if( response == SUCC_REQ ) {
@@ -81,12 +81,12 @@ int handle_request_type(client_out * in, int fd) {
         if( !db_validate_user(request->name, request->pass) ) {
             sr->success = 0;
             sr->reason = INVALID_UPASS;
-        } else if( !db_game_exists(request->name, request->opponent)) {
-            sr->success = 0;
-            sr->reason = FIRST_TURN;
         } else if( !db_user_exists(request->opponent) ) {
             sr->reason = NOT_VALID_OPPONENT;
             sr->success = 0;
+        } else if( !db_game_exists(request->name, request->opponent)) {
+            sr->success = 0;
+            sr->reason = FIRST_TURN;
         } else if( !db_my_turn(request->name, request->opponent) ) {
             sr->success = 0;
             sr->reason = NOT_MY_TURN;
@@ -94,13 +94,15 @@ int handle_request_type(client_out * in, int fd) {
             sr->success = 1;
             sr->key = db_get_key(request->name, request->opponent);
         }
-        write( fd, sr, sizeof(serv_response));
+        int w = write( fd, sr, sizeof(serv_response));
+        printf("Wrote %d bytes\n", w);
         return SUCC_REQ; //Closes socket
 
     } else if( in->type == UPLOAD_GAME_FIRST || in->type == UPLOAD_GAME_RESPONSE ) {
         cli_upload_game * request = (cli_upload_game *) in;
         serv_response * sr = malloc(sizeof(serv_response));
         sr->type = in->type;
+        printf("Name %s + pass %s\n", request->name, request->pass);
         if( !db_validate_user(request->name, request->pass) ) {
             sr->success = 0;
             sr->reason = INVALID_UPASS;
@@ -191,5 +193,5 @@ int is_my_turn( char * name, serv_out_games * s ) {
     }
 }
 void logger(char * str) {
-    
+    char * file = "server.log";
 }

@@ -38,8 +38,8 @@
 /* Turn value stored in database if its
  * u1 or u2's turns... Stored alphabetically remember
  */
-#define U1_TURN 1
-#define U2_TURN 2
+#define U1_TURN 0
+#define U2_TURN 1
 
 #define VALID 1647 //For true/false returns from
                    //callback function

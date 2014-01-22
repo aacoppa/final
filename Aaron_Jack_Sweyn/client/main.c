@@ -41,6 +41,8 @@ void login_user(char *, char *);
 char * get_name( char * );
 char * get_password( char * );
 char * XOR( char, char );
+void verify_upass(char *, char *);
+void verify_opponent(char *);
 
 int main(int argc, char ** argv) {
     init();
@@ -59,6 +61,7 @@ int main(int argc, char ** argv) {
             printf("usage: race register [username] [password]\n");
             exit(0);
         }
+        verify_upass(argv[2], argv[3]);
         exec_action(CREATE_ACCOUNT, argv[2], argv[3]);
     }
     if(strcmp(argv[1], "login") == 0) {
@@ -67,7 +70,9 @@ int main(int argc, char ** argv) {
             printf("usage: race login [username] [password]\n");
             exit(0);
         }
+        verify_upass(argv[2], argv[3]);
         login_user(argv[2], argv[3]);
+        printf("Logged in\n");
         exit(0);
 
     } else if(strcmp(argv[1], "play") == 0) {
@@ -78,6 +83,8 @@ int main(int argc, char ** argv) {
             printf("usage: race play [username]\n");
             exit(0);
         }
+        verify_opponent(argv[2]);
+        to_be_sent->opponent = malloc(strlen(argv[2]));
         strcpy(to_be_sent->opponent, argv[2]);
         exec_action( REQUEST_TO_PLAY, NULL, NULL );
     } else if(strcmp(argv[1], "pull") == 0) {
@@ -254,4 +261,22 @@ void login_user(char * name, char * password) {
 }
 int generate_key() {
     return rand();
+}
+
+void verify_opponent(char * name) {
+    if(strlen(name) >= 50 || strchr(name, '\"') ) {
+        printf("The maximum name length is 50 characters\n\
+                Also you can't use quotes ( \" ) in your submission\n\
+                Please try again.\n");
+        exit(0);
+    }
+}
+void verify_upass(char * name, char * pass) {
+    if(strlen(name) >= 50 || strlen(pass) >= 50 || strchr(name, '\"') || strchr(pass, '\"')) {
+        printf("Sorry that username password combination is invalid\n\
+                The maximum name and password length is 50 charecters each\n\
+                Also you can't use quotes ( \" ) in your submission\n\
+                Please try again.\n");
+        exit(0);
+    }
 }

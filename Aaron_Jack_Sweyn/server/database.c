@@ -15,6 +15,7 @@ static int callback(void * in, int argc, char **argv, char **azColName) {
     else if( type == U_EXISTS_CALLBACK ) {
         *comm = USER_EXISTS; 
     } else if( type == GAME_EXISTS_CALLBACK ) {
+        printf("Game does exists\n");
         *comm = GAME_EXISTS;  
     } else if( type == GAME_INFO_CALLBACK ) {
         //Fill out the global LOCKED game_info * gi struct
@@ -276,7 +277,7 @@ void db_update_game( struct cli_upload_game * gd, int update_turn) {
     char u1[50];
     char u2[50];
 
-    if( strcmp(gd->name, gd->opponent) > 0 ) {
+    if( strcmp(gd->name, gd->opponent) < 0 ) {
         strcpy(u1, gd->name);
         strcpy(u2, gd->opponent);
     } else {
@@ -304,13 +305,13 @@ void db_update_game( struct cli_upload_game * gd, int update_turn) {
             if( gi.turn == U2_TURN ){
                 if( gi.dist > gd->dist ){
                     gi.u2wins++;
-                } else {
+                } else if (gd->dist > gi.dist) {
                     gi.u1wins++;
                 }
             } else {
                 if( gi.dist > gd->dist ){
                     gi.u1wins++;
-                } else {
+                } else if(gd->dist > gi.dist) {
                     gi.u2wins++;
                 }
             }
@@ -318,8 +319,9 @@ void db_update_game( struct cli_upload_game * gd, int update_turn) {
         else {
             gi.turn = !gi.turn; 
         }
-
-        void * t = NO_CALLBACK;
+        printf("Hereyolo\n");
+        void * t = malloc(sizeof(int));
+        *(int *) t = NO_CALLBACK;
         db_execute(compose_update_wins(u1, u2, gi.u1wins, gi.u2wins), &t);
         *(int *) t = NO_CALLBACK;
         db_execute(compose_add_challenge(u1, u2, gd->dist, gi.turn, gd->key), &t);
@@ -345,18 +347,25 @@ void db_create_game( cli_upload_game * gd ) {
     *type = NO_CALLBACK; 
     db_execute(compose_new_game_entry(gd), (void **) &type);
 }   
-
-/*int main() {
+/*
+int main() {
     db_init();
-    db_create_user("aaron", "coppa");
-    db_create_user("john", "coppa");
-    if( !db_create_user("aaron", "pass") ) {
-        printf("Couldn't recreate aaron, good!!!\n");
-    } else printf("Error with user_exists\n");
+    cli_upload_game gd;
+    strcpy(gd.name, "alpha");
+    strcpy(gd.opponent, "zeta");
+    gd.dist = 2876;
+    gd.key = 123456;
+    db_update_game(&gd, 0);
+    //db_create_user("aaron", "coppa");
+    //db_create_user("john", "coppa");
+    //if( !db_create_user("aaron", "pass") ) {
+    //    printf("Couldn't recreate aaron, good!!!\n");
+    //} else printf("Error with user_exists\n");
+    //printf( "Game exists %d\n", db_game_exists("alpha", "zeta") );
     db_close();
 }
 
-/*
+
 int main(int argc, char ** argv) {
     db_init();
     strcpy(gd->to, "adaron");

@@ -116,7 +116,7 @@ char * compose_new_game_entry(cli_upload_game * gd) {
     char u1[50];
     char u2[50];
     
-    if( strcmp(gd->name, gd->opponent) > 0 ) {
+    if( strcmp(gd->name, gd->opponent) < 0 ) {
         strcpy(u1, gd->name);
         strcpy(u2, gd->opponent);
     } else {
@@ -130,9 +130,9 @@ char * compose_new_game_entry(cli_upload_game * gd) {
     strcat(execStr, u2);
     strcat(execStr, "\" , "); 
     if( strcmp(gd->name, u1) == 0 ) {
-        strcat(execStr, "2");
-    } else {
         strcat(execStr, "1");
+    } else {
+        strcat(execStr, "0");
     }
     strcat(execStr, " , 0 , 0 , ");
     
