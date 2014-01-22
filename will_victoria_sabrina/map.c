@@ -6,7 +6,7 @@
 
 territory *territories() {
   territory *ret = calloc(50, sizeof(territory));
-  territory **holder = NULL;
+  int *holder = NULL;
   ret[0] = (territory){"Greenland",
                        0, RISK_N_AM, holder, 1, 351, 120};
   ret[1] = (territory){"Alaska",
@@ -26,8 +26,8 @@ territory *territories() {
   ret[8] = (territory){"Central America",
                        0, RISK_N_AM, holder, 1, 193, 361};
 
-  territory* nbors[2] = {ret+2, ret+5};
-  ret[0].neighbors = nbors;
+  //territory* nbors[2] = {ret+2, ret+5};
+  //ret[0].neighbors = nbors;
   /* #warning Alaska connects to Asia */
 
   /* nbors = {ret+2, ret+3}; */
