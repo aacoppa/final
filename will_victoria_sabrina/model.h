@@ -53,3 +53,4 @@ net_move rtonetmove(RISK_move m);
 RISK_move nettormove(net_move m);
 
 territory *terrs; // need number of territories, should be NULL terminated
+

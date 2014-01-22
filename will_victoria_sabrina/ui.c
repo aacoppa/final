@@ -3,6 +3,7 @@
 #include <SDL2/SDL.h>
 #include "ui.h"
 #include "map.h"
+#include <math.h>
 
 SDL_Window *win;
 SDL_Renderer *ren;
@@ -10,6 +11,8 @@ SDL_Texture *maptex;
 
 struct color {int r, g, b;};
 struct color pColors[] = {{255, 0, 0}, {0, 255, 0}, {0, 0, 255}};
+
+const int TERR_RADIUS = 20;
 
 void log_SDL_error(const char *op) {
   printf("%s failed:\n\t%s\n", op, SDL_GetError());
@@ -48,7 +51,6 @@ void cleanup_SDL() {
 
 
 SDL_Texture *circle_texture(int r, int g, int b) {
-  printf("loading circle\n");
   SDL_Surface *img = SDL_LoadBMP("circle.bmp");
 
   SDL_SetColorKey(img, SDL_TRUE, 
@@ -59,13 +61,24 @@ SDL_Texture *circle_texture(int r, int g, int b) {
   return tex;
 }
 
-
 void draw_terr(territory t) {
-  SDL_Rect dest_pos = {t.x, t.y, 40, 40};
+  SDL_Rect dest_pos = {t.x, t.y, TERR_RADIUS*2, TERR_RADIUS*2};
   struct color pc = pColors[t.owner-1];
   SDL_Texture *circle = circle_texture(pc.r, pc.g, pc.b);
   SDL_RenderCopy(ren, circle, NULL, &dest_pos);
   // add text here
+}
+
+territory *terr_click(SDL_MouseButtonEvent m) {
+    int i = 0;
+    while (terrs[i].name) {
+      float d = hypot(terrs[i].x + TERR_RADIUS - m.x, terrs[i].y + TERR_RADIUS - m.y);
+      // printf("checking %s ... %f\n", terrs[i].name, d);
+      if (d <= TERR_RADIUS)
+        return terrs+i;
+      i++;
+    }
+    return NULL;
 }
 
 SDL_Texture *surftotex(SDL_Surface *img) {
@@ -117,8 +130,6 @@ int main() {
   terrs = territories();
   int i = 0;
   while(terrs[i].name) {
-    printf("drawing %s at (%d, %d)\n", terrs[i].name,
-           terrs[i].x, terrs[i].y);
 #warning This is a test
     terrs[i].owner = 1;
     draw_terr(terrs[i]);
@@ -131,12 +142,12 @@ int main() {
       if (event.type == SDL_QUIT)
         done = 1;
       if (event.type == SDL_MOUSEBUTTONDOWN) {
-        printf("mouse down at (%d, %d)\n", event.button.x, event.button.y);
-
+	territory *c = terr_click(event.button);
+	if (c)
+	  printf("clicked on %s\n", c->name);
+	else
+	  printf("mouse down at (%d, %d)\n", event.button.x, event.button.y);
       }
-      /* SDL_RenderClear(ren); */
-      /* SDL_RenderCopy(ren, maptex, NULL, NULL); */
-      //SDL_Surface *surface =
     }
   }
   cleanup_SDL();

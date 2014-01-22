@@ -21,3 +21,15 @@ SDL_Texture *load_texture(const char*);
 
 // surface to texture
 SDL_Texture *surftotex(SDL_Surface*);
+
+// get a circle texture
+SDL_Texture *circle_texture(int r, int g, int b);
+
+// draw a territory
+void draw_terr(territory t);
+
+// check if a territory contains a click
+territory *terr_click(SDL_MouseButtonEvent m);
+
+// walks the move queue and executes all moves to be made
+void update_map();
