@@ -9,6 +9,8 @@ char rune(int c);
 
 char* divByTwo(char* val);
 
+char* multByTwo(char* val);
+
 int binaryDigits(int digits);
 
 char* decToBin(char* val);
@@ -20,3 +22,10 @@ unsigned int* binaryStore(char* bin);
 unsigned int* decimalStore(char* dec);
 
 unsigned int* stdinStore();
+
+//reverse functions for testing & debugging purposes
+char* uintToBinary(unsigned int val);
+
+char* unpackToBinary(unsigned int* store);
+
+char* binToDec(char* bin);

@@ -59,6 +59,21 @@ char* divByTwo(char* val){
   return val;
 }
 
+char* multByTwo(char* val){
+  char* final = (char*)calloc(strlen(val)+2,sizeof(char));
+  int temp, i,j;
+  temp = 0;
+  for(i=strlen(val)-1;i>=0;i--){
+    temp+=val[i];
+    temp*=2;
+    final[i+1] = rune(temp%10);
+    temp=temp/10;
+  }
+  final[0] = rune(temp);
+  if (final[0]=='0')
+    final = &final+1;
+  return final;
+}
 
 //count how many binary digits it would take to represent
 //a value having x decimal digits
@@ -129,4 +144,38 @@ unsigned int* stdinStore(){
   //remove the new-line byte
   buff[strlen(buff)-1]=0;
   return decimalStore(buff);
+}
+
+char* uintToBinary(unsigned int val){
+  char* final = (char*)calloc(32,sizeof(char));
+  int i;
+  for(i=0;i<32;i++){
+    if(val%2==0)
+      final[i]='0';
+    else{
+      final[i]='1';
+      val--;
+    }
+    val=val/2;
+  }
+  return final;
+}
+
+char* unpackToBinary(unsigned int* store){
+  int k = store[0];
+  int i,j;
+  char* temp;
+  char* final = (char*)calloc(32*k,sizeof(char));
+  for(i=1;i<=k;i++){
+    temp = uintToBinary(store[i]);
+    for(j=0;j<32;j++){
+      final[j+32*(i-1)] = temp[j];
+    }
+  }
+  return final;
+}
+
+char* binToDec(char* bin){
+  char* final = (char*)calloc((int)(strlen(bin)-1)/log2(10)+1,sizeof(char));
+  
 }
