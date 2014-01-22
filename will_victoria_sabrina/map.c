@@ -3,6 +3,7 @@
 #include "model.h"
 #include "map.h"
 
+
 territory *territories() {
   territory *ret = calloc(50, sizeof(territory));
   territory **holder = NULL;
@@ -34,6 +35,9 @@ territory *territories() {
   /* ret[2].neighbors = (territory**){ret+0, ret+1, */
   /* 				   ret+3, ret+4}; */
   
-  
+    ret[9] = (territory){0};
   return ret;
 }
+
+
+

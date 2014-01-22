@@ -39,34 +39,49 @@ int main() {
   int i, b;
   int fdw,fdb;
   char *s;
-  char *cardsw;
-  char *cardsb;
-  char** white;
-  char** black;
+  char cardsw[12000];
+  char cardsb[10000];
+  char *white[600];
+  char *black[200];
   char** temp;
-    
-  //reading from files to get black and white card set up
-  /* fdw = open("white.txt",O_RDONLY,0664);
-  read(fdw,cardsw,sizeof(cardsw));
+  int bytesRead = 0;
+  int counter = 0;
+  //reading white card
+  fdw = open("white.txt",O_RDONLY,0664);
+  bytesRead = read(fdw,cardsw,sizeof(cardsw));
   temp = white;
-  while(s = strsep(&cardsw,",")){
+  char *line1 = cardsw;
+  while(s = strsep(&line1,",")){
     *temp = s;
     *temp++;
   }
   close(fdw);
-  printf("%s\n",*white);
+  //print white
+  /*
+  while(white[counter] != NULL){
+    printf("\twhite cards[%d]: %s\n",counter,white[counter]);
+    counter++;
+  }
   */
   fdb = open("black.txt",O_RDONLY,0664);
-  read(fdw,cardsb,sizeof(cardsb));
+  bytesRead = read(fdb,cardsb,sizeof(cardsb));
   temp = black;
-  while(s = strsep(&cardsb,",")){
+  char *line2 = cardsb;
+  while(s = strsep(&line2,",")){
     *temp = s;
     *temp++;
   }
   close(fdb);
-  printf("%s\n",*black);
-  
+  //print black
   /*
+  counter = 0;
+  while(black[counter] != NULL){
+    printf("\tblack cards[%d]: %s\n",counter,white[counter]);
+    counter++;
+  }
+  */
+
+  //NETWORK
   struct sockaddr_in server;
   socklen_t socket_length;
 
@@ -113,6 +128,5 @@ int main() {
 
     printf("Waiting for new connection\n");
   }
-  */
 
 }
