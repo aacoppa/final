@@ -58,7 +58,7 @@ char* divByTwo(char* val){
   }
   return val;
 }
-
+/*
 char* multByTwo(char* val){
   char* final = (char*)calloc(strlen(val)+2,sizeof(char));
   int temp, i,j;
@@ -74,7 +74,7 @@ char* multByTwo(char* val){
     final = &final+1;
   return final;
 }
-
+*/
 //count how many binary digits it would take to represent
 //a value having x decimal digits
 int binaryDigits(int digits){
@@ -102,6 +102,7 @@ char* decToBin(char* val){
     divByTwo(val);
     //printf("%s\n",val);
   }
+  printf("Storing binary:\n%s\n",final);
   return final;
 }
 
@@ -175,7 +176,15 @@ char* unpackToBinary(unsigned int* store){
   return final;
 }
 
+/*
 char* binToDec(char* bin){
   char* final = (char*)calloc((int)(strlen(bin)-1)/log2(10)+1,sizeof(char));
   
 }
+*/
+/*
+void main(){
+  unsigned int* a = stdinStore();
+  printf("Unpacking to binary:\n%s\n",unpackToBinary(a));
+}
+*/
