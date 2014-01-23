@@ -67,6 +67,7 @@ void draw_terr(territory t) {
   SDL_Texture *circle = circle_texture(pc.r, pc.g, pc.b);
   SDL_RenderCopy(ren, circle, NULL, &dest_pos);
   // add text here
+  SDL_DestroyTexture(circle);
 }
 
 territory *terr_click(SDL_MouseButtonEvent m) {
@@ -148,11 +149,12 @@ int main() {
       if (event.type == SDL_MOUSEBUTTONDOWN) {
 	territory *c = terr_click(event.button);
 	if (c)
-	  printf("clicked on %s\n", c->name);
+	  log_terr(*c);
 	else
 	  printf("mouse down at (%d, %d)\n", event.button.x, event.button.y);
       }
     }
+    SDL_Delay(100);
   }
   cleanup_SDL();
 }

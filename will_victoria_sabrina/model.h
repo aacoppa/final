@@ -50,5 +50,5 @@ typedef struct net_move {
 
 net_move rtonetmove(RISK_move m);
 RISK_move nettormove(net_move m);
-
+void log_terr(territory t);
 territory *terrs; // need number of territories, should be NULL terminated
