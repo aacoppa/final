@@ -142,7 +142,32 @@ int send_request(int type, char * name, char * passwd) {
         games_returned = temp_games;
         return QUERY_SUCC;
     } else if ( type == GAME_STATS ) {
+        cli_creat_acc * cl = malloc( sizeof(cli_creat_acc) );
+        strcpy(cl->name, name);
+        strcpy(cl->pass, passwd);
+        write( global_sock_id, cl, sizeof(cli_creat_acc) );
+        void * buff = malloc(400);
+        int r = read(global_sock_id, buff, 400);
+        serv_response * sr = (serv_response *)buff;
+        if( sr->type != GAME_STATS ) return CONNECTION_ERROR;
+        if( sr->success ) {
+            return sr->reason;
+        }
+        int i = 0;
+        cli_game_data ** temp_games = calloc(sr->reason + 1, sizeof(cli_game_data *));
+        while(i < sr->reason) {
+            void * b = malloc(sizeof(db_game_data));
+            read(global_sock_id, b, sizeof(db_game_data));
+            temp_games[i] = malloc(sizeof(cli_game_data));
+            temp_games[i]->turn = ( (db_game_data *)b)->turn;
 
+            temp_games[i]->dist = ((db_game_data *)b)->turn; 
+            strcpy(temp_games[i]->u1, ((db_game_data *)b)->u1); 
+            strcpy(temp_games[i]->u1, ((db_game_data *)b)->u2); 
+            i++;
+        }
+        games_returned = temp_games;
+        return QUERY_SUCC;
     }
     return 0;
 }

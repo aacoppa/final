@@ -47,4 +47,9 @@ int handle_request_type();
  *
  */
 int is_my_turn(char * name, db_game_data *);
+
+/* Log function
+ *
+ */
+void logger(char *);
 #endif

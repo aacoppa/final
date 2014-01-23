@@ -15,7 +15,6 @@ static int callback(void * in, int argc, char **argv, char **azColName) {
     else if( type == U_EXISTS_CALLBACK ) {
         *comm = USER_EXISTS; 
     } else if( type == GAME_EXISTS_CALLBACK ) {
-        printf("Game does exists\n");
         *comm = GAME_EXISTS;  
     } else if( type == GAME_INFO_CALLBACK ) {
         //Fill out the global LOCKED game_info * gi struct
@@ -45,6 +44,8 @@ static int callback(void * in, int argc, char **argv, char **azColName) {
         strcpy((temp_games[i])->u1, argv[0]);
         strcpy((temp_games[i])->u2, argv[1]);
         (temp_games[i])->turn = atoi(argv[2]);
+        (temp_games[i])->u1wins = atoi(argv[3]);
+        (temp_games[i])->u2wins = atoi(argv[4]);
         free(gip_hold->games);
         gip_hold->games = temp_games;
         gip_hold->number_of_games++; 
@@ -115,7 +116,6 @@ int db_create_user(char * name, char * pass) {
     sb.sem_op = -1;
     semop(createsem, &sb, 1);
 
-    //printf("Have create lock\n");
     if( db_user_exists(name) ) {
         //Release create lock
         sb.sem_op = 1;
@@ -132,7 +132,6 @@ int db_create_user(char * name, char * pass) {
     sbT.sem_op = -1;
     semop(writesem, &sbT, 1);
 
-    //printf("Have write lock\n");
     //Wait for all readers to be clear
     struct sembuf sbR;
     sbR.sem_num = 0;
@@ -325,7 +324,6 @@ void db_update_game( struct cli_upload_game * gd, int update_turn) {
         else {
             gi.turn = !gi.turn; 
         }
-        printf("Hereyolo\n");
         void * t = malloc(sizeof(int));
         *(int *) t = NO_CALLBACK;
         db_execute(compose_update_wins(u1, u2, gi.u1wins, gi.u2wins), &t);

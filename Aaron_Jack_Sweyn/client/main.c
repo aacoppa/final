@@ -94,8 +94,12 @@ int main(int argc, char ** argv) {
         exec_action( GAMES_IN_PROG, NULL, NULL );
 
     } else if(strcmp(argv[1], "stats") == 0) {
+        printf("%s\n", user);
         //Pulls down stats from server to display
-    } 
+        exec_action( GAME_STATS, NULL, NULL );
+    } else {
+        printf("%s", help_string);
+    }
 }
 
 void init() {
@@ -186,6 +190,24 @@ int exec_action(int type, char * name, char * password) {
     }
     if(type == UPLOAD_GAME_RESPONSE) {
         return 0;
+    }
+    
+    if(type == GAME_STATS) {
+        if( !games_returned[0] ) {
+            printf("No games in progress\n");
+        } else printf("You\tWins\tThem\tWins\n");
+        int i = 0;
+        while(  games_returned[i] ) {
+            if(strcmp(name, games_returned[i]->u1) == 0) { 
+                printf("%s\t%d\t%s\t%d\n", games_returned[i]->u1, games_returned[i]->u1wins, \
+                        games_returned[i]->u2, games_returned[i]->u2wins);
+            } else {
+                printf("%s\t%d\t%s\t%d\n", games_returned[i]->u2, games_returned[i]->u2wins, \
+                        games_returned[i]->u1, games_returned[i]->u1wins);
+            }
+            i++;
+        }
+
     }
     return 0;
 }   

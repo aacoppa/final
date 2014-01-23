@@ -43,6 +43,8 @@ typedef struct cli_game_data {
     char u2[50];
     int turn;
     int dist;
+    int u1wins;
+    int u2wins;
 } cli_game_data;
 
 typedef struct request_info {

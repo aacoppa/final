@@ -131,6 +131,8 @@ typedef struct db_game_data{
 
     int turn;
     int distance; //The distance stored in db of the most recent game
+    int u1wins;
+    int u2wins;
 } db_game_data;
 
 /* Wrapper struct to hold an list of db_game_data
