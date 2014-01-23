@@ -1,14 +1,19 @@
 #include "server.h"
+#define NUM_ROOMS 4
+#define NUM_PLAYERS_PER_ROOM 6
 
-char * capitalize(char *s) {
-  char *p;
-  p = s;
-  while ( *p ) {
-    if ( *p >= 'a' && *p <= 'z' )
-      *p = *p - ('a' - 'A');
-    p = p + 1;
+int findEmptyRoom(){
+  int i;
+  for(i = 0;i < NUM_ROOMS;i++){
+    if(rooms[i][0] == 0)
+      return i;
   }
-  return s;
+  return -1;
+}
+
+void createRoom( int socket_client ) {
+  int roomNum = findEmptyRoom();
+  rooms[roomNum][0] = socket_client;
 }
 
 void subserver( int socket_client ) {
@@ -26,7 +31,7 @@ void subserver( int socket_client ) {
         break;
 
       //TODO: CHANGE TO "ROOM" CODE
-      capitalize( buffer );
+      //capitalize( buffer );
 
       write( socket_client, buffer, strlen(buffer));
     }
@@ -41,14 +46,16 @@ int main() {
   int socket_id, socket_client;
   char buffer[256];
   int i, b;
+
+  int rooms[NUM_ROOMS][NUM_PLAYERS_PER_ROOM];
+  int roomNum;
   
   struct sockaddr_in server;
   socklen_t socket_length;
 
   //make the server socket for reliable IPv4 traffic 
   socket_id = socket( AF_INET, SOCK_STREAM, 0);
-
-  printf("Soket file descriptor: %d\n", socket_id);
+  printf("Socket file descriptor: %d\n", socket_id);
 
   //set up the server socket struct
   //Use IPv4 
@@ -66,27 +73,29 @@ int main() {
   //wait for any connection
   i =  listen( socket_id, 1 );
 
+  //initialize maze
+  int x,y;
+  for(x = 0;x < NUM_ROOMS;x++){
+    for(y = 0;y < NUM_PLAYERS_PER_ROOM;y++){
+      rooms[x][y] = 0;
+    }
+  }
   //acept connections continuously
   while(1) {
-
-    printf("Accpeting a connection\n");
-
+    printf("Accepting a connection\n");
     //set socket_length after the connection is made
     socket_length = sizeof(server); 
-
     //accept the incoming connection, create a new file desciprtor for the socket to the client
     socket_client = accept(socket_id, (struct sockaddr *)&server, &socket_length);
     printf("accepted connection %d\n",socket_client);
-
     i = fork();
     if ( i == 0 ) {
-       subserver(socket_client);
-     }
+      subserver(socket_client);
+    }
     else 
-        close(socket_client);
-
-
+      close(socket_client);
+      
     printf("Waiting for new connection\n");
   }
-
+  
 }

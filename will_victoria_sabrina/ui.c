@@ -67,6 +67,7 @@ void draw_terr(territory t) {
   SDL_Texture *circle = circle_texture(pc.r, pc.g, pc.b);
   SDL_RenderCopy(ren, circle, NULL, &dest_pos);
   // add text here
+  SDL_DestroyTexture(circle);
 }
 
 territory *terr_click(SDL_MouseButtonEvent m) {
@@ -130,17 +131,17 @@ int main() {
   terrs = territories();
   int i = 0;
   while(terrs[i].name) {
-#warning This is a test
+#warning for testing, every territory is owned by 1
     terrs[i].owner = 1;
     draw_terr(terrs[i]);
     i++;
   }
   printf("done drawing terrs\n");
-  SDL_RenderPresent(ren);
   terrs[1].owner = 2;
   draw_terr(terrs[1]);
   RISK_move moo = (RISK_move){3, terrs+1, terrs+2};
   move_queue[0] = moo;
+  SDL_RenderPresent(ren);
   while (!done) {
     while(SDL_PollEvent(&event)) {
       if (event.type == SDL_QUIT)
@@ -148,11 +149,12 @@ int main() {
       if (event.type == SDL_MOUSEBUTTONDOWN) {
 	territory *c = terr_click(event.button);
 	if (c)
-	  printf("clicked on %s\n", c->name);
+	  log_terr(*c);
 	else
 	  printf("mouse down at (%d, %d)\n", event.button.x, event.button.y);
       }
     }
+    SDL_Delay(100);
   }
   cleanup_SDL();
 }

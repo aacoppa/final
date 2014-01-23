@@ -25,7 +25,10 @@ with a label displaying number of units on each territory.
 ##Tech Design
 ###Specific technologies:
 ~~- ncurses to deal with displaying menus, etc.~~
-- there will be a server that handles game state, game logic, etc.
+~~- there will be a server that handles game state, game logic, etc.~~
+- each move will be sent from the client whose turn it is to the
+  server, which will distribute it to the rest of the clients
+- SDL2 used to display game screen
 
 ###Server details 
 - the server will recieve communications from a client on each computer

@@ -1,3 +1,5 @@
+#include <stdlib.h>
+#include <stdio.h>
 #include "model.h"
 #include <string.h>
 
@@ -27,4 +29,14 @@ territory *terr_lookup(char *name) {
     i++;
   }
   return NULL;
+}
+
+void log_terr(territory t) {
+  printf("%s:\n\tOwner: p%d\n\tUnits: %d\n\tNeighbors:\n", 
+	 t.name, t.owner, t.units);
+  int i = 0;
+  while (t.neighbors[i] > -1) {
+    printf("\t\t%s\n", terrs[t.neighbors[i]].name);
+    i++;
+  }
 }
