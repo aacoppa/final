@@ -32,6 +32,11 @@ territory *terr_lookup(char *name) {
 }
 
 void log_terr(territory t) {
-  printf("%s:\n\tOwner: p%d\n\tUnits: %d\n\tNeighbor 1: %s\n", 
-	 t.name, t.owner, t.units, terrs[t.neighbors[0]].name);
+  printf("%s:\n\tOwner: p%d\n\tUnits: %d\n\tNeighbors:\n", 
+	 t.name, t.owner, t.units);
+  int i = 0;
+  while (t.neighbors[i] > -1) {
+    printf("\t\t%s\n", terrs[t.neighbors[i]].name);
+    i++;
+  }
 }
