@@ -13,3 +13,6 @@ int die_roll();
   RETURNS : 0 for attacking win, 1 for defending win
 */
 int battle(int uAtt, int uDef);
+
+// given the number of players, distributes territories evenly
+

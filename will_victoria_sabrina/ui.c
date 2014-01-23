@@ -30,7 +30,7 @@ int init_SDL() {
     return 1;
   }
   ren = SDL_CreateRenderer(win, -1, SDL_RENDERER_ACCELERATED
-                           | SDL_RENDERER_PRESENTVSYNC);
+			   | SDL_RENDERER_PRESENTVSYNC);
   if (!ren) {
     log_SDL_error("SDL renderer creation");
     return 1;
