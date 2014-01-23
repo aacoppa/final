@@ -48,6 +48,40 @@ char rune(int c){
     return '9';
 }
 
+char* addStrs(char* a, char*b){
+  char* final;
+  int finlen;
+  if(strlen(a)>strlen(b)){
+    final = (char*)calloc(strlen(a)+2,sizeof(char));
+    finlen=strlen(a)+2;
+  }
+  else{
+    final = (char*)calloc(strlen(b)+2,sizeof(char));
+    finlen=strlen(b)+2;
+  }
+  int a_count = strlen(a);
+  int b_count = strlen(b);
+  int i = 1;
+  int temp = 0;
+  while(a_count>0 || b_count>0){
+    if(b_count>0){
+      temp+=digit(b[b_count-i]);
+      b_count--;
+    }
+    if(a_count>0){
+      temp+=digit(a[a_count-i]);
+      a_count--;
+    }
+    final[finlen-i]=rune(temp%10);
+    i++;
+    temp = temp/10;
+  }
+  final[0] = rune(temp);
+  if (final[0]=='0')
+    final++;
+  return final;
+}
+
 //divides string-represented even value by two
 char* divByTwo(char* val){
   int temp,i;
@@ -58,23 +92,22 @@ char* divByTwo(char* val){
   }
   return val;
 }
-/*
+
 char* multByTwo(char* val){
   char* final = (char*)calloc(strlen(val)+2,sizeof(char));
   int temp, i,j;
   temp = 0;
   for(i=strlen(val)-1;i>=0;i--){
-    temp+=val[i];
-    temp*=2;
+    temp+=digit(val[i])*2;
     final[i+1] = rune(temp%10);
     temp=temp/10;
   }
   final[0] = rune(temp);
   if (final[0]=='0')
-    final = &final+1;
+    final++;
   return final;
 }
-*/
+
 //count how many binary digits it would take to represent
 //a value having x decimal digits
 int binaryDigits(int digits){
@@ -176,15 +209,28 @@ char* unpackToBinary(unsigned int* store){
   return final;
 }
 
-/*
-char* binToDec(char* bin){
-  char* final = (char*)calloc((int)(strlen(bin)-1)/log2(10)+1,sizeof(char));
-  
-}
-*/
-/*
+
+//char* binToDec(char* bin){
+//  char* final = (char*)calloc((int)(strlen(bin)-1)/log2(10)+1,sizeof(char));
+//  int i;
+// for(i=
+//}
+
+
 void main(){
-  unsigned int* a = stdinStore();
-  printf("Unpacking to binary:\n%s\n",unpackToBinary(a));
+  //unsigned int* a = stdinStore();
+  //char* bin = unpackToBinary(a);
+  //char* inverse = binToDec(bin);
+  //printf("Translated and untranslated:\n%s\n",inverse);
+
+  char* buff1 = (char*) calloc(1000,sizeof(char));
+  fgets(buff1, 1000, stdin);
+  buff1[strlen(buff1)-1]=0;
+
+  char* buff2 = (char*) calloc(1000,sizeof(char));
+  fgets(buff2, 1000, stdin);
+  buff2[strlen(buff2)-1]=0;
+
+  printf("sum:\n%s\n",addStrs(buff1,buff2));
 }
-*/
+

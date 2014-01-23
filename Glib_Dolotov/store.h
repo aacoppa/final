@@ -5,8 +5,9 @@
 
 int digit(char c); //WORKING
 char rune(int c); //WORKING
+char* addStrs(char* a, char*b);
 char* divByTwo(char* val); // WORKING
-//char* multByTwo(char* val);
+char* multByTwo(char* val); //WORKING
 int binaryDigits(int digits); //WORKING
 char* decToBin(char* val); //WORKING
 unsigned int binToDec(char* val, int start); //WORKING
