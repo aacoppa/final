@@ -29,8 +29,7 @@ int init_SDL() {
     log_SDL_error("SDL window create");
     return 1;
   }
-  ren = SDL_CreateRenderer(win, -1, SDL_RENDERER_ACCELERATED
-                           | SDL_RENDERER_PRESENTVSYNC);
+  ren = SDL_CreateRenderer(win, -1,  0);//SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
   if (!ren) {
     log_SDL_error("SDL renderer creation");
     return 1;
@@ -144,8 +143,10 @@ int main() {
   SDL_RenderPresent(ren);
   while (!done) {
     while(SDL_PollEvent(&event)) {
-      if (event.type == SDL_QUIT)
+      if (event.type == SDL_QUIT) {
+	printf("exiting RISK...\n");
         done = 1;
+      }
       if (event.type == SDL_MOUSEBUTTONDOWN) {
 	territory *c = terr_click(event.button);
 	if (c)

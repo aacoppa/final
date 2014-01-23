@@ -18,7 +18,7 @@
 - deal with troop movements [DONE]
 - roll dice
 - pass data from network to ui
-- assign territories
+- assign territories from terrs (in model.h)
 
 # Networking
 - Server accept multiple clients
