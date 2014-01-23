@@ -2,11 +2,16 @@
 - Render some image [DONE]
 - Find appropriate map image [DONE]
 - Draw circles [DONE]
-- Fix circle outline
+- Fix circle outline [DONE]
 - Attach labels
 - Clickable circles/labels [DONE]
 - Hooks for game logic
-
+- N.Am. data [DONE]
+- S.Am. data [DONE]
+- Europe data
+- Africa data
+- Asia data
+- Australia data
 
 # Logic
 - simulate battle
