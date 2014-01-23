@@ -51,6 +51,7 @@ int start_listener() {
         struct server client;
         strcpy(client.ip, cli);
         add_server(&client, known_servers);
+        continue; // Jump to the next iteration.
       }
     }
     close(socket_id);
@@ -127,6 +128,7 @@ int request_list(struct server* host) {
   while ((token = strsep(&curr_str, ",")) != NULL) {
     curr->value = calloc(1, sizeof(struct server)); // allocate space
     curr->value->ip = token;
+    curr->value->dead = 0; // liiive, liiive!
     curr->next = calloc(1, sizeof(struct server_list));
     curr = curr->next;
   }
@@ -142,7 +144,28 @@ int add_server(struct server* new, struct server_list* list) {
   insert->value = new;
   insert->next = list->next;
   list->next = insert;
+  new->dead = 0; // It's aliiiive
   return 0;
+}
+
+int rem_server(struct server* rem, struct server_list* list) {
+  struct server_list* curr;
+  // Go through our servers
+  for (curr = list; curr->next != 0; curr = curr->next) {
+    struct server* test = curr->next->value; // We want to test 1 forward, so we can relink the list
+    if (test == rem || (strcmp(test->ip, rem->ip) == 0)) { // If they're identical pointers or if they have the same ip, that's a match!
+      struct server_list* temp = curr->next->next; // store the next next value
+      if (!test->refs) { // If there are no existing references to this server, free it off.
+        free(test->ip);
+        free(test);
+      } else {
+        test->dead = 1; // Otherwise, label it as dead so nobody want's to use it.
+      }
+      curr->next = temp;
+      return 0; // We're done here.
+    }
+  }
+  return 1; // We found nothing
 }
 
 int die() {

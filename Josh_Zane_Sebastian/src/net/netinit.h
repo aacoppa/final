@@ -10,7 +10,10 @@
 #include <sys/types.h>
 #include <netinet/in.h>
 
+// Header specifying a request for a list of servers
 #define REQUEST_LIST "REQLIST"
+// Header specifying a request for a function to get evaluated
+#define REQUEST_FN "REQFN"
 
 #define SLIST_LEN 1024
 
@@ -18,6 +21,8 @@
 
 struct server {
   char* ip;
+  int dead;
+  int refs;
 };
 
 struct server_list {
@@ -40,6 +45,10 @@ int request_list(struct server*);
 
 // Add a server after server_list, keep teh stuff afterwards intact
 int add_server(struct server*, struct server_list*);
+
+// removes a server from the server list specified. Also sets the server's dead var to true
+// 0 if successful, 1 if failure.
+int rem_server(struct server*, struct server_list*);
 
 // End this server, and notify all known servers of it's passing
 // Memory and such will get freed here.
