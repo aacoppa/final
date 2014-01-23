@@ -154,6 +154,6 @@ int die() {
     free(current->value);
     free(current); // Master has given current a sock! Current is FREE!
     current = next;
-  } while (next != 0);
+  } while (current != 0);
   return 0;
 }
