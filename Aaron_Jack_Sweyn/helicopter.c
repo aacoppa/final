@@ -1,52 +1,8 @@
-#include <ncurses.h>            /* ncurses.h includes stdio.h */  
-#include <string.h> 
-#include <unistd.h>
-#include <stdlib.h>
-#include <time.h>
-#include <inttypes.h>
-#include <math.h>
-#include <sys/time.h>
-//***Struct***
-typedef struct Wall{
-    int currentCol; 
-    int startRow;
-    int show;
-    int length;
-} Wall;
-typedef struct Player{
-    int playerRow;
-    int alive;
-} Player;
-//***Headers***
-void printScreen();
-void printBars();
-void printWall(int wallIndex);
-int endGame();
-int kbhit();
-void seedGame(unsigned long seed);
-void checkKeyPress();
-void tick();
-unsigned long getTime(void);
-void makeWall();
-void tickActions();
-int getRandom(void);
-void printPlayer();
-int isTick();
-int startGame(unsigned long seed);
-//****Variables***
-int totalRow, totalCol;
-char * stars;
-Wall walls[100];
-Player player;
-//****Random****
-unsigned long next = 1;
-unsigned long gameSeed;
+#include "helicopter.h"
 
-//***Game Variables***
-int GAME_SPEED = 100;
-int TICKS = 1;
-unsigned long lastTick;
-
+int main(){
+    startGame(makeSeed());
+}
 
 int startGame(unsigned long seed){
     seedGame(seed);
@@ -103,12 +59,10 @@ unsigned long getTime(void){
 void printScreen(){
     clear();
     printBars();
-    mvprintw(32, 0, "%d", TICKS);
-    mvprintw(33, 0, "%d", TICKS % 10);
+    mvprintw(32, 0, "Current Distance: %d", TICKS);
     int i;
     int j = 35;
     for(i = 0; i < 100; i++){
-        //1mvprintw(j++, 0, "%d", walls[i].show);
         if (walls[i].show == 1)
             printWall(i);
     }
@@ -124,7 +78,7 @@ void tickActions(){
         makeWall();
     }
     if (TICKS % 2 == 0){
-        //player.playerRow++;
+        player.playerRow++;
     }
     int wallIndex;
     for (wallIndex = 0; wallIndex < 100; wallIndex++){
@@ -180,9 +134,9 @@ void checkKeyPress(){
         if (key == 'w')
             if (player.playerRow > 1)
                 player.playerRow--;
-        if (key == 's')
-            if (player.playerRow < 29)
-                player.playerRow++;
+        // if (key == 's')
+        //     if (player.playerRow < 29)
+        //         player.playerRow++;
     }
 }
 
@@ -196,6 +150,10 @@ int kbhit(void){
     }
 }
 
+unsigned long makeSeed(){
+    srand(time(0));
+    return random();
+}
 
 /* RAND_MAX assumed to be 32767 */
 int getRandom(void){

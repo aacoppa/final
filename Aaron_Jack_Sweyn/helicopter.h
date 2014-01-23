@@ -1,0 +1,53 @@
+#include <ncurses.h> 
+#include <string.h> 
+#include <unistd.h>
+#include <stdlib.h>
+#include <time.h>
+#include <inttypes.h>
+#include <math.h>
+#include <sys/time.h>
+
+//***Structs***
+typedef struct Wall{
+    int currentCol; 
+    int startRow;
+    int show;
+    int length;
+} Wall;
+typedef struct Player{
+    int playerRow;
+    int alive;
+} Player;
+
+//***Headers***
+void printScreen();
+void printBars();
+void printWall(int wallIndex);
+int endGame();
+int kbhit();
+void seedGame(unsigned long seed);
+void checkKeyPress();
+void tick();
+unsigned long getTime(void);
+void makeWall();
+void tickActions();
+int getRandom(void);
+void printPlayer();
+int isTick();
+int startGame(unsigned long seed);
+unsigned long makeSeed();
+
+//****Variables***
+int totalRow, totalCol;
+char * stars;
+Wall walls[100];
+Player player;
+
+//****Random Variables****
+unsigned long next = 1;
+unsigned long gameSeed;
+
+//***Game Variables***
+int GAME_SPEED = 100;
+int TICKS = 1;
+unsigned long lastTick;
