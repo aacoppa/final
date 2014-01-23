@@ -11,9 +11,11 @@ typedef struct Wall{
     int currentCol; 
     int startRow;
     int show;
+    int length;
 } Wall;
 typedef struct Player{
     int playerRow;
+    int alive;
 } Player;
 //***Headers***
 void printScreen();
@@ -21,31 +23,33 @@ void printBars();
 void printWall(int wallIndex);
 int endGame();
 int kbhit();
+void seedGame(unsigned long seed);
 void checkKeyPress();
 void tick();
 unsigned long getTime(void);
 void makeWall();
 void tickActions();
-void seedGame();
 int getRandom(void);
 void printPlayer();
 int isTick();
+int startGame(unsigned long seed);
 //****Variables***
 int totalRow, totalCol;
 char * stars;
-Wall walls[15];
+Wall walls[100];
 Player player;
 //****Random****
 unsigned long next = 1;
 unsigned long gameSeed;
 
 //***Game Variables***
-int GAME_SPEED = 20;
+int GAME_SPEED = 100;
 int TICKS = 1;
 unsigned long lastTick;
 
-int main(){
-    seedGame();
+
+int startGame(unsigned long seed){
+    seedGame(seed);
     initscr();
     cbreak();
     curs_set(0);
@@ -60,27 +64,27 @@ int main(){
         i++;
     }
     player.playerRow = 15/2;
+    player.alive = 1;
     makeWall();
-    while(1)
+    while(player.alive)
         tick();
+    clear();
     endwin();
-
-    return 0;
+    return TICKS;
 }
 
 void tick(){
     if (isTick())
         tickActions();
+    usleep(30);
     checkKeyPress();
+    usleep(30);
     printScreen();
-    usleep(40);
+    usleep(20);
 }
 
 int isTick(){
     unsigned long currentTime = getTime();
-    // mvprintw(50, 0, "%ld", currentTime);
-    // mvprintw(51, 0, "%ld", lastTick);
-    // mvprintw(52, 0, "%ld", currentTime - lastTick);
     int ans = 0;
     if (currentTime - lastTick > GAME_SPEED){
         ans = 1;
@@ -99,8 +103,12 @@ unsigned long getTime(void){
 void printScreen(){
     clear();
     printBars();
+    mvprintw(32, 0, "%d", TICKS);
+    mvprintw(33, 0, "%d", TICKS % 10);
     int i;
-    for(i = 0; i < 15; i++){
+    int j = 35;
+    for(i = 0; i < 100; i++){
+        //1mvprintw(j++, 0, "%d", walls[i].show);
         if (walls[i].show == 1)
             printWall(i);
     }
@@ -110,16 +118,16 @@ void printScreen(){
 
 void tickActions(){
     TICKS++;
-    if (TICKS % 100 == 0)
-        //GAME_SPEED -= 1000;
-    if (TICKS % 50 == 0){
+    if (TICKS % 100 == 0 && GAME_SPEED > 20)
+        GAME_SPEED -= 1;
+    if (TICKS % 10 == 0){
         makeWall();
     }
     if (TICKS % 2 == 0){
         //player.playerRow++;
     }
     int wallIndex;
-    for (wallIndex = 0; wallIndex < 15; wallIndex++){
+    for (wallIndex = 0; wallIndex < 100; wallIndex++){
         walls[wallIndex].currentCol--;
         if (walls[wallIndex].currentCol == 1)
             walls[wallIndex].show = 0;
@@ -128,8 +136,10 @@ void tickActions(){
 
 void makeWall(){
     Wall newWall;
+    int random = getRandom();
+    newWall.length = random % 10 + 1;
     newWall.currentCol = totalCol-1;
-    newWall.startRow = getRandom() % 19 + 1;
+    newWall.startRow = random % (30 - newWall.length) + 1;
     newWall.show = 1;
     int i = 0;
     while (walls[i].show == 1)
@@ -141,8 +151,10 @@ void printWall(int wallIndex){
     int i;
     int row = walls[wallIndex].startRow;
     int col = walls[wallIndex].currentCol;
-    for(i = 0; i < 10; i++){
+    for(i = 0; i < walls[wallIndex].length; i++){
         mvprintw(row, col, "|");
+        if (row == player.playerRow && col == 5)
+            player.alive = 0;
         row++;
     }
 }
@@ -166,9 +178,11 @@ void checkKeyPress(){
     if (kbhit()){
         int key = getch();
         if (key == 'w')
-            player.playerRow--;
+            if (player.playerRow > 1)
+                player.playerRow--;
         if (key == 's')
-            player.playerRow++;
+            if (player.playerRow < 29)
+                player.playerRow++;
     }
 }
 
@@ -189,7 +203,7 @@ int getRandom(void){
     return((unsigned)(next/65536) % 32768);
 }
 
-void seedGame(){
-    gameSeed = time(0);
+void seedGame(unsigned long seed){
+    gameSeed = seed;
     next = gameSeed;
 }
