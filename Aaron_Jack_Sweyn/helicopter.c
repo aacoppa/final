@@ -9,6 +9,11 @@ int startGame(unsigned long seed){
     initscr();
     cbreak();
     curs_set(0);
+    start_color();
+    init_pair(4, COLOR_GREEN, COLOR_BLACK);
+    init_pair(1, COLOR_RED, COLOR_BLACK);
+    init_pair(2, COLOR_BLUE, COLOR_BLACK);
+    init_pair(3, COLOR_CYAN, COLOR_BLACK);
     nodelay(stdscr, TRUE);
     noecho();
     getmaxyx(stdscr,totalRow,totalCol);
@@ -22,6 +27,8 @@ int startGame(unsigned long seed){
     player.playerRow = 15/2;
     player.alive = 1;
     makeWall();
+    printBars();
+    mvprintw(32, 0, "Current Distance:");
     while(player.alive)
         tick();
     clear();
@@ -32,12 +39,13 @@ int startGame(unsigned long seed){
 void tick(){
     if (isTick())
         tickActions();
-    usleep(30);
+    usleep(40);
     checkKeyPress();
-    usleep(30);
+    usleep(40);
     printScreen();
-    usleep(20);
+    usleep(40);
 }
+
 
 int isTick(){
     unsigned long currentTime = getTime();
@@ -49,6 +57,10 @@ int isTick(){
     return ans;
 }
 
+int isDrop(){
+    return getTime() > nextDrop;
+}
+
 unsigned long getTime(void){
     struct timeval  tv;
     gettimeofday(&tv, NULL);
@@ -57,34 +69,43 @@ unsigned long getTime(void){
 }
 
 void printScreen(){
-    clear();
-    printBars();
-    mvprintw(32, 0, "Current Distance: %d", TICKS);
-    int i;
-    int j = 35;
-    for(i = 0; i < 100; i++){
-        if (walls[i].show == 1)
-            printWall(i);
-    }
-    printPlayer();
+    mvprintw(32, 18, "%d", TICKS);
     refresh();
 }
 
 void tickActions(){
     TICKS++;
-    if (TICKS % 100 == 0 && GAME_SPEED > 20)
-        GAME_SPEED -= 1;
-    if (TICKS % 10 == 0){
+    if (TICKS % 100 == 0 && GAME_SPEED > 20){
+        GAME_SPEED -= 2;
+        if (betweenWalls > 10)
+            betweenWalls--;
+    }
+    if (TICKS % betweenWalls == 0){
         makeWall();
     }
-    if (TICKS % 2 == 0){
-        player.playerRow++;
+    if (isDrop()){
+        if (TICKS % 2 == 0){
+            if (player.playerRow < 29){
+                mvprintw(player.playerRow, 5, " ");
+                player.playerRow++;
+                printPlayer();
+            }
+            else
+                player.alive = 0;
+        }
     }
     int wallIndex;
     for (wallIndex = 0; wallIndex < 100; wallIndex++){
         walls[wallIndex].currentCol--;
         if (walls[wallIndex].currentCol == 1)
             walls[wallIndex].show = 0;
+    }
+    int i;
+    for(i = 0; i < 100; i++){
+        if (walls[i].show == 1)
+            printWall(i);
+        else
+            deleteWall(i);
     }
 }
 
@@ -95,6 +116,8 @@ void makeWall(){
     newWall.currentCol = totalCol-1;
     newWall.startRow = random % (30 - newWall.length) + 1;
     newWall.show = 1;
+    int c = rand() % 2;
+    newWall.color = 2 + c;
     int i = 0;
     while (walls[i].show == 1)
         i++;
@@ -105,12 +128,27 @@ void printWall(int wallIndex){
     int i;
     int row = walls[wallIndex].startRow;
     int col = walls[wallIndex].currentCol;
+    attron(COLOR_PAIR(walls[wallIndex].color));
     for(i = 0; i < walls[wallIndex].length; i++){
+        mvprintw(row, col+1, " ");
         mvprintw(row, col, "|");
         if (row == player.playerRow && col == 5)
             player.alive = 0;
         row++;
     }
+    attroff(COLOR_PAIR(walls[wallIndex].color));
+}
+
+void deleteWall(int wallIndex){
+    int i;
+    int row = walls[wallIndex].startRow;
+    int col = walls[wallIndex].currentCol;
+    attron(COLOR_PAIR(walls[wallIndex].color));
+    for(i = 0; i < walls[wallIndex].length; i++){
+        mvprintw(row, col+1, " ");
+        row++;
+    }
+    attroff(COLOR_PAIR(walls[wallIndex].color));
 }
 
 void printPlayer(){
@@ -118,41 +156,43 @@ void printPlayer(){
 }
 
 void printBars(){
-    clear();
+    attron(COLOR_PAIR(1));
     mvprintw(0, 0,"%s", stars);
     mvprintw(30,0, "%s", stars);
-}
-
-int endGame(){
-
-    return 0;
+    attroff(COLOR_PAIR(1));
 }
 
 void checkKeyPress(){
     if (kbhit()){
         int key = getch();
-        if (key == 'w')
-            if (player.playerRow > 1)
+        if (key == 'w'){
+            if (player.playerRow > 1){
+                mvprintw(player.playerRow, 5, " ");
                 player.playerRow--;
-        // if (key == 's')
-        //     if (player.playerRow < 29)
-        //         player.playerRow++;
+                printPlayer();
+                nextDrop = getTime() + 250;
+            }
+            else{
+                player.alive = 0;
+            }
+        }
     }
 }
 
 int kbhit(void){
     int ch = getch();
-    if (ch != ERR) {
+    if (ch != ERR){
         ungetch(ch);
         return 1;
-    } else {
+    } 
+    else{
         return 0;
     }
 }
 
 unsigned long makeSeed(){
     srand(time(0));
-    return random();
+    return rand();
 }
 
 /* RAND_MAX assumed to be 32767 */

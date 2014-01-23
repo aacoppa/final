@@ -13,6 +13,7 @@ typedef struct Wall{
     int startRow;
     int show;
     int length;
+    int color;
 } Wall;
 typedef struct Player{
     int playerRow;
@@ -23,7 +24,6 @@ typedef struct Player{
 void printScreen();
 void printBars();
 void printWall(int wallIndex);
-int endGame();
 int kbhit();
 void seedGame(unsigned long seed);
 void checkKeyPress();
@@ -36,6 +36,7 @@ void printPlayer();
 int isTick();
 int startGame(unsigned long seed);
 unsigned long makeSeed();
+void deleteWall(int wallIndex);
 
 //****Variables***
 int totalRow, totalCol;
@@ -51,3 +52,5 @@ unsigned long gameSeed;
 int GAME_SPEED = 100;
 int TICKS = 1;
 unsigned long lastTick;
+unsigned long nextDrop = 0;
+int betweenWalls = 30;
