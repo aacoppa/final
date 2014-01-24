@@ -14,5 +14,8 @@ int die_roll();
 */
 int battle(int uAtt, int uDef);
 
+// checks if territories are adjacent
+char tadjacent(territory*, territory*);
+
 // given the number of players, distributes territories evenly
 

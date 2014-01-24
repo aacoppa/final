@@ -41,5 +41,3 @@ territory *territories() {
   return ret;
 }
 
-
-

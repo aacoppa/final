@@ -3,11 +3,13 @@
 #include <SDL2/SDL.h>
 #include "ui.h"
 #include "map.h"
+#include "logic.h"
 #include <math.h>
 
 SDL_Window *win;
 SDL_Renderer *ren;
 SDL_Texture *maptex;
+territory *selected = NULL;
 
 struct color {int r, g, b;};
 struct color pColors[] = {{255, 0, 0}, {0, 255, 0}, {0, 0, 255}};
@@ -149,10 +151,21 @@ int main() {
       }
       if (event.type == SDL_MOUSEBUTTONDOWN) {
 	territory *c = terr_click(event.button);
-	if (c)
+	if (c) {
+	  printf("clicked: ");
 	  log_terr(*c);
-	else
-	  printf("mouse down at (%d, %d)\n", event.button.x, event.button.y);
+	  if (selected) {
+	    //process();
+	    printf("%s to %s\n", selected->name, c->name);
+	    printf("countries are %sadjacent\n", tadjacent(selected, c)?"":"not ");
+	    selected = NULL;
+	  } else {
+	    selected = c;
+	  }
+	} else {
+	  printf("clicked (%d, %d)\n", event.button.x, event.button.y);
+	  selected = NULL;
+	}
       }
     }
     SDL_Delay(100);

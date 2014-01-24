@@ -19,6 +19,7 @@
 - roll dice
 - pass data from network to ui
 - assign territories from terrs (in model.h)
+- check if territories are adjacent [DONE]
 
 # Networking
 - Server accept multiple clients
