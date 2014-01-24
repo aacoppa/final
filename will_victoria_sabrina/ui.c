@@ -39,7 +39,6 @@ int init_SDL() {
   maptex = load_texture("maptex.bmp");
   SDL_RenderClear(ren);
   SDL_RenderCopy(ren, maptex, NULL, NULL);
-  //SDL_RenderPresent(ren);
   return 0;
 }
 
@@ -157,8 +156,12 @@ int main() {
 	  if (selected) {
 	    //process();
 	    printf("%s to %s\n", selected->name, c->name);
-	    printf("countries are %sadjacent\n", tadjacent(selected, c)?"":"not ");
-	    selected = NULL;
+	    if (selected == c)
+	      printf("double clicked!\n");
+	    else {
+	      printf("territories are %sadjacent\n", tadjacent(selected, c)?"":"not ");
+	      selected = NULL;
+	    }
 	  } else {
 	    selected = c;
 	  }
