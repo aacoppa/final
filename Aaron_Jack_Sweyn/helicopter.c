@@ -1,6 +1,7 @@
 #include "helicopter.h"
 
 int main(){
+    initiateRand();
     startGame(makeSeed());
 }
 
@@ -190,8 +191,11 @@ int kbhit(void){
     }
 }
 
-unsigned long makeSeed(){
+void initiateRand(){
     srand(time(0));
+}
+
+unsigned long makeSeed(){
     return rand();
 }
 

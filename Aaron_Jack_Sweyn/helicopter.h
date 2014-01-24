@@ -37,6 +37,7 @@ int isTick();
 int startGame(unsigned long seed);
 unsigned long makeSeed();
 void deleteWall(int wallIndex);
+void initiateRand();
 
 //****Variables***
 int totalRow, totalCol;
