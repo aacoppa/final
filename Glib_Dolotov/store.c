@@ -53,23 +53,24 @@ char* addStrs(char* a, char*b){
   int finlen;
   if(strlen(a)>strlen(b)){
     final = (char*)calloc(strlen(a)+2,sizeof(char));
-    finlen=strlen(a)+2;
+    finlen=strlen(a);
   }
   else{
     final = (char*)calloc(strlen(b)+2,sizeof(char));
-    finlen=strlen(b)+2;
+    finlen=strlen(b);
   }
+  //printf("test1\n");
   int a_count = strlen(a);
   int b_count = strlen(b);
-  int i = 1;
+  int i = 0;
   int temp = 0;
   while(a_count>0 || b_count>0){
     if(b_count>0){
-      temp+=digit(b[b_count-i]);
+      temp+=digit(b[b_count-1]);
       b_count--;
     }
     if(a_count>0){
-      temp+=digit(a[a_count-i]);
+      temp+=digit(a[a_count-1]);
       a_count--;
     }
     final[finlen-i]=rune(temp%10);
@@ -135,7 +136,7 @@ char* decToBin(char* val){
     divByTwo(val);
     //printf("%s\n",val);
   }
-  printf("Storing binary:\n%s\n",final);
+  //printf("Storing binary:\n%s\n",final);
   return final;
 }
 
@@ -210,11 +211,20 @@ char* unpackToBinary(unsigned int* store){
 }
 
 
-//char* binToDec(char* bin){
-//  char* final = (char*)calloc((int)(strlen(bin)-1)/log2(10)+1,sizeof(char));
-//  int i;
-// for(i=
-//}
+char* unpackToDecimal(unsigned int* store){
+  char* bin = unpackToBinary(store);
+  char* final = (char*)calloc(2,sizeof(char));
+  final[0]='0';
+  char* twoPow = (char*)calloc(2,sizeof(char));
+  twoPow[0]='1';
+  int i;
+  for(i=0;i<strlen(bin);i++){
+    if(bin[i]='1')
+      final = addStrs(final,twoPow);
+    twoPow = multByTwo(twoPow);
+  }
+  return final;
+}
 
 
 void main(){
@@ -223,14 +233,19 @@ void main(){
   //char* inverse = binToDec(bin);
   //printf("Translated and untranslated:\n%s\n",inverse);
 
-  char* buff1 = (char*) calloc(1000,sizeof(char));
-  fgets(buff1, 1000, stdin);
-  buff1[strlen(buff1)-1]=0;
+  unsigned int* x = stdinStore();
+  char* y = unpackToDecimal(x);
+  printf("%s\n",y);
 
+
+  /*
   char* buff2 = (char*) calloc(1000,sizeof(char));
   fgets(buff2, 1000, stdin);
   buff2[strlen(buff2)-1]=0;
 
   printf("sum:\n%s\n",addStrs(buff1,buff2));
+  */
+
+
 }
 

@@ -5,7 +5,7 @@
 
 int digit(char c); //WORKING
 char rune(int c); //WORKING
-char* addStrs(char* a, char*b);
+char* addStrs(char* a, char*b); //WORKING
 char* divByTwo(char* val); // WORKING
 char* multByTwo(char* val); //WORKING
 int binaryDigits(int digits); //WORKING
@@ -18,4 +18,4 @@ unsigned int* stdinStore(); //WORKING
 //reverse functions for testing & debugging purposes
 char* uintToBinary(unsigned int val); //WORKING
 char* unpackToBinary(unsigned int* store); //WORKING
-//char* binToDec(char* bin);
+char* unpackToDecimal(unsigned int* store);
