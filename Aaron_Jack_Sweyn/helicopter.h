@@ -1,3 +1,8 @@
+/* Helicopter
+ * contains all the game code
+ */
+#ifndef __HELI_AJS
+#define __HELI_AJS 1
 #include <ncurses.h> 
 #include <string.h> 
 #include <unistd.h>
@@ -55,3 +60,4 @@ int TICKS = 1;
 unsigned long lastTick;
 unsigned long nextDrop = 0;
 int betweenWalls = 20;
+#endif

@@ -56,7 +56,7 @@ int main(int argc, char ** argv) {
         printf("%s", help_string);
         exit(0);
     }
-    if(strcmp(argv[1], "register") == 0) {
+    else if(strcmp(argv[1], "register") == 0) {
         if( !argv[2] || !argv[3] ) {
             printf("usage: race register [username] [password]\n");
             exit(0);
@@ -64,7 +64,7 @@ int main(int argc, char ** argv) {
         verify_upass(argv[2], argv[3]);
         exec_action(CREATE_ACCOUNT, argv[2], argv[3]);
     }
-    if(strcmp(argv[1], "login") == 0) {
+    else if(strcmp(argv[1], "login") == 0) {
         //Change the global login data (~/.rxc/udata)
         if( !argv[2] || !argv[3] ) {
             printf("usage: race login [username] [password]\n");

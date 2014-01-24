@@ -145,6 +145,7 @@ int send_request(int type, char * name, char * passwd) {
         cli_creat_acc * cl = malloc( sizeof(cli_creat_acc) );
         strcpy(cl->name, name);
         strcpy(cl->pass, passwd);
+        cl->type = type;
         write( global_sock_id, cl, sizeof(cli_creat_acc) );
         void * buff = malloc(400);
         int r = read(global_sock_id, buff, 400);

@@ -18,7 +18,6 @@ static int callback(void * in, int argc, char **argv, char **azColName) {
         *comm = GAME_EXISTS;  
     } else if( type == GAME_INFO_CALLBACK ) {
         //Fill out the global LOCKED game_info * gi struct
-        free(comm);
         gi.turn = atoi(argv[2]); 
         gi.u1wins = atoi(argv[3]);
         gi.u2wins = atoi(argv[4]);
@@ -46,7 +45,7 @@ static int callback(void * in, int argc, char **argv, char **azColName) {
         (temp_games[i])->turn = atoi(argv[2]);
         (temp_games[i])->u1wins = atoi(argv[3]);
         (temp_games[i])->u2wins = atoi(argv[4]);
-        free(gip_hold->games);
+        //free(gip_hold->games);
         gip_hold->games = temp_games;
         gip_hold->number_of_games++; 
     }
@@ -201,6 +200,7 @@ db_game_data_wr * db_games_in_progress(char * name) {
 
     gip_hold = malloc(sizeof(db_game_data_wr));
     gip_hold->number_of_games = 0;
+    gip_hold->games = malloc(sizeof(db_game_data *));
 
     //Type is sent with information about whose callback routine to call
     int * type = malloc(sizeof(int));
