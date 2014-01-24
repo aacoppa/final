@@ -49,8 +49,8 @@ unsigned long next = 1;
 unsigned long gameSeed;
 
 //***Game Variables***
-int GAME_SPEED = 100;
+int GAME_SPEED = 80;
 int TICKS = 1;
 unsigned long lastTick;
 unsigned long nextDrop = 0;
-int betweenWalls = 30;
+int betweenWalls = 20;

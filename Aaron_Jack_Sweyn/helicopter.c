@@ -112,7 +112,7 @@ void tickActions(){
 void makeWall(){
     Wall newWall;
     int random = getRandom();
-    newWall.length = random % 10 + 1;
+    newWall.length = random % 20 + 1;
     newWall.currentCol = totalCol-1;
     newWall.startRow = random % (30 - newWall.length) + 1;
     newWall.show = 1;
