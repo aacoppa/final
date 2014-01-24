@@ -1,3 +1,5 @@
+#include <stdio.h>
+#include <stdlib.h>
 #include "model.h"
 #include <string.h>
 // check if territories are adjacent
