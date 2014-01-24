@@ -7,7 +7,6 @@
  *
  */
 #include "server_side.h"
-#include "database.h"
 
 int main(int argc, char ** argv) {
     start();
@@ -38,53 +37,55 @@ void listen_for_new_connections() {
     }
 }
 void handle_connection(int fd) {
-    while( 1 ) {
-        void * in = malloc(400);
-        int bytesRead = read(fd, in, 400);
-        printf("%d bytes read\n", bytesRead);
-        int response = handle_request_type((client_out *) in, fd);
-         //free(in);
-        if( response == SUCC_REQ ) {
-            close(fd);
-            exit(0);
-        }
-
+    void * in = malloc(400);
+    int bytesRead = read(fd, in, 400);
+    //Client / server discussion occers in handle_request_type
+    int response = handle_request_type((client_out *) in, fd);
+    //free(in);
+    if( response == SUCC_REQ ) {
+        logger("\n\n");
+        close(fd);
+        exit(0);
     }
 }
+
 int handle_request_type(client_out * in, int fd) {
-    //printf("Type: %d\n", in->type);
+
+    //Figure out what type of data we are getting and act accordingly
+    //Always returns SUCC_REQ... 
+    //Client notification and server handling of invalid requests happen here
     if( in->type == CREATE_ACCOUNT ) {
+        logger("Registering account...\n");
         cli_creat_acc * request = (cli_creat_acc *) in;
-        //int passHash = hashPassword(request->pass);
-        //printf("Creating account...\n");
         if( db_create_user( request->name, request->pass)) {
             serv_response * sr = malloc(sizeof(serv_response));
             sr->type = CREATE_ACCOUNT;
             sr->success = 1;
             int s = write( fd, sr, sizeof(serv_response));
-            //printf("Created account...%d\n", s);
             return SUCC_REQ;
         }
-        //Failure
+        //Username taken...
         serv_response * sr = malloc(sizeof(serv_response));
         sr->type = CREATE_ACCOUNT;
         sr->success = 0;
-        sr->reason = USERNAME_TAKEN;
+        sr->reason = USERNAME_TAKEN; //Checked by client for why failure
         int s = write( fd, sr, sizeof(serv_response));
-        //printf("Account taken... %d\n", s);
         return SUCC_REQ;
 
     } else if( in->type == REQUEST_TO_PLAY ) {
+        printf("Request to play...\n");
         cli_request_game * request = (cli_request_game *) in;    
         serv_response * sr = malloc(sizeof(serv_response));
         sr->type = REQUEST_TO_PLAY;
         if( !db_validate_user(request->name, request->pass) ) {
+            //Confirm proper password username combo
             sr->success = 0;
             sr->reason = INVALID_UPASS;
         } else if( !db_user_exists(request->opponent) ) {
             sr->reason = NOT_VALID_OPPONENT;
             sr->success = 0;
         } else if( !db_game_exists(request->name, request->opponent)) {
+            //No game between the two so skip to UPLOAD_GAME_RESPONSE in client
             sr->success = 0;
             sr->reason = FIRST_TURN;
         } else if( !db_my_turn(request->name, request->opponent) ) {
@@ -95,14 +96,15 @@ int handle_request_type(client_out * in, int fd) {
             sr->key = db_get_key(request->name, request->opponent);
         }
         int w = write( fd, sr, sizeof(serv_response));
-        printf("Wrote %d bytes\n", w);
         return SUCC_REQ; //Closes socket
 
     } else if( in->type == UPLOAD_GAME_FIRST || in->type == UPLOAD_GAME_RESPONSE ) {
+        printf("Hey\n");
+        if( in->type == UPLOAD_GAME_FIRST ) logger("Uploading first game...\n");
+        else logger("Uploading second game\n");
         cli_upload_game * request = (cli_upload_game *) in;
         serv_response * sr = malloc(sizeof(serv_response));
         sr->type = in->type;
-        printf("Name %s + pass %s\n", request->name, request->pass);
         if( !db_validate_user(request->name, request->pass) ) {
             sr->success = 0;
             sr->reason = INVALID_UPASS;
@@ -127,21 +129,15 @@ int handle_request_type(client_out * in, int fd) {
             int i = 0;
             sr->success = 1;
             sr->reason = 0;
-            //printf("validated\n");
             while( i < gd->number_of_games ) {
-                //printf("i: %d \n", i);
-                if( is_my_turn(request->name, (serv_out_games *) gd->games[i]) ) {
-                    //printf("Tololo\n");
+                if( is_my_turn(request->name, gd->games[i]) ) {
                     gd_proper[sr->reason] = gd->games[i];
                     sr->reason++;
                 }
-                //printf("Post my turn\n");
                 i++;
             }
         }
-        //printf("Pre-write\n");
         int w = write( fd, sr, sizeof(serv_response)); 
-        //printf("%d written\n", w);
         if( sr->success ) {
             int i = 0;
             while(i < sr->reason ) {
@@ -157,7 +153,6 @@ int handle_request_type(client_out * in, int fd) {
         serv_response * sr = malloc(sizeof(serv_response));
         sr->type = GAMES_IN_PROG;
         db_game_data_wr * gd = db_games_in_progress(request->name);
-        db_game_data ** gd_proper = calloc(gd->number_of_games, sizeof(db_game_data_wr *));
         if( !db_validate_user(request->name, request->pass) ) {
             sr->success = 0;
             sr->reason = INVALID_UPASS;
@@ -170,22 +165,38 @@ int handle_request_type(client_out * in, int fd) {
         if( sr->success ) {
             int i = 0;
             while(i < sr->reason ) {
-                write(fd, gd_proper[i], sizeof(db_game_data));
+                write(fd, gd->games[i], sizeof(db_game_data));
                 i++;
             }
         }
         return SUCC_REQ; //Closes socket
 
     } else if ( in->type == GAME_STATS ) {
-    
+        cli_creat_acc * request = (cli_creat_acc *) in;
+        serv_response * sr = malloc( sizeof(serv_response));
+        sr->type = GAME_STATS;
+        db_game_data_wr * gd = db_games_in_progress(request->name);
+        if( !db_validate_user(request->name, request->pass) ) {
+            sr->success = 0;
+            sr->reason = INVALID_UPASS;
+        } else {
+            int i = 0;
+            sr->success = 1;
+            sr->reason = gd->number_of_games;
+        }
+        int w = write( fd, sr, sizeof(serv_response));
+        if( sr->success ) {
+            int i = 0;
+            while(i < sr->reason ) {
+                write(fd, gd->games[i], sizeof(db_game_data));
+                i++;
+            }
+        }
+        return SUCC_REQ; //Closes socket
     }
     return SUCC_REQ;
 }
-int hash_password(char * passwd) {
-    int ret;
-    return ret;
-}
-int is_my_turn( char * name, serv_out_games * s ) {
+int is_my_turn( char * name, db_game_data * s ) {
     if( strcmp(name, s->u1) == 0) {
         return (s->turn == U1_TURN);
     } else {
@@ -194,4 +205,5 @@ int is_my_turn( char * name, serv_out_games * s ) {
 }
 void logger(char * str) {
     char * file = "server.log";
+    printf("%s", str);
 }

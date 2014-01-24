@@ -145,7 +145,3 @@ char * compose_new_game_entry(cli_upload_game * gd) {
     strcat(execStr, " );");
     return execStr;
 }
-/*
-int main() {
-    printf("%s\n", composeAddChallenge("aaron", "john", 1, 2, 3));
-}*/

@@ -63,15 +63,55 @@ int readsem; //Semaphore for readers
 struct db_game_data_wr * gip_hold;
 struct db_game_info gi;
 
+/* Username validity
+ * For opponent name checking and username taken checks
+ */
 int db_user_exists(char * name);
+
+/* Returns the turn for two players in a game
+ *
+ */
 int db_my_turn(char *, char *);
+
+/* Confirm proper username and password
+ * Everytime we receive data... Maybe a bit
+ * excessive. And make it a hash one day
+ */
 int db_validate_user(char *, char *);
+
+/* Returns the most recent game key
+ * between two users
+ */
 int db_get_key(char *, char *);
+
+/* Check if a game exists between two players
+ * 
+ */
 int db_game_exists(char *, char *);
+
+/* Create a user
+ * Checking is done inside of here
+ * -Username already taken
+ */
 int db_create_user(char * name, char * password);
+
+/* Makes a new game; called by update game
+ */
 void db_create_game(struct cli_upload_game *);
+
+/* Wrapper that both creates new games and updates old
+ *
+ */
 void db_update_game(struct cli_upload_game *, int);
+
+/* Gets games in progress for a user
+ * db_game_data_wr stores a list of game data
+ */
 struct db_game_data_wr * db_games_in_progress(char * name);
+
+/* Init and close functions for cleanup
+ *
+ */
 void db_init();
 void db_close();
 void close_sems();
@@ -91,6 +131,8 @@ typedef struct db_game_data{
 
     int turn;
     int distance; //The distance stored in db of the most recent game
+    int u1wins;
+    int u2wins;
 } db_game_data;
 
 /* Wrapper struct to hold an list of db_game_data
