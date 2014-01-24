@@ -1,5 +1,5 @@
 server: database.o compose.o
-	gcc -lsqlite3 database.o compose.o server_side.c
+	gcc -lsqlite3 database.o compose.o -o server server_side.c
 	#gcc -O3 server_side.c sqlite3.c -lpthread -ldl compose.o database.o
 database.o:
 	gcc -c database.c
