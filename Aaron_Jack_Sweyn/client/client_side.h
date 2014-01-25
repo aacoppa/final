@@ -23,7 +23,7 @@ int key_to_play;
 int global_sock_id; //connect
 int init_connection();
 int send_request();
-struct cli_game_data ** games_returned;
+struct db_game_data ** games_returned;
 struct request_info * to_be_sent;
 typedef struct db_game_data{
     int type; //Here for easy cast so it can be sent from server to client
@@ -34,6 +34,8 @@ typedef struct db_game_data{
 
     int turn;
     int distance; //The distance stored in db of the most recent game
+    int u1wins;
+    int u2wins;
 } db_game_data;
 
 

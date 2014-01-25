@@ -199,11 +199,9 @@ int exec_action(int type, char * name, char * password) {
         int i = 0;
         while(  games_returned[i] ) {
             if(strcmp(name, games_returned[i]->u1) == 0) { 
-                printf("%s\t%d\t%s\t%d\n", games_returned[i]->u1, games_returned[i]->u1wins, \
-                        games_returned[i]->u2, games_returned[i]->u2wins);
+                printf("%s\t%d\t%s\t%d\n", games_returned[i]->u1, games_returned[i]->u1wins, games_returned[i]->u2, games_returned[i]->u2wins);
             } else {
-                printf("%s\t%d\t%s\t%d\n", games_returned[i]->u2, games_returned[i]->u2wins, \
-                        games_returned[i]->u1, games_returned[i]->u1wins);
+                printf("%s\t%d\t%s\t%d\n", games_returned[i]->u2, games_returned[i]->u2wins, games_returned[i]->u1, games_returned[i]->u1wins);
             }
             i++;
         }

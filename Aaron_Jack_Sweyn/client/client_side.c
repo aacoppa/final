@@ -83,9 +83,9 @@ int send_request(int type, char * name, char * passwd) {
             exit(0);
         }
         //Now wait for response
-        void * buff = malloc( 400 );
+        void * buff = malloc( sizeof(serv_response) );
 
-        int bytes_read = read( global_sock_id, buff, 400);
+        int bytes_read = read( global_sock_id, buff, sizeof(serv_response));
         serv_response * sr = (serv_response *)buff;
         if( sr->type != CHECK_FOR_GAME) {
             return CONNECTION_ERROR;
@@ -95,14 +95,14 @@ int send_request(int type, char * name, char * passwd) {
         }
 
         int i = 0;
-        cli_game_data ** temp_games = calloc(sr->reason + 1, sizeof(cli_game_data *));
+        db_game_data ** temp_games = calloc(sr->reason + 1, sizeof(db_game_data *));
         while(i < sr->reason) {
             void * b = malloc(sizeof(db_game_data));
             read(global_sock_id, b, sizeof(db_game_data));
-            temp_games[i] = malloc(sizeof(cli_game_data));
+            temp_games[i] = malloc(sizeof(db_game_data));
             temp_games[i]->turn = ( (db_game_data *)b)->turn;
 
-            temp_games[i]->dist = ((db_game_data *)b)->turn; 
+            temp_games[i]->distance = ((db_game_data *)b)->turn; 
             strcpy(temp_games[i]->u1, ((db_game_data *)b)->u1); 
             strcpy(temp_games[i]->u1, ((db_game_data *)b)->u2); 
             i++;
@@ -117,8 +117,8 @@ int send_request(int type, char * name, char * passwd) {
         strcpy(cl->name, name);
         strcpy(cl->pass, passwd);
         int w = write( global_sock_id, cl, sizeof(cli_request_game) );
-        void * buff = malloc(400);
-        int r= read(global_sock_id, buff, 400); 
+        void * buff = malloc(sizeof(serv_response));
+        int r= read(global_sock_id, buff, sizeof(serv_response)); 
         serv_response * sr = (serv_response *)buff;
         if( sr->type != GAMES_IN_PROG ) {
             return CONNECTION_ERROR;
@@ -127,16 +127,16 @@ int send_request(int type, char * name, char * passwd) {
             return sr->reason;
         }
         int i = 0;
-        cli_game_data ** temp_games = calloc(sr->reason + 1, sizeof(cli_game_data *));
+        db_game_data ** temp_games = calloc(sr->reason + 1, sizeof(db_game_data *));
         while(i < sr->reason) {
             void * b = malloc(sizeof(db_game_data));
             read(global_sock_id, b, sizeof(db_game_data));
-            temp_games[i] = malloc(sizeof(cli_game_data));
+            temp_games[i] = malloc(sizeof(db_game_data));
             temp_games[i]->turn = ( (db_game_data *)b)->turn;
 
-            temp_games[i]->dist = ((db_game_data *)b)->turn; 
+            temp_games[i]->distance = ((db_game_data *)b)->distance; 
             strcpy(temp_games[i]->u1, ((db_game_data *)b)->u1); 
-            strcpy(temp_games[i]->u1, ((db_game_data *)b)->u2); 
+            strcpy(temp_games[i]->u2, ((db_game_data *)b)->u2); 
             i++;
         }
         games_returned = temp_games;
@@ -147,24 +147,26 @@ int send_request(int type, char * name, char * passwd) {
         strcpy(cl->pass, passwd);
         cl->type = type;
         write( global_sock_id, cl, sizeof(cli_creat_acc) );
-        void * buff = malloc(400);
-        int r = read(global_sock_id, buff, 400);
+        void * buff = malloc(sizeof(serv_response));;
+        int r = read(global_sock_id, buff, sizeof(serv_response));
         serv_response * sr = (serv_response *)buff;
         if( sr->type != GAME_STATS ) return CONNECTION_ERROR;
-        if( sr->success ) {
+        if( !sr->success ) {
             return sr->reason;
         }
         int i = 0;
-        cli_game_data ** temp_games = calloc(sr->reason + 1, sizeof(cli_game_data *));
+        db_game_data ** temp_games = calloc(sr->reason + 1, sizeof(db_game_data *));
         while(i < sr->reason) {
             void * b = malloc(sizeof(db_game_data));
-            read(global_sock_id, b, sizeof(db_game_data));
-            temp_games[i] = malloc(sizeof(cli_game_data));
+            int r = read(global_sock_id, b, sizeof(db_game_data));
+            printf("read %d name %s\n", r, ((db_game_data *)b)->u1);
+            temp_games[i] = malloc(sizeof(db_game_data));
             temp_games[i]->turn = ( (db_game_data *)b)->turn;
-
-            temp_games[i]->dist = ((db_game_data *)b)->turn; 
+            temp_games[i]->distance = ((db_game_data *)b)->distance; 
+            temp_games[i]->u1wins = ((db_game_data *)b)->u1wins; 
+            temp_games[i]->u2wins = ((db_game_data *)b)->u2wins; 
             strcpy(temp_games[i]->u1, ((db_game_data *)b)->u1); 
-            strcpy(temp_games[i]->u1, ((db_game_data *)b)->u2); 
+            strcpy(temp_games[i]->u2, ((db_game_data *)b)->u2); 
             i++;
         }
         games_returned = temp_games;

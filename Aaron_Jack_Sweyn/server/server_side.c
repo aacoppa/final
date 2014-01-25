@@ -188,7 +188,8 @@ int handle_request_type(client_out * in, int fd) {
         if( sr->success ) {
             int i = 0;
             while(i < sr->reason ) {
-                write(fd, gd->games[i], sizeof(db_game_data));
+                int w = write(fd, gd->games[i], sizeof(db_game_data));
+                printf("%s %d %s %d wrote %d\n",gd->games[i]->u1, gd->games[i]->u1wins, gd->games[i]->u2, gd->games[i]->u2wins, w);
                 i++;
             }
         }
