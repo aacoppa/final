@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
 #include "ui.h"
 #include "map.h"
 #include "logic.h"
@@ -9,10 +10,10 @@
 SDL_Window *win;
 SDL_Renderer *ren;
 SDL_Texture *maptex;
+TTF_Font *font = NULL;
 territory *selected = NULL;
 
-struct color {int r, g, b;};
-struct color pColors[] = {{255, 0, 0}, {0, 255, 0}, {0, 0, 255}};
+SDL_Color pColors[] = {{255, 0, 0}, {0, 255, 0}, {0, 0, 255}};
 
 const int TERR_RADIUS = 20;
 
@@ -23,6 +24,10 @@ void log_SDL_error(const char *op) {
 int init_SDL() {
   if (SDL_Init(SDL_INIT_EVERYTHING) == -1) {
     log_SDL_error("SDL init");
+    return 1;
+  }
+  if (TTF_Init() != 0){
+    log_SDL_error("TTF init");
     return 1;
   }
   win = SDL_CreateWindow("Map", 100, 100, SCREEN_WIDTH,
@@ -42,13 +47,6 @@ int init_SDL() {
   return 0;
 }
 
-void cleanup_SDL() {
-  SDL_DestroyTexture(maptex);
-  SDL_DestroyRenderer(ren);
-  SDL_DestroyWindow(win);
-  SDL_Quit();
-}
-
 
 SDL_Texture *circle_texture(int r, int g, int b) {
   SDL_Surface *img = SDL_LoadBMP("circle.bmp");
@@ -63,11 +61,17 @@ SDL_Texture *circle_texture(int r, int g, int b) {
 
 void draw_terr(territory t) {
   SDL_Rect dest_pos = {t.x, t.y, TERR_RADIUS*2, TERR_RADIUS*2};
-  struct color pc = pColors[t.owner-1];
+  SDL_Color pc = pColors[t.owner-1];
   SDL_Texture *circle = circle_texture(pc.r, pc.g, pc.b);
   SDL_RenderCopy(ren, circle, NULL, &dest_pos);
+  // allow up to 3 bytes
+  char *tbuf = malloc(4 * sizeof(char));
+  sprintf(tbuf, "%d", t.units);
+  SDL_Texture *text = text_texture(tbuf);
+  SDL_RenderCopy(ren, text, NULL, &dest_pos);
   // add text here
   SDL_DestroyTexture(circle);
+  SDL_DestroyTexture(text);
 }
 
 territory *terr_click(SDL_MouseButtonEvent m) {
@@ -122,6 +126,35 @@ void update_map() {
   }
 }
 
+TTF_Font *open_font() {
+  //Open the font
+  TTF_Font *font = TTF_OpenFont("source-code-pro.ttf", 12);
+  if (!font){
+    log_SDL_error("font opening");
+    return NULL;
+  }
+  return font;
+}
+
+SDL_Texture *text_texture(char *message) {
+  if (!font)
+    font = open_font();
+  SDL_Color c = {0, 0, 0, 255};
+  SDL_Surface *surf = TTF_RenderText_Blended(font, message, c);
+  if (!surf){
+    TTF_CloseFont(font);
+    log_SDL_error("text_texture()");
+    return NULL;
+  }
+  SDL_Texture *texture = SDL_CreateTextureFromSurface(ren, surf);
+  if (!texture){
+    log_SDL_error("create text texture");
+  }
+  //Clean up the surface
+  SDL_FreeSurface(surf);
+  return texture;
+}
+
 int main() {
   if (init_SDL())
     return 1;
@@ -174,4 +207,12 @@ int main() {
     SDL_Delay(100);
   }
   cleanup_SDL();
+}
+
+void cleanup_SDL() {
+  TTF_CloseFont(font);
+  SDL_DestroyTexture(maptex);
+  SDL_DestroyRenderer(ren);
+  SDL_DestroyWindow(win);
+  SDL_Quit();
 }

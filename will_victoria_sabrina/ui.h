@@ -33,3 +33,9 @@ territory *terr_click(SDL_MouseButtonEvent m);
 
 // walks the move queue and executes all moves to be made
 void update_map();
+
+// opens TTF_Font
+TTF_Font *open_font();
+
+// renders text to a texture
+SDL_Texture *text_texture(char *);
