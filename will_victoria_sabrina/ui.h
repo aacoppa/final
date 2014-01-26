@@ -5,7 +5,7 @@ const int SCREEN_HEIGHT = 631;
 
 int pNum; // player number
 
-RISK_move move_queue[10]; // NULL terminated
+RISK_move *move_queue; // NULL terminated
 
 // logs any SDL error, taking op as the operation that failed
 void log_SDL_error(const char *op);
@@ -39,3 +39,6 @@ TTF_Font *open_font();
 
 // renders text to a texture
 SDL_Texture *text_texture(char *);
+
+// queues a move to be processed next update
+void queue_move(RISK_move m);

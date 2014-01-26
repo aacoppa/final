@@ -6,6 +6,7 @@
 #include "map.h"
 #include "logic.h"
 #include <math.h>
+#include <assert.h>
 
 SDL_Window *win;
 SDL_Renderer *ren;
@@ -41,6 +42,8 @@ int init_SDL() {
     log_SDL_error("SDL renderer creation");
     return 1;
   }
+  // max 10 moves queued
+  move_queue = calloc(sizeof(RISK_move), 10);
   maptex = load_texture("maptex.bmp");
   SDL_RenderClear(ren);
   SDL_RenderCopy(ren, maptex, NULL, NULL);
@@ -104,10 +107,26 @@ SDL_Texture *load_texture(const char *path) {
   return surftotex(img);
 }
 
+void queue_move(RISK_move m) {
+  int i = 0;
+  RISK_move *p = move_queue;
+  while (p->units > 0) {
+    i++;
+    p++;
+  }
+  assert(i < 10);
+}
 
 void update_map() {
   RISK_move *p;
-  for (p=move_queue; p; p++) {
+  char represent = 0;
+  if (move_queue) {
+    SDL_RenderClear(ren);
+    represent = 1;
+  }
+  for (p=move_queue; p->units > 0; p++) {
+    printf("next up: %lu\n", p);
+    printf("updating move from %s\n",p->origin->name);
     if (!p->origin) {
       // a player is resupplying
       p->destination->units += p->units;
@@ -121,14 +140,22 @@ void update_map() {
       p->destination->units += p->units;
       p->origin->units -= p->units;
     }
-    SDL_Texture *circ = circle_texture(255, 0, 0);
-    SDL_RenderCopy(ren, circ, NULL, NULL);
+    *p = (RISK_move){-1, NULL, NULL};
+  }
+  if (represent) {
+    SDL_RenderCopy(ren, maptex, NULL, NULL);
+    int i = 0;
+    while(terrs[i].name) {
+      draw_terr(terrs[i]);
+      i++;
+    }
+    SDL_RenderPresent(ren);
   }
 }
 
 TTF_Font *open_font() {
   //Open the font
-  TTF_Font *font = TTF_OpenFont("source-code-pro.ttf", 12);
+  TTF_Font *font = TTF_OpenFont("source-code-pro.ttf", 45);
   if (!font){
     log_SDL_error("font opening");
     return NULL;
@@ -171,9 +198,6 @@ int main() {
   }
   printf("done drawing terrs\n");
   terrs[1].owner = 2;
-  draw_terr(terrs[1]);
-  RISK_move moo = (RISK_move){3, terrs+1, terrs+2};
-  move_queue[0] = moo;
   SDL_RenderPresent(ren);
   while (!done) {
     while(SDL_PollEvent(&event)) {
@@ -204,6 +228,7 @@ int main() {
 	}
       }
     }
+    update_map();
     SDL_Delay(100);
   }
   cleanup_SDL();
