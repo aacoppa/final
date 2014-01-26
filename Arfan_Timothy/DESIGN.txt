@@ -4,30 +4,14 @@ Arfan Rehab and Timothy Ong
 ===========================
 
 
-BlackJack
+5 card draw poker
 =========
+In this version of 5 card draw poker, there are 4 players. All players can be computers that play against one another. To enable this change "#define ONLYCPU 0" to be "#define ONLYCPU 1" in the player.h file. The game works by initializing all structures, building the deck, players, game, shuffling the deck, and then dealing out cards to players.
 
-There will be one computer acting as the "house" by being the server.
-Clients will connect to the server and the server will decide when to start the game.
-Then you play the game and players can join a game in progress but will not fully connect until a turn is done.
-Player will play in the terminal with a text-based interface.
-
+Once cards are dealt initially they can be seen by the human player. After cards are dealt and displayed on the screen each user HAS to put 5 chips (out of their initial 100) into the pot. If a user cannot put in 5 chips they automatically lose and their remaining chips will go into the pot.
 
 Class Topics Used
 =================
-
-Semaphores:
-	Because of the nature of blackjack, it will not matter what order players make their moves.
-	Thus semaphores will be able to just keep track of when a turn is over.
-
-Networking:
-	Connect players and the house.
-
-Processes:
-	Forking for each turn.
-
-Structs:
-	An array of structs to be the deck(s).
 
 
 Timeline
