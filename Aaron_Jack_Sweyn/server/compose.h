@@ -23,7 +23,7 @@ char * compose_get_game_info(char *, char *);
 /* Updates the number of wins for each user
  *
  */
-char * compose_update_wins(char *, char *, int, int);
+char * compose_update_wins(char *, char *, int, int, int);
 
 /* Replaces old game entry with newer data:\
  * turn, dist, key

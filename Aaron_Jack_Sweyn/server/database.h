@@ -16,6 +16,7 @@
 #include <unistd.h>
 #include "server_protocols.h"
 #include "compose.h"
+
 #define CREAT_FAILED 0
 #define CREAT_SUCC 1
 
@@ -40,6 +41,7 @@
  */
 #define U1_TURN 0
 #define U2_TURN 1
+#define NO_WINNER 2 //For when its not U1 or U2
 
 #define VALID 1647 //For true/false returns from
                    //callback function
@@ -133,6 +135,7 @@ typedef struct db_game_data{
     int distance; //The distance stored in db of the most recent game
     int u1wins;
     int u2wins;
+    int last;
 } db_game_data;
 
 /* Wrapper struct to hold an list of db_game_data
@@ -157,5 +160,6 @@ typedef struct db_game_info {
     int key;
     int dist;
     int turn;
+    int last;
 } db_game_info;
 #endif

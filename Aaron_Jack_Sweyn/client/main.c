@@ -103,7 +103,6 @@ int main(int argc, char ** argv) {
 }
 
 void init() {
-    to_be_sent = malloc(sizeof(request_info));
     games_returned = calloc(sizeof(cli_game_data *), 1);
     srand(time(NULL));
     to_be_sent = malloc( sizeof(request_info) );
@@ -145,20 +144,23 @@ int exec_action(int type, char * name, char * password) {
             printf("No games in progress\n");
         } else {
             printf("Games in progress for %s\n", name);
-            printf("USER\tTURN\n");
+            printf("USER\tTURN\tYOUR WINS\tTHEIR WINS\nLAST RACE\n");
             int i = 0;
             while(  games_returned[i] ) {
                 if(strcmp(name, games_returned[i]->u1) == 0) {
 
                     printf("%s\t", games_returned[i]->u2);
                     if(games_returned[i]-> turn == U1_TURN) {
-                        printf("My Turn\n");
-                    } else printf("Their Turn\n");
+                        printf("My Turn\t");
+                    } else printf("Their Turn\t");
+                    printf("%d\t%d\n", games_returned[i]->u1wins, games_returned[i]->u2wins);
+                    
                 } else {
                     printf("%s\t", games_returned[i]->u1);
                     if(games_returned[i]-> turn == U2_TURN) {
-                        printf("My Turn\n");
-                    } else printf("Their Turn\n");
+                        printf("My Turn");
+                    } else printf("Their Turn");
+                    printf("%d\t%d\n", games_returned[i]->u2wins, games_returned[i]->u1wins);
                 }
                 i++;
             }
@@ -186,22 +188,31 @@ int exec_action(int type, char * name, char * password) {
         first_game:
             to_be_sent->key = generate_key();
             to_be_sent->dist = game_start(to_be_sent->key);
+            printf("Key and dist set\n");
             return exec_action(UPLOAD_GAME_RESPONSE, name, password);
     }
     if(type == UPLOAD_GAME_RESPONSE) {
+        
         return 0;
     }
     
     if(type == GAME_STATS) {
         if( !games_returned[0] ) {
             printf("No games in progress\n");
-        } else printf("You\tWins\tThem\tWins\n");
+        } else printf("You\tWins\tThem\tWins\tLast Winner\tTurn\n");
         int i = 0;
         while(  games_returned[i] ) {
+            char * last_str = malloc(40);
             if(strcmp(name, games_returned[i]->u1) == 0) { 
-                printf("%s\t%d\t%s\t%d\n", games_returned[i]->u1, games_returned[i]->u1wins, games_returned[i]->u2, games_returned[i]->u2wins);
+                if(games_returned[i]->last == NO_WINNER) strcpy(last_str, "Waiting");
+                else if(games_returned[i]->last == U1_TURN) strcpy(last_str, "You Won");
+                else strcpy(last_str, "They won");
+                printf("%s\t%d\t%s\t%d\t%s", games_returned[i]->u1, games_returned[i]->u1wins, games_returned[i]->u2, games_returned[i]->u2wins, last_str);
             } else {
-                printf("%s\t%d\t%s\t%d\n", games_returned[i]->u2, games_returned[i]->u2wins, games_returned[i]->u1, games_returned[i]->u1wins);
+                if(games_returned[i]->last == NO_WINNER) strcpy(last_str, "Waiting");
+                else if(games_returned[i]->last == U1_TURN) strcpy(last_str, "They Won");
+                else strcpy(last_str, "You won");
+                printf("%s\t%d\t%s\t%d\t%s", games_returned[i]->u2, games_returned[i]->u2wins, games_returned[i]->u1, games_returned[i]->u1wins, last_str);
             }
             i++;
         }
@@ -300,3 +311,4 @@ void verify_upass(char * name, char * pass) {
         exit(0);
     }
 }
+

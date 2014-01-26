@@ -16,6 +16,7 @@ static int callback(void * in, int argc, char **argv, char **azColName) {
         *comm = USER_EXISTS; 
     } else if( type == GAME_EXISTS_CALLBACK ) {
         *comm = GAME_EXISTS;  
+        printf("Game exists\n");
     } else if( type == GAME_INFO_CALLBACK ) {
         //Fill out the global LOCKED game_info * gi struct
         gi.turn = atoi(argv[2]); 
@@ -24,6 +25,7 @@ static int callback(void * in, int argc, char **argv, char **azColName) {
         gi.dist = atoi(argv[6]);
     } else if( type == GET_TURN_CALLBACK ) {
         *comm = atoi(argv[2]);
+        printf("Turn %s\n", argv[2]);
     } else if( type == GET_KEY_CALLBACK ) {
         *comm = atoi(argv[5]);
     } else if( type == VALIDATE_USER_CALLBACK ) {
@@ -45,6 +47,7 @@ static int callback(void * in, int argc, char **argv, char **azColName) {
         (temp_games[i])->turn = atoi(argv[2]);
         (temp_games[i])->u1wins = atoi(argv[3]);
         (temp_games[i])->u2wins = atoi(argv[4]);
+        (temp_games[i])->last = atoi(argv[7]);
         //free(gip_hold->games);
         gip_hold->games = temp_games;
         gip_hold->number_of_games++; 
@@ -245,11 +248,12 @@ int db_get_key( char * name, char * opponent ) {
 }
 int db_my_turn( char * name, char * opponent ) {
     int my_turn;
-    if( strcmp(name, opponent) > 0 ) {
+    if( strcmp(name, opponent) < 0 ) {
         my_turn = U1_TURN;
     } else {
         my_turn = U2_TURN;
     }   
+    printf("My turn is: %d\n", my_turn);
     struct sembuf sbT;
     sbT.sem_num = 0;
     sbT.sem_flg = SEM_UNDO;
@@ -275,7 +279,7 @@ int db_my_turn( char * name, char * opponent ) {
     sbR.sem_op = -1;
     semop(readsem, &sbR, 1);
 
-    return ( *(int *) type == my_turn);
+    return (*type == my_turn);
 
 }
 void db_update_game( struct cli_upload_game * gd, int update_turn) {
@@ -305,28 +309,33 @@ void db_update_game( struct cli_upload_game * gd, int update_turn) {
         *type = GAME_INFO_CALLBACK; 
         db_execute(compose_get_game_info(u1, u2), (void **) &type);
 
+        int last_winner = NO_WINNER;
         if( !update_turn ) {
             //gi is the last player
             if( gi.turn == U2_TURN ){
                 if( gi.dist > gd->dist ){
-                    gi.u2wins++;
-                } else if (gd->dist > gi.dist) {
+                    last_winner = U1_TURN;
                     gi.u1wins++;
+                } else if (gd->dist > gi.dist) {
+                    last_winner = U2_TURN;
+                    gi.u2wins++;
                 }
             } else {
                 if( gi.dist > gd->dist ){
-                    gi.u1wins++;
-                } else if(gd->dist > gi.dist) {
+                    last_winner = U2_TURN;
                     gi.u2wins++;
+                } else if(gd->dist > gi.dist) {
+                    last_winner = U1_TURN;
+                    gi.u1wins++;
                 }
             }
         }
         else {
-            gi.turn = !gi.turn; 
+            gi.turn = !gi.turn;
         }
         void * t = malloc(sizeof(int));
         *(int *) t = NO_CALLBACK;
-        db_execute(compose_update_wins(u1, u2, gi.u1wins, gi.u2wins), &t);
+        db_execute(compose_update_wins(u1, u2, gi.u1wins, gi.u2wins, last_winner), &t);
         *(int *) t = NO_CALLBACK;
         db_execute(compose_add_challenge(u1, u2, gd->dist, gi.turn, gd->key), &t);
 
@@ -343,7 +352,7 @@ int db_game_exists(char * a, char * b) {
     int * type = malloc(sizeof(int));
     *type = GAME_EXISTS_CALLBACK; 
     db_execute(compose_game_exists(a, b), (void **) &type);
-    return ( *(int *) type == GAME_EXISTS);
+    return ( *type == GAME_EXISTS);
 }
 
 void db_create_game( cli_upload_game * gd ) {

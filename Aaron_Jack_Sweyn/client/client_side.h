@@ -14,9 +14,9 @@
 #define QUERY_SUCC 0
 #define QUERY_FAILED 1
 
-#define U1_TURN 1
-#define U2_TURN 2
-
+#define U1_TURN 0
+#define U2_TURN 1
+#define NO_WINNER 2
 #define IP "127.0.0.1"
 
 int key_to_play;
@@ -36,6 +36,7 @@ typedef struct db_game_data{
     int distance; //The distance stored in db of the most recent game
     int u1wins;
     int u2wins;
+    int last;
 } db_game_data;
 
 
@@ -47,6 +48,7 @@ typedef struct cli_game_data {
     int dist;
     int u1wins;
     int u2wins;
+    int last;
 } cli_game_data;
 
 typedef struct request_info {

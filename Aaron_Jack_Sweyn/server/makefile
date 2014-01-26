@@ -6,9 +6,10 @@ database.o:
 compose.o: compose.c compose.h
 	gcc -c compose.c
 clean:
-	rm *.o
-	rm *.db
-	rm a.out
+	-rm *.o
+	-rm *.db
+	-rm a.out
+	-rm server
 
 
 database: compose.o

@@ -87,6 +87,7 @@ int handle_request_type(client_out * in, int fd) {
         } else if( !db_game_exists(request->name, request->opponent)) {
             //No game between the two so skip to UPLOAD_GAME_RESPONSE in client
             sr->success = 0;
+            printf("Ummm...\n");
             sr->reason = FIRST_TURN;
         } else if( !db_my_turn(request->name, request->opponent) ) {
             sr->success = 0;
