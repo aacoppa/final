@@ -89,3 +89,39 @@ User interface:
       | 
       |Reponses:
       |1 Old people smell  2. puppies! 3. Poor Life choices
+
+
+Technical Design 
+
+     Topics incorporated in project:
+     
+      Networking
+	 - We will use a TCP server for its greater reliability 
+      	 - We will incorporate a forking server that will server as connections
+      	   to each of our players.
+
+      String Manipulation
+         - Since the game heavily relies on words and phrases transferring
+	   between server and client, there is a variety of string stuff.
+
+      Accessing/manipulation of Files
+         - The cards for the game are included as text files that we use as 
+	   a resourcce to derive the cards everytime the server starts. 
+         - open/close a file & reading files are done in the server
+
+	 *Note: These are only the main topics. There are of course many 
+	 	general things that covered that were used but these stood out
+		as the most noticable.
+
+     Responsibility(WHO DOES WHAT?)
+     	 - We did not establish any general guidelines as to whom would do 
+	   what more.
+
+
+Timeline(Estimated)
+	
+ Design Doc --- Working Server/Client  --- Finish planning out --- Finished server --- Testing --- Finished
+     |	       	      |		         interface ideas +   	       & Client	 	  |		|
+     12th           20th		  final implementation	          |	    28th & 29th       30th Morning
+						|			 26th
+						21st
