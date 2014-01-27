@@ -6,21 +6,26 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
-
+char *white[600];
+char *black[200];
 
 void subserver( int socket_client ) {
 
     char buffer[256];
-    int b, i;
+    char s[256];
+    int b, i, c;
     b = 0;
 
     //do client stuff continuously
     while (1) {
-
+      //give cards to client
+      b = read(socket_client,buffer,sizeof(buffer));
+      if(strncmp(buffer,"0",sizeof(buffer)) == 0)
+	for(c = 0;c < 5;c++)
+	  strcat(s,white[rand()%537]);
       //read from the client
       b = read( socket_client, buffer, sizeof(buffer) );
-      printf("Received: %s\n", buffer);
-      
+      printf("Received: %s\n", buffer); 
       if ( strncmp(buffer, "exit", sizeof(buffer)) == 0 )
 	break;
 
@@ -41,8 +46,6 @@ int main() {
   char *s;
   char cardsw[12000];
   char cardsb[10000];
-  char *white[600];
-  char *black[200];
   char** temp;
   int bytesRead = 0;
   int counter = 0;

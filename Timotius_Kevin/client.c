@@ -13,47 +13,51 @@ int main(int argc, char **argv) {
   int socket_id;
   char buffer[256];
   int i, b;
+  char* hand[5];
+  int num = 0;
+  int holder;
+
   
   struct sockaddr_in sock;
-
+  
   //make the server socket for reliable IPv4 traffic 
   socket_id = socket( AF_INET, SOCK_STREAM, 0);
-
+  
   printf("Soket file descriptor: %d\n", socket_id);
 
   //set up the server socket struct
   //Use IPv4 
   sock.sin_family = AF_INET;
-
+  
   //Client will connect to address in argv[1], need to translate that IP address to binary
   inet_aton( argv[1], &(sock.sin_addr) );
-    
+  
   //set the port to listen on, htons converts the port number to network format
   sock.sin_port = htons(24601);
   
   //connect to the server
   int c = connect(socket_id, (struct sockaddr *)&sock, sizeof(sock));
   printf("Connect returned: %d\n", c);
-
-    //do client stuff continuously
-    while (1) {
-
-      
-      printf("Enter message: ");
-      fgets(buffer, sizeof(buffer), stdin);
-      *(strchr(buffer, '\n')) = 0;
-
-      b = write( socket_id, buffer, strlen(buffer) + 1 );
-
-      if ( strncmp(buffer, "exit", sizeof(buffer)) == 0)
+  
+  //do client stuff continuously
+  while (1) {
+    //get white cards
+    while(num < 5){
+      buffer = (char*) num;
+      b = write(socket_id,buffer,strlen(buffer) + 1);
+      b = read(socket_id,buffer,strlen(buffer));
+      printf("\tReceived: %s\n",buffer);
+      for(holder = 0;hand[holder] == NULL;holder++){
+	hand[holder] = buffer;
 	break;
-
-      b = read( socket_id, buffer, strlen(buffer));
-      
-      printf("\tReceived: %s\n", buffer);
+      }
+      num++;
     }
-
-    close(socket_id);
-
-    return 0;
+    if ( strncmp(buffer, "exit", sizeof(buffer)) == 0)
+      break;
+  }
+  
+  close(socket_id);
+  
+  return 0;
 }
