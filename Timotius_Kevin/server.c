@@ -13,16 +13,21 @@ void subserver( int socket_client ) {
 
     char buffer[256];
     char s[256];
+    char n[1];
     int b, i, c;
     b = 0;
-
+    memset(buffer,0,strlen(buffer));
     //do client stuff continuously
     while (1) {
       //give cards to client
-      b = read(socket_client,buffer,sizeof(buffer));
-      if(strncmp(buffer,"0",sizeof(buffer)) == 0)
-	for(c = 0;c < 5;c++)
-	  strcat(s,white[rand()%537]);
+      b = read(socket_client,n,sizeof(buffer));
+      if(strcmp(n,"0") == 0)
+	for(c = 0;c < 5;c++){
+	  strcat(buffer,white[rand()%537]);
+	  strcat(buffer,",");
+	}
+      printf("%s\n",buffer);
+      write(socket_client,buffer,strlen(buffer));
       //read from the client
       b = read( socket_client, buffer, sizeof(buffer) );
       printf("Received: %s\n", buffer); 
@@ -112,7 +117,7 @@ int main() {
   //acept connections continuously
   while(1) {
 
-    printf("Accpeting a connection\n");
+    printf("Accepting a connection\n");
 
     //set socket_length after the connection is made
     socket_length = sizeof(server); 

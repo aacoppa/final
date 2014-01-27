@@ -12,6 +12,7 @@ int main(int argc, char **argv) {
 
   int socket_id;
   char buffer[256];
+  char n[1];
   int i, b;
   char* hand[5];
   int num = 0;
@@ -42,17 +43,18 @@ int main(int argc, char **argv) {
   //do client stuff continuously
   while (1) {
     //get white cards
-    while(num < 5){
-      buffer = (char*) num;
-      b = write(socket_id,buffer,strlen(buffer) + 1);
-      b = read(socket_id,buffer,strlen(buffer));
-      printf("\tReceived: %s\n",buffer);
-      for(holder = 0;hand[holder] == NULL;holder++){
-	hand[holder] = buffer;
-	break;
-      }
-      num++;
+    num = 0;
+    sprintf(n,"%d",num);
+    b = write(socket_id,n,strlen(n) + 1);
+    b = read(socket_id,buffer,strlen(buffer));
+    printf("\tReceived: %s\n",buffer);
+    for(holder = 0;hand[holder] == NULL;holder++){
+      hand[holder] = buffer;
+      break;
     }
+    printf("Enter message: ");
+    fgets(buffer, sizeof(buffer), stdin);
+    *(strchr(buffer, '\n')) = 0;
     if ( strncmp(buffer, "exit", sizeof(buffer)) == 0)
       break;
   }

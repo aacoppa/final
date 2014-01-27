@@ -1,0 +1,6 @@
+- have to fill hand of client with cards
+       - create a counter of some sort that will keep track of how many cards is in the hand and what space isn't filled
+- have to create a space where the black card will be sent
+       - make sure that it will separate the reading of black cards and white cards
+- allow input as to which white card in response to the black card
+       - if "exit" was inputted, let that client exit the game
