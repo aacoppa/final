@@ -18,16 +18,44 @@ void subserver( int socket_client ) {
     b = 0;
     memset(buffer,0,strlen(buffer));
     //do client stuff continuously
-    while (1) {
+    while (1){
       //give cards to client
       b = read(socket_client,n,sizeof(buffer));
-      if(strcmp(n,"0") == 0)
-	for(c = 0;c < 5;c++){
+      if(strcmp(n,"0") == 0){
+	for(c = 5;c > 0;c--){
 	  strcat(buffer,white[rand()%537]);
 	  strcat(buffer,",");
 	}
-      printf("%s\n",buffer);
-      write(socket_client,buffer,strlen(buffer));
+	b = write(socket_client,buffer,strlen(buffer));
+      }
+      if(strcmp(n,"1") == 0){
+	for(c = 5;c > 1;c--){
+	  strcat(buffer,white[rand()%537]);
+	  strcat(buffer,",");
+	}
+	b = write(socket_client,buffer,strlen(buffer));
+      }
+      if(strcmp(n,"2") == 0){
+	for(c = 5;c > 2;c--){
+	  strcat(buffer,white[rand()%537]);
+	  strcat(buffer,",");
+	}
+	b = write(socket_client,buffer,strlen(buffer));
+      }
+      if(strcmp(n,"3") == 0){
+	for(c = 5;c > 3;c--){
+	  strcat(buffer,white[rand()%537]);
+	  strcat(buffer,",");
+	}
+	b = write(socket_client,buffer,strlen(buffer));
+      }
+      if(strcmp(n,"4") == 0){
+	for(c = 5;c > 4;c--){
+	  strcat(buffer,white[rand()%537]);
+	  strcat(buffer,",");
+	}
+	b = write(socket_client,buffer,strlen(buffer));
+      }
       //read from the client
       b = read( socket_client, buffer, sizeof(buffer) );
       printf("Received: %s\n", buffer); 
@@ -96,7 +124,7 @@ int main() {
   //make the server socket for reliable IPv4 traffic 
   socket_id = socket( AF_INET, SOCK_STREAM, 0);
 
-  printf("Soket file descriptor: %d\n", socket_id);
+  printf("Socket file descriptor: %d\n", socket_id);
 
   //set up the server socket struct
   //Use IPv4 
