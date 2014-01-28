@@ -138,3 +138,119 @@ void betting_round(Game * game, Player * players, int player_size){
     free(result);
 }
 
+/* determines winner */
+void determine_winner(Game * game, Player * players, int p_size){
+    int max, i, counter, rem;
+    max = counter = rem = 0;
+    char * result = malloc(sizeof(char));
+    char * split = malloc(sizeof(int)*4);
+    
+    /* display hands on last round */
+    show_hands(players, game->player_count, TRUE);
+    
+    for (i = 0; i < 4; ++i) split[i] = -1;
+    
+    /* get best hand value for all players who are active and who have not folded */
+    for (i = 0; i < p_size; ++i){
+        if (players[i].isActive && !players[i].hasFolded){
+            if (max < players[i].hand->value){
+                max = players[i].hand->value;
+            }
+        }
+    }
+    
+    /* split the pot if more than one winner */
+    for (i = 0; i < p_size; ++i)
+        if (players[i].isActive && !players[i].hasFolded)
+            if (max == players[i].hand->value)
+                split[i] = max;
+    
+    for (i = 0; i < p_size; ++i)
+        if (split[i] > -1)
+            counter++;
+    
+    /* split pot, more than one winner */
+    if (counter > 1){
+        printf("Tie game, split the pot\n");
+        for (i = 0; i < p_size; ++i)
+            if (split[i] != -1)
+                printf("%s wins round.\n", players[i].name);
+        
+        if (game->pot % counter != 0){ /* if pot is uneven i.e. pot is 32 with a 3 way tie */
+            rem = game->pot % counter;
+            game->pot -= rem;
+            for (i = 0; i < p_size; ++i){
+                if (split[i] != -1)
+                    players[i].amount += game->pot / counter;
+            }
+            game->pot = rem;
+        } else {
+            for (i = 0; i < p_size; ++i)
+                if (split[i] != -1)
+                    players[i].amount += game->pot / counter;
+            
+        }
+        game->pot = 0;
+    }
+    else { /* not a split pot */
+        for (i = 0; i < p_size; ++i){
+            if (players[i].isActive && !players[i].hasFolded){
+                if (players[i].hand->value == max){
+                    printf("%s wins round.\n", players[i].name);
+                    players[i].amount += game->pot;
+                }
+            }
+        }
+        game->pot = 0;
+    }
+    
+    /* Rankings */
+    for (i = 0; i < p_size; ++i){
+        if (players[i].isActive){
+            printf("%s - Score: %d, Chips: %d",
+                   players[i].name,
+                   players[i].hand->value,
+                   players[i].amount);
+        }
+        if (players[i].isActive && players[i].hasFolded)
+            printf(" (Folded)");
+        printf("\n");
+    }
+    
+    for (i = 0; i < p_size; ++i){
+        if (players[i].isActive){
+            players[i].hasFolded = 0;
+        }
+    }
+    
+    printf("Type any key and enter to start next round: ");
+    scanf("%s", result);
+    if (!strncmp(result, "", strlen(""))) /* dummy */
+        clear_screen(); /* this is a hack to clear the screen, it just moves text up to the top of the screen */
+    
+    printf("\n");
+    
+    free(result);
+    free(split);
+}
+
+/* while a winner has not been found, continue playing, otherwise print a winnner and prompt for replay */
+int game_winner(Game * game, int psize){
+    int i;
+    char * result = malloc(sizeof(char));
+    for (i = 0; i < psize; ++i){
+        if (game->players[i].amount == TOTAL_CASH){
+            printf("%s is the winner. \n", game->players[i].name);
+            printf("Would you like to play again? 'y' or 'n'\n");
+            scanf("%s", result);
+            if (!strncmp(result, "y", strlen("y"))){
+                clear_screen();
+                reset_game(game);
+                return 0;
+            }
+            return 1;
+        }
+    }
+    init_deck(game->deck); /* reset deck */
+    return 0;
+}
