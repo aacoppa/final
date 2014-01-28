@@ -52,3 +52,53 @@ void drawImage(SDL_Surface *image, int x, int y)
 	SDL_BlitSurface(image, NULL, screen, &dest);
 }
 
+void loadSprite(int index, char *name)
+{
+  /* Load the image into the next slot in the sprite bank */
+  
+  if (index >= MAX_SPRITES || index < 0)
+    {
+      printf("Invalid index for sprite! Index: %d Maximum: %d\n", index, MAX_SPRITES);
+      
+      exit(1);
+    }
+  
+  sprite[index].image = loadImage(name);
+  
+  if (sprite[index].image == NULL)
+    {
+      exit(1);
+    }
+}
+
+SDL_Surface *getSprite(int index)
+{
+        if (index >= MAX_SPRITES || index < 0)
+        {
+                printf("Invalid index for sprite! Index: %d Maximum: %d\n", index, MAX_SPRITES);
+                
+                exit(1);
+        }
+        
+        return sprite[index].image;
+}
+
+void freeSprites()
+{
+  int i;
+  
+  /* Loop through the sprite bank and clear the images */
+  
+  for (i=0;i<MAX_SPRITES;i++)
+    {
+      if (sprite[i].image != NULL)
+	{
+	  SDL_FreeSurface(sprite[i].image);
+	}
+    }
+}
+
+void loadAllSprites()
+{
+        loadSprite(PLAYER_SPRITE, "gfx/smiley.png");
+}

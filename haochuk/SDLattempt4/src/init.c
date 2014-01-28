@@ -1,5 +1,7 @@
 #include "init.h"
 
+extern void freeSprites(void);
+
 void init(char *title)
 {
 	/* Initialise SDL Video and Audio */
@@ -25,10 +27,6 @@ void init(char *title)
 	/* Set the screen title */
 	
 	SDL_WM_SetCaption(title, NULL);
-	
-	/* Hide the mouse cursor */
-	
-	SDL_ShowCursor(SDL_DISABLE);
 }
 
 void cleanup()
@@ -40,13 +38,17 @@ void cleanup()
 		SDL_FreeSurface(brickImage);
 	}
 	
-	/* Free the brick image */
+	/* Free the background image */
 	
 	if (backgroundImage != NULL)
 	{
 		SDL_FreeSurface(backgroundImage);
 	}
 	
+	/* Free the sprites */
+
+	freeSprites();
+
 	/* Shut down SDL */
 	
 	SDL_Quit();

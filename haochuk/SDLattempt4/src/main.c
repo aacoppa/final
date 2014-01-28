@@ -8,6 +8,11 @@
 extern void init(char *);
 extern void cleanup(void);
 extern void getInput(void);
+extern void initPlayer(void);
+extern void doPlayer(void);
+extern void doEntities(void);
+extern void loadAllSprites(void);
+/*extern void freeSprites(void); */
 extern void loadMap(char *);
 extern SDL_Surface *loadImage(char *);
 extern void draw(void);
@@ -49,15 +54,32 @@ int main(int argc, char *argv[])
 	  {  
 	    exit(1);  
 	  }  
-	
+	/* Load all other sprites */
+
+	loadAllSprites();
+
+	/* Initialize the player */
+
+	initPlayer();
+
+	/* Build the mansion */
+
 	loadMap("data/maps/map01.dat");
 	
 	/* Loop indefinitely for messages */
 	
 	while (go == 1)
 	{
+	  /* Get the input */
+
 		getInput();
+
+		/* Update player's position */
+
+		doPlayer();
 		
+		/* Draw everything */
+
 		draw();
 		
 		/* Sleep briefly to stop sucking up all the CPU time */

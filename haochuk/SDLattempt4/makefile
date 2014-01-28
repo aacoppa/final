@@ -1,6 +1,6 @@
 CFLAGS = -Wall -pedantic -Werror
 LFLAGS = `sdl-config --libs` -lSDL -lSDL_image -lSDL_mixer
-OBJS   = draw.o init.o input.o graphics.o main.o map.o
+OBJS   = draw.o init.o input.o graphics.o main.o map.o player.o
 PROG = 'The Haunted Mansion'
 CXX = gcc
 

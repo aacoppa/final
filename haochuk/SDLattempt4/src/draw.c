@@ -1,12 +1,18 @@
 #include "draw.h"
 
 extern void drawMap(void);
+extern void drawPlayer(void);
+extern void drawEntities(void);
 
 void draw()
 {
 	/* Draw the map */
 	
 	drawMap();
+
+	/* Draw the player */
+
+	drawPlayer();
 
 	/* Swap the buffers */
 
