@@ -1,11 +1,12 @@
 #include "server.h"
 
+int rooms[NUM_ROOMS][NUM_PLAYERS_PER_ROOM];
+
 int main() {
   int socket_id, socket_client;
   char buffer[256];
   int i, b;
 
-  int rooms[NUM_ROOMS][NUM_PLAYERS_PER_ROOM];
   int roomNum;
   
   struct sockaddr_in server;
@@ -85,15 +86,12 @@ void subserver( int socket_client ) {
 	return;
       if ( strncmp(buffer, EXIT_CLIENT, sizeof(buffer)) == 0 ){
 	//Client exited. Exit subserver
-        free(socket_client);
-	exit(EXIT_XUCCESS);
+        close(socket_client);
+	exit(EXIT_SUCCESS);
       }
       
       write( socket_client, buffer, strlen(buffer));
     }
-    
-    //close this client connection
-    close(socket_client);
 }
 
 
@@ -125,15 +123,17 @@ int findEmptyRoom(){
   return -1;
 }
 int leaveRoom(int socket_client,int roomNum){
-  int room[NUM_PLAYERS_PER_ROOM] = rooms[roomNUM];
+  int room[NUM_PLAYERS_PER_ROOM];
   int i;
+  for(i = 0;i < NUM_PLAYERS_PER_ROOM;i++)
+    room[i] = rooms[roomNum][i];
   for(i = 0;i < NUM_PLAYERS_PER_ROOM;i++){
     if(room[i] == socket_client){
       //Shift other client_ids over
       int j;
       for(j = i + 1; j < NUM_PLAYERS_PER_ROOM;j++)
 	room[j-1] = room[j];
-      room[NUM_PLAERS_PER_ROOM - 1] = 0;
+      room[NUM_PLAYERS_PER_ROOM - 1] = 0;
     }
   }
   return 1;

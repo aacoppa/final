@@ -1,3 +1,5 @@
+#include "client.h"
+
 int main(int argc, char **argv) {
   int socket_id;
   char buffer[256];
@@ -8,8 +10,11 @@ int main(int argc, char **argv) {
   socket_id = socket( AF_INET, SOCK_STREAM, 0);
   printf("Socket file descriptor: %d\n", socket_id);
   sock.sin_family = AF_INET;
+  printf("I GOT HERE\n");
   inet_aton( argv[1], &(sock.sin_addr) );
+  printf("NOW IM HERE\n");
   sock.sin_port = htons(24601);
+  printf("Check C\n");
   int c = connect(socket_id, (struct sockaddr *)&sock, sizeof(sock));
   printf("Connect returned: %d\n", c);
 

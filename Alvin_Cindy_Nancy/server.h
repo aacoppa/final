@@ -12,8 +12,7 @@
 
 #include "constants.h"
 
-int** rooms;
-typedef struct roomStruct{
+/*typedef struct roomStruct{
   int timeToStart;
   int roomMembers;
 } roomStruct;
@@ -23,9 +22,14 @@ typedef struct mazeStruct{
   cell startPos;
   cell endPos;
 } mazeStruct;
-
-int findEmptyRoom();
-void createRoom(int);
+*/
 
 void subserver(int);
+
+int joinRoom(int,int);
+int createRoom(int);
+int findEmptyRoom();
+int leaveRoom(int,int);
+int getMaze(int);
+int updateScore(int,int,int);
 #endif
