@@ -17,6 +17,8 @@
 #include <sys/time.h>
 #include <netinet/in.h>
 
+#include "util.h"
+
 #define MAX_LEN 64
 #define SEM_KEY 24601
 #define SHM_KEY 10641
@@ -24,8 +26,9 @@
 #define SHM_ID 1
 #define WKP "mario"
 
+/*
 union semun {
 	int val;
 	struct semid_ds *buf;
 	unsigned short  *array;
-};
+};*/
