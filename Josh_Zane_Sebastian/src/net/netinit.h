@@ -12,6 +12,10 @@
 
 // Header specifying a request for a list of servers
 #define REQUEST_LIST "REQLIST"
+// Header specifying that the server want's us to know it exists
+#define REQUEST_INFORM "REQINFORM"
+#define INFORM_DEAD "DEAD"
+#define INFORM_LIVE "LIVE"
 // Header specifying a request for a function to get evaluated
 #define REQUEST_FN "REQFN"
 
@@ -49,6 +53,10 @@ int add_server(struct server*, struct server_list*);
 // removes a server from the server list specified. Also sets the server's dead var to true
 // 0 if successful, 1 if failure.
 int rem_server(struct server*, struct server_list*);
+
+// inform a server that we're living or dead.
+// 0 if success
+int inform(struct server*, int type);
 
 // End this server, and notify all known servers of it's passing
 // Memory and such will get freed here.

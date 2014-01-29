@@ -43,15 +43,28 @@ int start_listener() {
 
         send_list(socket_client);
         
-        // Add the client to our list
-        char cli[INET_ADDRSTRLEN];
-        inet_ntop(AF_INET, &server.sin_addr, cli, INET_ADDRSTRLEN);
-
-        printf("remote address: %s\n", cli);
-        struct server client;
-        strcpy(client.ip, cli);
-        add_server(&client, known_servers);
         continue; // Jump to the next iteration.
+      } else if (strcmp(buffer, REQUEST_INFORM) == 0) { // They're letting us know they exist, how sweet. Unless they're dying. That's not sweet.
+        read(socket_client, buffer, sizeof(buffer)); // Find out what they want to tell us
+        if (strcmp(buffer, INFORM_LIVE) == 0) {
+          // Add the client to our list
+          char cli[INET_ADDRSTRLEN];
+          inet_ntop(AF_INET, &server.sin_addr, cli, INET_ADDRSTRLEN);
+
+          printf("remote address: %s\n", cli);
+          struct server client;
+          strcpy(client.ip, cli);
+          add_server(&client, known_servers);
+          continue; // Jump to the next iteration.
+        } else if (strcmp(buffer, INFORM_DEAD) == 0) {
+          char cli[INET_ADDRSTRLEN];
+          inet_ntop(AF_INET, &server.sin_addr, cli, INET_ADDRSTRLEN);
+
+          printf("remote address: %s\n", cli);
+          struct server client;
+          strcpy(client.ip, cli);
+          rem_server(&client, known_servers);
+        }
       }
     }
     close(socket_id);
@@ -129,6 +142,10 @@ int request_list(struct server* host) {
     curr->value = calloc(1, sizeof(struct server)); // allocate space
     curr->value->ip = token;
     curr->value->dead = 0; // liiive, liiive!
+  
+    // Inform curr that we exist
+    inform(curr->value);
+
     curr->next = calloc(1, sizeof(struct server_list));
     curr = curr->next;
   }
@@ -145,6 +162,33 @@ int add_server(struct server* new, struct server_list* list) {
   insert->next = list->next;
   list->next = insert;
   new->dead = 0; // It's aliiiive
+  return 0;
+}
+
+int inform(struct server* remote, char* type) {
+  char buffer[256];
+  struct sockaddr_in sock;
+  int socket_id;
+
+  socket_id = socket(AF_INET, SOCK_STREAM, 0);
+
+  // IPv4, yo
+  sock.sin_family = AF_INET;
+  
+  // Convert the host's ip to something usable
+  inet_aton(remote->ip, &(sock.sin_addr));
+
+  sock.sin_port = htons(PORT);
+
+  // Establish connection
+  int c = connect(socket_id, (struct sockaddr *)&sock, sizeof(sock));
+
+  // Send them an inform for whatever we're talkin' bout.
+  write(socket_id, REQUEST_INFORM, sizeof(REQUEST_INFORM));
+  write(socket_id, type, sizeof(type));
+
+  close(socket_id);
+  
   return 0;
 }
 
