@@ -144,7 +144,7 @@ int send_request(int type, char * name, char * passwd) {
         }
         games_returned = temp_games;
         return QUERY_SUCC;
-    } else if ( type == GAME_STATS ) {
+    } else if ( type == GAME_STATS || type == CHECK_FOR_GAME ) {
         cli_creat_acc * cl = malloc( sizeof(cli_creat_acc) );
         strcpy(cl->name, name);
         strcpy(cl->pass, passwd);
@@ -153,7 +153,7 @@ int send_request(int type, char * name, char * passwd) {
         void * buff = malloc(sizeof(serv_response));;
         int r = read(global_sock_id, buff, sizeof(serv_response));
         serv_response * sr = (serv_response *)buff;
-        if( sr->type != GAME_STATS ) return CONNECTION_ERROR;
+        if( sr->type != type ) return CONNECTION_ERROR;
         if( !sr->success ) {
             return sr->reason;
         }
