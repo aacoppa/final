@@ -1,0 +1,7 @@
+Enter your sudo password:
+Enter encryption letter: a-zA-Z (translates the password)
+password --(key a)--> qbttxpse
+
+One day a Nigerian Prince emails you.
+A) Give him your bank info -> You lost already you goddamn retard
+B) He ends up sshing into your system somehow, and he tries to crack your encrypted password
