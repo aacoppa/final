@@ -8,10 +8,13 @@ void interpret(struct program* program) {
   for (i = 0; i < program->length; i++) {
     struct statement stmt = program->statements[i];
     if (stmt.type == ST_ASSGN) {
+      // a = | b c
       assign(stmt.parts[1], stmt.parts[0]);
     } else if (stmt.type == ST_RETRN) {
+      // > $| b c
       retVal(stmt.parts[0]);
     } else if (stmt.type == ST_FUNCT) {
+      // | b c
       runFunc(stmt.parts[0]);
     }
   }
