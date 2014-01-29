@@ -144,7 +144,7 @@ int request_list(struct server* host) {
     curr->value->dead = 0; // liiive, liiive!
   
     // Inform curr that we exist
-    inform(curr->value);
+    inform(curr->value, INFORM_LIVE);
 
     curr->next = calloc(1, sizeof(struct server_list));
     curr = curr->next;
@@ -210,6 +210,11 @@ int rem_server(struct server* rem, struct server_list* list) {
     }
   }
   return 1; // We found nothing
+}
+
+int send_function(struct function* fn, struct server* dest) {
+
+  return 0;
 }
 
 int die() {

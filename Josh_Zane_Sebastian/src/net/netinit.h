@@ -9,6 +9,7 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <netinet/in.h>
+#include "parser/types.h"
 
 // Header specifying a request for a list of servers
 #define REQUEST_LIST "REQLIST"
@@ -56,7 +57,11 @@ int rem_server(struct server*, struct server_list*);
 
 // inform a server that we're living or dead.
 // 0 if success
-int inform(struct server*, int type);
+int inform(struct server*, char* type);
+
+// Send a function to a server for evaluation
+// 0 if success
+int send_function(struct function*, struct server*);
 
 // End this server, and notify all known servers of it's passing
 // Memory and such will get freed here.
