@@ -4,5 +4,4 @@
   - Connect to Server
   - Create Rooms?
   - GUI
-- Random Maze Generator
 - Timer
