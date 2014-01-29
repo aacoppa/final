@@ -46,7 +46,8 @@ The file is stashed in a random location, you have to move it back to Computer/S
 The Nigerian Prince has built himself a secure shack in Computer/System/Castle
 If you can crack the password you can open the folder and delete him from your system.
 
-
+The prince's password is 6 digits long, 4 3-digit blocks are hidding throughout various folders.
+3 of these blocks will start with the same digit, and those 3 blocks will have the remaining 2 letters in some order make up the 6 digit password.
 
 
 
