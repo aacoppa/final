@@ -9,51 +9,43 @@
 char *white[600];
 char *black[200];
 
+void delete(char* cards[], int r){
+  int c;
+  for(c = r;c < 537;c++)
+    cards[c] = cards[c+1];
+}
+
 void subserver( int socket_client ) {
 
     char buffer[256];
     char s[256];
     char n[1];
-    int b, i, c;
+    int b, i, c, r, mod;
     b = 0;
-    memset(buffer,0,strlen(buffer));
+    mod = 537;
     //do client stuff continuously
     while (1){
+      memset(buffer,0,strlen(buffer));
       //give cards to client
-      b = read(socket_client,n,sizeof(buffer));
+      b = read(socket_client,n,sizeof(n));
       if(strcmp(n,"0") == 0){
 	for(c = 5;c > 0;c--){
-	  strcat(buffer,white[rand()%537]);
+	  strcat(buffer,white[r = (rand()%mod)]);
 	  strcat(buffer,",");
+	  mod--;
+	  delete(white,r);
 	}
+	printf("%s\n",buffer);
 	b = write(socket_client,buffer,strlen(buffer));
       }
-      if(strcmp(n,"1") == 0){
-	for(c = 5;c > 1;c--){
-	  strcat(buffer,white[rand()%537]);
-	  strcat(buffer,",");
-	}
-	b = write(socket_client,buffer,strlen(buffer));
-      }
-      if(strcmp(n,"2") == 0){
-	for(c = 5;c > 2;c--){
-	  strcat(buffer,white[rand()%537]);
-	  strcat(buffer,",");
-	}
-	b = write(socket_client,buffer,strlen(buffer));
-      }
-      if(strcmp(n,"3") == 0){
-	for(c = 5;c > 3;c--){
-	  strcat(buffer,white[rand()%537]);
-	  strcat(buffer,",");
-	}
-	b = write(socket_client,buffer,strlen(buffer));
-      }
-      if(strcmp(n,"4") == 0){
+      else if(strcmp(n,"4") == 0){
 	for(c = 5;c > 4;c--){
-	  strcat(buffer,white[rand()%537]);
+	  strcat(buffer,white[r = (rand()%mod)]);
 	  strcat(buffer,",");
+	  mod--;
+	  delete(white,r);
 	}
+	printf("%s\n",buffer);
 	b = write(socket_client,buffer,strlen(buffer));
       }
       //read from the client
