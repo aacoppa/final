@@ -1,9 +1,6 @@
 /*credits: Joe Wingbermuehle
   https://raw.github.com/joewing/maze/master/maze.c*/
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
-
+#include "maze.h"
 /*Display the maze.*/
 void ShowMaze(const char *maze, int width, int height) {
    int x, y;
