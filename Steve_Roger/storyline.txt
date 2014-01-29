@@ -49,5 +49,7 @@ If you can crack the password you can open the folder and delete him from your s
 The prince's password is 6 digits long, 4 3-digit blocks are hidding throughout various folders.
 3 of these blocks will start with the same digit, and those 3 blocks will have the remaining 2 letters in some order make up the 6 digit password.
 
+You have to be in all 3 folders at once to unlock the Prince's Castle.
+
 
 
