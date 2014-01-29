@@ -1,0 +1,55 @@
+Enter your sudo password:
+Enter encryption letter: a-zA-Z (translates the password)
+password --(key a)--> qbttxpse
+It's a reversible encryption
+
+One day a Nigerian Prince emails you.
+A) Give him your bank info -> You lost already you goddamn retard
+B) He ends up sshing into your system somehow, and he tries to crack your encrypted password
+
+Files:
+Computer
+    Documents
+        Work
+        School
+        Not Porn
+    Games
+        Club Penguin
+        League of Legends
+        Runescape
+    System
+        Programs
+        Data
+Phone
+    Documents
+        Music
+        Pictures
+        Videos
+    System
+        Programs
+        Data
+Tablet
+    Documents
+        Music
+        Books
+        Movies
+    System
+        Programs
+        Data
+        
+
+He finds the file with all your credentials, encrypted by the password, but he doesn't know the password yet.
+First, you must recover this important file.
+You search through everything using a simulated terminal with cd, and then execute the search command until you find the file.
+The file is stashed in a random location, you have to move it back to Computer/System/Data
+
+The Nigerian Prince has built himself a secure shack in Computer/System/Castle
+If you can crack the password you can open the folder and delete him from your system.
+
+The prince's password is 6 digits long, 4 3-digit blocks are hidding throughout various folders.
+3 of these blocks will start with the same digit, and those 3 blocks will have the remaining 2 letters in some order make up the 6 digit password.
+
+You have to be in all 3 folders at once to unlock the Prince's Castle.
+
+
+
