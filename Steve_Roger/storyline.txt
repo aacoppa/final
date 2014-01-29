@@ -43,8 +43,8 @@ First, you must recover this important file.
 You search through everything using a simulated terminal with cd, and then execute the search command until you find the file.
 The file is stashed in a random location, you have to move it back to Computer/System/Data
 
-
-
+The Nigerian Prince has built himself a secure shack in Computer/System/Castle
+If you can crack the password you can open the folder and delete him from your system.
 
 
 
