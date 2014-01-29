@@ -1,3 +1,3 @@
-a.out: gamec headers.h
-	gcc headers.h
+a.out: game.c header.h
+	gcc header.h
 	gcc game.c -o game
