@@ -15,7 +15,7 @@ struct call parseCall(char* statement);
 struct function parseFunction(char* statement);
 
 char* fixSpacing(char* code) {
-  char* fixedCode = calloc(sizeof(char), strlen(code) + 1);
+  char* fixedCode = malloc(sizeof(char) * (strlen(code) + 1));
   fixedCode = strcpy(fixedCode, code);
   char* doubleSpace = strstr(fixedCode, "  ");
   char* movingIndex;
@@ -27,8 +27,7 @@ char* fixSpacing(char* code) {
   return fixedCode;
 }
 
-struct statement* parse(char* code) {
-  char* regCode = fixSpacing(code);
+char** spcTokenize(char* regCode) {
   int n = 0;
   int i;
   for(i = 0; regCode[i]; i++) {
@@ -36,4 +35,11 @@ struct statement* parse(char* code) {
       n++;
     }
   }
-  char** spcTokens = calloc(sizeof(char*), n+1);
+  char** spcTokens = malloc(sizeof(char*) * (n+1));
+  int k;
+  for(i = 0; i < n+1; i++) {
+    k = strchr(regCode, ' ') - regCode;
+    regCode[k] = NULL;
+    spcTokens[i] = regCode + k + 1;
+  }
+}
