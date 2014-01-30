@@ -10,7 +10,7 @@ void push(struct stack_node, struct stack_node*);
 
 void runStep(struct iq_node node, struct stack_node *top) {
   struct stack_node topush;
-  struct stack_node x, y, z, n, *w;
+  struct stack_node x, y, z, n, *w, b, f;
   int i;
   switch( node.type ) {
   case T_INT:
@@ -135,10 +135,10 @@ void runStep(struct iq_node node, struct stack_node *top) {
       break;
 
     case '?':
-      struct stack_node b = pop(top);
-      struct stack_node f = pop(top);
-      if(b)
-	queue_skip(f);
+      b = pop(top);
+      f = pop(top);
+      if(b.data.numval)
+	      queue_skip(f);
       break;
 
     }
