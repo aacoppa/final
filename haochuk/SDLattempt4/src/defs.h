@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include "SDL/SDL.h"
 #include "SDL/SDL_image.h"
+#include "client3.c"
 
 #define MAX_MAP_X 20
 #define MAX_MAP_Y 15
