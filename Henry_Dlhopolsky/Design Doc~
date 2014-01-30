@@ -1,0 +1,20 @@
+DW APPROVED
+
+DESIGN DOCUMENT FOR QUIZ GAME
+
+Team: Henry Dlhopolsky, solo
+
+Problem/Project:
+The goal of my project will be to make a working quiz game that will work over a
+network. The quiz game itself will start out as a simple multiple choice quiz based upon
+common nerd-culture knowledge. But this may evolve if the project is completed before due.
+
+User Interface:
+The user interface will be simple. The user will recieve in their terminal a message of
+a multiple choice question, and will proceed to enter a, b, c or d. Both players Must respond, otherwise the game will not continue. Scores will be tabulated at the end of the game.
+Time planning:
+Initally, I will create a version of the quiz game using named pipes, and two files,
+a client and a server. That will be done by friday, 1/17/2014. Next, I will be upgrading it to
+use a network. Ideally that will be done by monday, 1/20/2014.
+
+
