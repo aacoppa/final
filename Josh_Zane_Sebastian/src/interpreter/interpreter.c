@@ -1,6 +1,5 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include "dictionary.c"
 
 // interprets a parsed version of the program, split into statements
 void interpret(struct program *program) {
