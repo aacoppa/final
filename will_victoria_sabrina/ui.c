@@ -226,9 +226,14 @@ int main() {
   }
   printf("done drawing terrs\n");
   SDL_RenderPresent(ren);
+  char buf[15];
   while (!done) {
     handle_input();
     update_map();
+    // if we need input, get it:
+    if (0) {
+      fgets(buf, sizeof(buf), stdin);
+    }
     SDL_Delay(100);
   }
   cleanup_SDL();
