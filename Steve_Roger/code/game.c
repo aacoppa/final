@@ -25,7 +25,7 @@ int main() {
 		err("SIGINT ERR");
 	}
 
-	// show welcome message?
+	printf("\n");
 	printColor("Welcome to Conquest of the Nigerian Prince v1!\n", C_GREEN);
 	printColor("Type exit to quit the game\n\n", C_CYAN);
 
@@ -84,6 +84,7 @@ a:
 		"\tA) Give Jamal your bank info.\n"
 		"\tB) I've never seen anything that looked so much like a scam. Jamal probably isn't even a real person.\n"
 		"\tC) I respect the name Jamal just as I respect people of all races, but I believe this is illegitimate.\n"
+		"\t   I humbly refuse your offer.\n"
 	);
 
 	do {
@@ -97,6 +98,10 @@ a:
 		printf("That's racist. Jamal is just as much a real person as you. YOU think he's not a person just because he's black?!\n");
 		goto lose;
 	} else {
+b:
+		printf("Too bad Jamal is a master hacker. Today is not your day " C_RED "=[" C_RESET "\n");
+		printf("He somehow ssh's into your system and tries to crack your encrypted sudo password in order to rm -rf your 700TB of pornography.\n");
+		printf("Good thing he'll never find out that it's stored in '/Not Porn'\n");
 
 	}
 
