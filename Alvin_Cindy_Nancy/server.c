@@ -151,11 +151,13 @@ int updateScore(int socket_client,int roomNum,int score){
   return -1;
 }
 void printRoomList(){
+  printf("PRINTING ROOMS\n");
   int x,y;
   for(x = 0;x < NUM_ROOMS;x++){
     printf("Room %d: [ ",x);
     for(y = 0;y < NUM_PLAYERS_PER_ROOM;y++){
       printf("%d , ",*rooms[x][y]);
     }
+    printf("]\n");
   }
 }
