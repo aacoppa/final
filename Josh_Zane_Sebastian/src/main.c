@@ -6,36 +6,99 @@ int main(int argc, char **argv) {
     struct stack_node *stack_top = 0;
     struct routine cur_level;
     int fd = fopen(argv[1]);
-    int sbrtn_depth = 0;
     char in[16], i = 0;
+    char in_comment = 0;
 
     while (read(fd, in+i, 1)) {
-        if (i) {
-            // previous text must have been a long number
-            if (!isdigit(in[i])) {
-                in[i+1] = in[i];
-                in[i] = 0;
-                // add the int value to the instruction queue
-                struct iq_node new_node;
-                union node_data data;
-                data.numval = atoi(in);
-                new_node.instr = data;
-                new_node.type = T_INT;
+        // ignore comments
+        if (in_comment) {
+            if (in[0] == '}')
+                in_comment = true;
+            i = 0;
+        } else if (in[i] == '{') {
+            in_comment = true;
+        } else {
+            if (i) {
+                // previous text must have been a long number
+                if (isdigit(in[0]))
+                    i++;
+                else {
+                    // save the number to the queue
+                    struct iq_node node;
+                    node.type = T_INT;
+                    union node_data data;
+                    node.instr = data;
+                    char c = in[i];
+                    in[i] = 0;
+                    data.numval = atoi(in);
+                    add_node(node, routine);
+                    i = 0;
 
-                in[0] = in[i+1];
-                i = 1;
-                // ignore whitespace
-                if (in[0] == ' ' || in[0] == '\t' || in[0] == '\n') {
-                    i--;
-                    continue;
+                    // deal with the new character
+                    if (c == '[') {
+                        struct iq_new_node new_node;
+                        new_node.type = T_RTN;
+                        union new_node_data data;
+                        new_node.instr = data;
+                        struct routine subroutine;
+                        data.routine = subroutine;
+
+                        add_node(new_node, cur_level);
+                        subroutine.parent = &cur_level;
+                        cur_level = subroutine;
+                    } else if (c == ']') {
+                        cur_level = *cur_level.parent;
+                    } else if (c == ' ' || c == '\t' || c == '\n') {
+                        // ignore
+                    } else {
+                        struct iq_new_node new_node;
+                        new_node.type = T_CHR;
+                        union new_node_data data;
+                        new_node.instr = data;
+                        data.numval = c;
+                    }
+                    i = 0;
                 }
-                if (in[0] == '[') {
-                    sbrtn_depth++;
-                    continue;
+            } else {
+                if (isdigit(in[0]))
+                    i++;
+                else {
+                    if (in[0] == '[') {
+                        struct iq_node node;
+                        node.type = T_RTN;
+                        union node_data data;
+                        node.instr = data;
+                        struct routine subroutine;
+                        data.routine = subroutine;
+
+                        add_node(node, cur_level);
+                        subroutine.parent = &cur_level;
+                        cur_level = subroutine;
+                    } else if (in[0] == ']') {
+                        cur_level = *cur_level.parent;
+                    } else if (in[0] == ' ' || in[0] == '\t' || in[0] == '\n') {
+                        // ignore
+                    } else {
+                        struct iq_node node;
+                        node.type = T_CHR;
+                        union node_data data;
+                        node.instr = data;
+                        data.numval = in[0];
+                    }
+                    i = 0;
                 }
             }
-        } else {
-
         }
+    }
+}
+
+void addNode(struct iq_node node, struct routine routine) {
+    if (routine.nodes) {
+        struct iq_node cur_node = *routine.nodes;
+        while (cur_node.next)
+            cur_node = *cur_node.next;
+        cur_node.next = &node;
+    } else {
+        routine.nodes = &node;
     }
 }

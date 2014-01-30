@@ -1,6 +1,6 @@
 #define T_INT 0
-#define T_CHAR 1
-#define T_SBRTN 2
+#define T_CHR 1
+#define T_RTN 2
 
 struct stack_node {
     struct stack_node *cdr;
@@ -8,7 +8,7 @@ struct stack_node {
 }
 
 union node_data {
-    struct subroutine srtine;
+    struct routine routine;
     int numval;
 }
 
