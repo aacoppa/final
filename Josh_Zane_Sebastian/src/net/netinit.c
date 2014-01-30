@@ -71,6 +71,25 @@ int start_listener() {
           struct server client;
           strcpy(client.ip, cli);
           rem_server(&client, known_servers);
+        } else if (strcmp(buffer, REQUEST_FN) == 0) {
+          struct function* fn = calloc(1, sizeof(struct function));
+          read(socket_client, buffer, sizeof(buffer));
+          if (strcmp(buffer, FUNCTION_ARGS) != 0) {
+            fprintf(stderr, "Fuck, %s is not %s\n", buffer, FUNCTION_ARGS);
+          }
+          read(socket_client, buffer, sizeof(buffer));
+          fn->numargs = atoi(buffer);
+          fn->args = calloc(numargs, sizeof(struct symbol));
+          int i;
+          for (i = 0; i < fn->numargs; ++i) {
+            read(socket_client, buffer, sizeof(buffer));
+            fn->args[i]->typeid = buffer[0];
+            read(socket_client, buffer, sizeof(buffer));
+            fn->args[i]->val = buffer;
+          }
+          read(socket_client, buffer, sizeof(buffer));
+          fn->definition = buffer;
+          //TODO: Do something with this function
         }
       }
     }
@@ -276,7 +295,9 @@ int send_function(struct function* fn, struct server* dest) {
   write(socket_id, fn->numargs, sizeof(fn->numargs));
   sleep(1);
   for (i = 0; i < fn->numargs; ++i) {
-    write(socket_id, fn->args[i], sizeof(fn->args[i]));
+    write(socket_id, fn->args[i]->name, sizeof(fn->args[i]->name));
+    write(socket_id, fn->args[i]->referant->typeid, sizeof(fn->args[i]->referant->typeid));
+    write(socket_id, fn->args[i]->referant->val, sizeof(fn->args[i]->referant->val));
     sleep(1);
   }
   write(socket_id, FUNCTION_CONTENTS, sizeof(FUNCTION_CONTENTS));
