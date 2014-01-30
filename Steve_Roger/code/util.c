@@ -24,6 +24,24 @@ char *currentDir() {
     wd++; // idk this just works trust me
     return wd;
 }
+char * relativeDir() {
+    char cwd[1024];
+    getcwd(cwd, sizeof(cwd));
+    char *wd = cwd;
+    while (strncmp(wd, "files", strlen("files")) != 0) wd++;
+    wd += 4;
+    strncpy(wd, "~", 1); // adds ~ as root dir
+    return wd;
+}
+void ls() {
+    DIR *dp;
+    struct dirent *ep;
+    dp = opendir("./");
+    while ((ep = readdir(dp))) {
+        if (strcmp(ep->d_name,".")==0 || strcmp(ep->d_name,"..")==0) continue;
+        printf("%s\n",ep->d_name);
+    }
+}
 void createFile(char *name) {
     int fd = open(name, O_WRONLY | O_CREAT);
     close(fd);
@@ -51,7 +69,6 @@ void createDevices() {
             strcpy(last, f[i]);
         }
     }
-    hidePrince();
 }
 
 void goToRoot() {

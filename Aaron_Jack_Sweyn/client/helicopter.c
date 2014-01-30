@@ -12,6 +12,10 @@ void reset_vars() {
     TICKS = 1;
     nextDrop = 0;
     betweenWalls = 20;
+    int i;
+    for (i = 0; i < 100; i++){
+        walls[i].show = 0;
+    }
 }
 int game_start(unsigned long seed){
     reset_vars();
