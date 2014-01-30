@@ -6,6 +6,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <time.h>
+#include <signal.h>
 
 void generatePlayer();
 void printStats();
@@ -21,6 +22,7 @@ void nameGenerator();
 void dump();
 int load();
 void pickUpLoot();
+void sigHandle(int sig);
 
 typedef struct Weapon{
   int type;

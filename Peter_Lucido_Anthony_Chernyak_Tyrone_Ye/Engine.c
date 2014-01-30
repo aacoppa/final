@@ -23,6 +23,7 @@ Room * DRoom;
 
 int left_to_reseed = 4;
 int seed;
+int quit = 1;
 
 char *wType[] = {"Pointer","Knife","Sword","Spear","Halberd"};
 double wTypeBase[] = {0,5,10,15,20};
@@ -38,7 +39,6 @@ int main(){
   //inventory = (Weapon)calloc(1,sizeof(Weapon));
   srand(time(NULL));
   seed = getpid();
-  
   while(1){
     system("clear");
     printf("Welcome to Generic Crawler #%d!\nType Play to start playing, or Exit to Quit the game.\n",rand_lim(545));
@@ -68,7 +68,7 @@ int main(){
 	printStats();
 	system("clear");
 	printf("Would You Like to see the Help Page?\n");
-	while(1){
+	while(quit){
 	  fgets(input,sizeof(input),stdin);
 	  if(strcasecmp("Yes\n",input) == 0){
 	    DisplayHelp();
@@ -85,7 +85,8 @@ int main(){
 	DRoom = calloc(1,sizeof(Room));
 	generateRoom();
       }
-      while(Player->hp > 0){
+      while(Player->hp > 0 && quit){
+	signal(SIGINT, sigHandle);
 	system("clear");
 	printf("Your life: %d \n", Player->hp);
 	if(!DRoom->roomClear)
@@ -137,6 +138,13 @@ int rand_lim(int limit) {
   return (int)((double)limit * ( rand()/(double)RAND_MAX));
 }
 
+void sigHandle(int sig){
+  if(sig == SIGINT){
+    dump();
+    int temp = getpid();
+    kill(temp,SIGQUIT);
+  }
+}
 //Generation-----------------------------------------------------------------------------------------Generation
 
 void generatePlayer(){
@@ -301,6 +309,9 @@ void interpretGame(){
       printf("Your weapons give you a +%d bonus to attack.\n",Player->slot1.attk + Player->slot2.attk);
       getchar();
     }
+  }
+  else if(strcasecmp(input,"Quit\n") == 0 || strcasecmp(input,"Exit\n") == 0){
+    quit = 0;
   }
   else{
     printf("Sorry, I don't understand that\n");
