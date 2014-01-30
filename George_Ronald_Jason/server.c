@@ -15,7 +15,7 @@ int main(){
   server.sin_port = htons(SERVER_PORT);
   
   int i = bind(socket_id, (struct sockaddr *)&server,sizeof(server));
-  printf("Sockt: %d\n",i);
+  printf("Socket: %d\n",i);
   listen(socket_id,0);
 
   printf("Waiting for players to connect");
