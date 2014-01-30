@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <dirent.h>
 
 #include <fcntl.h>
 #include <sys/types.h>
@@ -13,10 +14,10 @@
 void err(char *m);
 
 int dirExists();
-char *currentDir();
+char *currentDir(); // gets current folder (not entire directory)
 
 int saveExists();
-void createDevices();
+void createDevices(); // creates all the folders and shit
 
-void goToRoot();
-void goToRandomInner();
+void goToRoot(); // goes to root files/
+void goToRandomInner(); // goes to a random innermost folder

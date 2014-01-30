@@ -43,14 +43,35 @@ void createDevices() {
             strcpy(last, f[i]);
         }
     }
-    goToRandomInner();
 }
 
 void goToRoot() {
     while (strcmp(currentDir(),"files")!=0) chdir("..");
 }
 void goToRandomInner() {
-    
+    goToRoot();
+    int i;
+    for(i=0;i<2;i++) {
+        DIR *dp;
+        struct dirent *ep;
+        dp = opendir("./");
+        double len = 0;
+        while ((ep = readdir(dp))) {
+            if (strcmp(ep->d_name,".")==0 || strcmp(ep->d_name,"..")==0) continue;
+            len++;
+        }
+        closedir(dp);
+        dp = opendir("./");
+        while ((ep = readdir(dp))) {
+            if (strcmp(ep->d_name,".")==0 || strcmp(ep->d_name,"..")==0) continue;
+            if ((rand() / (double)RAND_MAX) <= (1.0 / len)) {
+                chdir(ep->d_name);
+                break;
+            }
+            len--;
+        }
+        closedir(dp);
+    }
 }
 
 
