@@ -19,13 +19,33 @@ void subserver( int socket_client ) {
 
     char buffer[256];
     char s[256];
+<<<<<<< HEAD
+ 
+    int b, i, c;
+=======
     char n[1];
     int b, i, c, r, mod,mod2;
+>>>>>>> 492909108d219846a0a98cc9796df7a2d2595cfc
     b = 0;
     mod = 537;
     mod2 = 105;
     srand(time(NULL));
     //do client stuff continuously
+<<<<<<< HEAD
+    while (1) {
+
+      b = read(socket_client,buffer,sizeof(buffer));
+      
+      printf("received: %s\n",buffer  );
+      
+      if ( strncmp(buffer, "exit", sizeof(buffer)) == 0 )
+	break;
+
+      //give cards to client
+     
+	for(c = 0;c < 5;c++){
+	  strcat(buffer,white[rand()%537]);
+=======
     while (1){
       memset(buffer,0,strlen(buffer));
       //give cards to client
@@ -43,10 +63,15 @@ void subserver( int socket_client ) {
       if(strcmp(n,"4") == 0){
 	for(c = 5;c > 4;c--){
 	  strcat(buffer,white[r = (rand()%mod)]);
+>>>>>>> 492909108d219846a0a98cc9796df7a2d2595cfc
 	  strcat(buffer,",");
 	  mod--;
 	  delete(white,r);
 	}
+<<<<<<< HEAD
+      printf("%s\n",buffer);
+      write(socket_client,buffer,strlen(buffer));
+=======
 	printf("%s\n",buffer);
 	b = write(socket_client,buffer,strlen(buffer));
       }
@@ -63,8 +88,8 @@ void subserver( int socket_client ) {
       printf("Received: %s\n", buffer); 
       if ( strncmp(buffer, "exit", sizeof(buffer)) == 0 )
 	break;
+>>>>>>> 492909108d219846a0a98cc9796df7a2d2595cfc
 
-      write( socket_client, buffer, strlen(buffer));
     }
     
     //close this client connection
