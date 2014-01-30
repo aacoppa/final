@@ -29,6 +29,7 @@ int main() {
 }
 
 void init() {
+	//rmdir("files");
 	saveExists(); // create files
 	createDevices();
 	chdir("files");
@@ -59,13 +60,13 @@ start:
 	if (!strcasecmp(l, "Roger") || !strcasecmp(l, "Steve")) {
 		printf("So you are Nobleman %s.\n", l);
 		printf("There is no one in this universe as awesome as you.\nYou should just win the game right now.\n");
-		printf("But that would be no fun because");
+		printf("But that would be no fun");
 	} else {
 		printf("So you are Peasant %s.\n", l);
 		printf("I've heard much about your failed attempts to produce $$$$$\n");
-		printf("No worries though because");
+		printf("No worries though");
 	}
-	printf("earlier today, you received an email from trusted Nigerian Prince, %s.\n", PRINCE_NAME);
+	printf(" because earlier today, you received an email from trusted Nigerian Prince, %s.\n", PRINCE_NAME);
 	printf("\n");
 	typeToContinue();
 	printf("From: <princejamal2401@aol.com>\n\n");
@@ -78,8 +79,9 @@ start:
 		" UNFORTUNATELY ALL THE ROYAL FAMILY BANK ACCOUNTS OUTSIDE OF THE COUNTRY WERE FROZEN BY HUGH JAZZ, COMMANDER OF THE SOMO OPERATION FORCES, WHO IS LEADING THE TAKEOVER OF THE NIGERIA."
 		"\n\nSEND YOUR BANK INFORMATION IMMEDIATELY SO THAT I CAN BEGIN THE TRANSFER OF FUNDS. "
 	);
-	printf("\n\nREST ASSURED THAT THIS IS LEGIT,");
+	printf("\n\nREST ASSURED THAT THIS IS LEGIT,\n");
 	printf(C_MAGENTA "\nPrince %s  ʅ༼ຈل͜ຈ༽ʃ\n\n" C_RESET, PRINCE_NAME);
+	typeToContinue();
 a: save = 'a';
 	printf("You have some choices " C_CYAN "(type a, b, or c)" C_RESET ":\n"
 		"\tA) Give Jamal your bank info. (ಠ_ಠ)\n"
@@ -122,8 +124,26 @@ b: save = 'b';
 			}
 		}
 c: save = 'c';
+		printColor("Use ls to see the files in the current directory.\n", C_CYAN);
+		printColor("Use rm to remove files.\n", C_CYAN);
+		loop {
+			getInput(true);
+			if (!strcasecmp(l, "rm " PRINCE_NAME)) {
+				printf("You don't have the permissions to delete Jamal.\n");
+				printf("What kind of voodoo magic is this...?\n");
+				printf("...Perhaps you have to have sudo permissions.\n");
+			} else if (!strcasecmp(l, "sudo rm " PRINCE_NAME)) {
+				printf("Jamal forgot to securely store the password in his excitement.")
+				printf("It's probably lying around here somewhere in these folders.");
+				printf("Enter the password:\n");
+				break;
+			}
+		}
+		loop {
+			getInput(true);
+		}
 		printf("You managed to destroy Jamal from existence, but he managed to delete 99%% of your porn stash.\n");
-		printf("There is no happy ending. Better luck in real life.");
+		printf("There is no happy ending. Better luck in real life.\n");
 	}
 
 	free(l);
@@ -160,15 +180,15 @@ int getInput(int denyEmpty) {
 		} else if (!strcasecmp(l, "ls")) {
 			ls();
 		} else if (!strncasecmp(l, "cd", 2)) {
-			l += 3; // increment to remove "cd " part
-			if (!strncmp(l, "..", 2) && !strncmp(relativeDir(), "/", 1)) {
+			if (!strncmp(l + 3, "..", 2) && !strncmp(relativeDir(), "/", 1)) {
 				printf("You are already in the root dir...\n");
-			} else if (chdir(l) != -1) {
+			} else if (chdir(l + 3) != -1) {
 				char * rel = relativeDir();
 				printf("%s\n", rel);
 				if (save == 'b') {
 					if (isPrinceHere()) {
-						printf("Jamal is a sneaky *** ************. You found him though. Good job!");
+						printf("Jamal is a sneaky *** ************. You found him though. Good job!\n");
+						break;
 					} else if (!strcmp(rel, "/Computer/Documents/Work")) {
 						printf("This folder is serious business; he won't be in here.\n");
 					} else if (!strcmp(rel, "/Computer/Documents/School")) {
@@ -189,7 +209,6 @@ int getInput(int denyEmpty) {
 				perror("cd");
 				printColor("Type ls to list possible directories.\n", C_CYAN);
 			}
-			l -= 3;
 		} else if (!denyEmpty || (l != NULL && *l != '\0')) {
 			break;
 		}
