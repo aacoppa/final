@@ -91,6 +91,7 @@ int main() {
   while (1) {
 
     //read buffer from client[turncounter]   
+
     if (strcmp(buffer,"hit") == 0) {
       hit(deck, turncounter);
       if (/*client's hand is greater than 21*/) { 
@@ -125,5 +126,8 @@ int main() {
   return;
 }
 
-  
+
+  /* this will most likely be included in the server file.
+     client will have a char **hand, and two booleans READY & BUST, int turncounter (from 1-4) 
+     Maybe an int money (otherwise, get rid of doubledown) */
     
