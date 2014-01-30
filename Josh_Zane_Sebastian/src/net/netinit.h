@@ -1,3 +1,5 @@
+#ifndef NET_NETINIT_H
+#define NET_NETINIT_H
 // Files to initialize this computer into the network, basically get a list of interpreters to talk to
 // It also is expected to set up a listen for incoming requests and respond to them with a list of servers and
 // to add the connecting server to the list of other servers this one knows about.
@@ -66,3 +68,4 @@ int send_function(struct function*, struct server*);
 // End this server, and notify all known servers of it's passing
 // Memory and such will get freed here.
 int die();
+#endif

@@ -1,6 +1,9 @@
 #include "netinit.h"
 
 int start_listener() {
+  if (known_servers == NULL) {
+    known_servers = calloc(1, sizeof(struct server_list));
+  }
   int socket_id, socket_client;
   char buffer[256];
 
@@ -54,7 +57,9 @@ int start_listener() {
 
           printf("remote address: %s\n", cli);
           struct server client;
-          strcpy(client.ip, cli);
+          /*strcpy(client.ip, cli);*/
+          client.ip = cli;
+          printf("client.ip: %s\n", client.ip);
           add_server(&client, known_servers);
           printf("Done adding\n");
           continue; // Jump to the next iteration.
@@ -76,6 +81,10 @@ int start_listener() {
 }
 
 int send_list(int socket_client) {
+  if (known_servers == NULL) {
+    known_servers = calloc(1, sizeof(struct server_list));
+    known_servers->value = calloc(1, sizeof(struct server));
+  }
   // Respond with list of servers, seperated by commas
   struct server_list* curr;
   char slist[SLIST_LEN]; // buffer for our server list to be stored in
@@ -83,16 +92,15 @@ int send_list(int socket_client) {
   size_t space_remaining = sizeof(slist);
   printf("Preparing server list\n");
   for (curr = known_servers; curr != 0; curr = curr->next) {
-    printf("First thing?");
     space_remaining = sizeof(slist) - strlen(slist);
-    if (space_remaining >= sizeof(curr->value->ip)) { // If we have room
+    if (curr->value != NULL && space_remaining >= sizeof(curr->value->ip)) { // If we have room
       printf("Adding server: %s\n", curr->value->ip);
       strcat(slist, curr->value->ip);
       if (curr->next != 0) {
         strcat(slist, ",");
       }
     } else { //We're out of room in our buffer, let's send it even though it's technically incomplete.
-      printf("Well I'll be, we ran out of all %lu bytes in our sending string\n", sizeof(slist));
+      printf("Well I'll be, either we ran out of all %lu bytes in our sending string or this was our first run because Josh is too lazy to do multiple if statements\n", sizeof(slist));
       break;
     }
   }
@@ -105,8 +113,9 @@ int send_list(int socket_client) {
 }
 
 int request_list(struct server* host) {
-  known_servers = calloc(1, sizeof(struct server_list));
-  known_servers->value = host; // Put our first known server at the top
+  if (known_servers == NULL) {
+    known_servers = calloc(1, sizeof(struct server_list));
+  }
   struct server_list* curr = known_servers;
   char buffer[256];
   struct sockaddr_in sock;
@@ -166,7 +175,9 @@ int request_list(struct server* host) {
 int add_server(struct server* new, struct server_list* list) {
   struct server_list* insert = calloc(1, sizeof(struct server_list));
   insert->value = new;
-  insert->next = list->next;
+  if (list != NULL) {
+    insert->next = list->next;
+  }
   list->next = insert;
   new->dead = 0; // It's aliiiive
   return 0;
