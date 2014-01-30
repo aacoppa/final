@@ -14,7 +14,6 @@
 int main(int argc, char **argv) {
 
   int socket_id;
-  territory terr;
   int i, b;
   
   struct sockaddr_in sock;
@@ -32,13 +31,13 @@ int main(int argc, char **argv) {
   int c = connect(socket_id, (struct sockaddr *)&sock, sizeof(sock));
   printf("Connect returned: %d\n", c);
 
-    while (1) {
-      b = write( socket_id, terr, sizeof(terr) );
-      
-      printf("\tReceived\n");
-    }
+  while (1) {
+    b = write( socket_id, terr, sizeof(terr) );
+    
+    printf("\tReceived\n");
+  }
 
-    close(socket_id);
-
-    return 0;
+  close(socket_id);
+  
+  return 0;
 }

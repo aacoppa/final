@@ -17,6 +17,12 @@
 #define U1_TURN 0
 #define U2_TURN 1
 #define NO_WINNER 2
+
+/* There is currently ./server
+ * being run on the ip below as well
+ * for further testing
+ */
+//#define IP "198.211.104.102"
 #define IP "127.0.0.1"
 
 int key_to_play;

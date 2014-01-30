@@ -49,6 +49,13 @@ int init_SDL() {
   maptex = load_texture("maptex.bmp");
   SDL_RenderClear(ren);
   SDL_RenderCopy(ren, maptex, NULL, NULL);
+  int i = 0;
+  while(terrs[i].name) {
+    draw_terr(terrs[i]);
+    i++;
+  }
+  printf("done drawing terrs\n");
+  SDL_RenderPresent(ren);
   return 0;
 }
 
@@ -177,7 +184,6 @@ SDL_Texture *text_texture(char *message) {
   if (!texture){
     log_SDL_error("create text texture");
   }
-  //Clean up the surface
   SDL_FreeSurface(surf);
   return texture;
 }
@@ -195,7 +201,6 @@ void handle_input() {
         printf("clicked: ");
         log_terr(*c);
         if (selected) {
-          //process();
           printf("%s to %s\n", selected->name, c->name);
           if (selected == c)
             printf("double clicked!\n");
@@ -214,27 +219,25 @@ void handle_input() {
   }
 }
 
+void ui_update() {
+  handle_input();
+  update_map();
+#warning input will be sent to network once networking is complete
+  if (0) {
+    char buf[15];
+    fgets(buf, sizeof(buf), stdin);
+  }
+  SDL_Delay(100);
+}
+
 int main() {
-  if (init_SDL())
-    return 1;
+#warning terrs distributed here for testing until networking is finished
   terrs = territories();
   distribute(5);
-  int i = 0;
-  while(terrs[i].name) {
-    draw_terr(terrs[i]);
-    i++;
-  }
-  printf("done drawing terrs\n");
-  SDL_RenderPresent(ren);
-  char buf[15];
+  if (init_SDL())
+    return 1;
   while (!done) {
-    handle_input();
-    update_map();
-    // if we need input, get it:
-    if (0) {
-      fgets(buf, sizeof(buf), stdin);
-    }
-    SDL_Delay(100);
+    ui_update();
   }
   cleanup_SDL();
 }

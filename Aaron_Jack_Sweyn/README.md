@@ -25,6 +25,8 @@ make
 ./server
 
 This will start running the server; initializing a database, etc
+Currently the client connects to localhost, in client/client\_side.h
+there is a macro IP: change that to change what server you connect to
 
 /client
 -------
