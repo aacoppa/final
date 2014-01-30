@@ -1,2 +1,2 @@
-main: blahblahblah
-	gcc blahblahblah
+main.c: blackjack.c
+	gcc blackjack.c

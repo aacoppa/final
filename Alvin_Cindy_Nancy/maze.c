@@ -7,23 +7,19 @@
 #include "maze.h"
 
 /*Display the maze.*/
-char* ShowMaze(const char *maze, int width, int height) {
-  char* ret = (char*)malloc(2 *( y * width + x));
+void showMaze(const char *maze, int width, int height) {
   int x, y;
    for(y = 0; y < height; y++) {
       for(x = 0; x < width; x++) {
          switch(maze[y * width + x]) {
-         case 1:  strcat(ret,"A");  break;
-         case 2:  strcat(ret,"B");  break;
-         default: strcat(ret," ");  break;
+         case 0:  printf("[]");  break;
+         case 1:  printf("<>");  break;
+         default: printf("  ");  break;
          }
       }
-      strcat(ret,"\n");
+      printf("\n");
    }
-   return ret;
 }
-
-
 
 
 /*  Carve the maze starting at x, y. */
@@ -64,7 +60,7 @@ void CarveMaze(char *maze, int width, int height, int x, int y) {
 }
 
 /* Generate maze in matrix maze with size width, height. */
-void GenerateMaze(char *maze, int width, int height) {
+void generateMaze(char *maze, int width, int height) {
 
    int x, y;
 
@@ -91,7 +87,7 @@ void GenerateMaze(char *maze, int width, int height) {
 
 
 
-
+/*
 int main() {
 
   int width = 10;
@@ -102,17 +98,17 @@ int main() {
   height = height*2 +3;
  
 
-  /* Allocate the maze array.*/ 
+  // Allocate the maze array. 
   maze = (char*)malloc(width * height * sizeof(char));
   
-  /* Generate and display the maze. */
-  GenerateMaze(maze, width, height);
+// Generate and display the maze. 
+  generateMaze(maze, width, height);
   
-  ShowMaze(maze, width, height);
-  
-  /* Clean up. */
+  showMaze(maze, width, height);
+// Clean up.
   free(maze);
   exit(EXIT_SUCCESS);
   return 0;
   
 }
+*/

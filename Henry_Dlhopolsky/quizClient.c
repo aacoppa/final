@@ -9,15 +9,12 @@
 
 
 int main(int argc, char **argv) {
-  char ret[20][20];
   char todo[200];
   int socket_id;
   char buffer[256];
-  char a[256][256];
   int i, b, x;
-  char parsed[20][20];
   int numquestions = 0;
-  char time[200];
+  int score = 0;
   char s = 'l';
   struct sockaddr_in sock;
   
@@ -49,8 +46,9 @@ int main(int argc, char **argv) {
     b = recvfrom(socket_id, todo, sizeof(todo), 0, NULL, NULL);
     todo[b] = '\0';
     printf("Recieved: %s \n", todo);
-    sleep(10);
-    for(x = 0; x < 11; x++){ 
+    sleep(5);
+    //This section mirrors the sections of the Server function, accepting answers and transfering them to the server.
+    for(x = 0; x < 10; x++){ 
       printf("recieveing question# %d\n",x);
       
       b = recvfrom(socket_id, buffer, sizeof(buffer), 0, NULL, NULL);
@@ -61,32 +59,16 @@ int main(int argc, char **argv) {
       sendto(socket_id, buffer, sizeof(buffer), 0, NULL, 0);
       printf("sending answer\n");
     }
+    if(x = 10){
+      printf("tabulating scores....\n");
+      b = recvfrom(socket_id, buffer, sizeof(buffer), 0, NULL, NULL);
+      printf("your score is %s! Good Job!\n",buffer);
+    }
     // if(strncmp(todo, "l", 1)){
     //  retval = 1;}
     
     // else{ 
     //   return
 }
-
-/*
-  int answerQuestion(){
-    b = recvfrom(socket_id, todo, sizeof(todo), 0, NULL, NULL);
-    parsed = parse(buffer);
-    if(strncmp(parsed[0], "Question", sizeof(parsed[0]))){
-      printf("Question: %s \n a: %s \n b: %s \n c: %s \n d: %s \n",a[1],a[2],a[3],a[4],a[5]);
-      printf("Enter Answer: \n");
-      fgets(buffer, sizeof(buffer), stdin);
-      sendto(socket_id, buffer, sizeof(buffer), 0, NULL, 0);
-      numquestions++;
-    }
-    if(strncmp(parsed[0], "Time", sizeof(parsed[0]))){
-      printf("Time Out, please wait for the next question \n");
-      sendto(socket_id, time, sizeof(time), 0, NULL, 0);
-      numquestions++;
-    }
-  }
-}
-*/
-  
   
 

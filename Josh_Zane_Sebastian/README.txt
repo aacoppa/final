@@ -66,10 +66,10 @@ Native Operations:
       OR(1, 1) -> 1
       |(1, 0) -> 1
       |(0, 0) -> 0
-    NOT, ~: If the input is 1, return 0, else return 1
+    NOT, !: If the input is 1, return 0, else return 1
   On lists:
-    CAR, ]: Returns the last element of a list
-    CDR, [: Returns a list containing all the elements of the input list, except for the final one
+    CAR, [: Returns the last element of a list
+    CDR, ]: Returns a list containing all the elements of the input list, except for the final one
     PUSH, <: Appends an element to a list, returns the resulting list (does not modify the input)
     EMPTY, ?: Returns 1 if the list is empty, 0 if not.
 

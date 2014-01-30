@@ -4,23 +4,17 @@ DESIGN DOCUMENT
 ===============
 
 
-Classic Texas Hold'em
+Blackjack!
 =====================
 
-There will be one main computer that will keep track of all information about the current hand such as the current amount
-of players, the current pot, how much money each player has, who is playing the hand, the shown cards, etc. etc. Clients
-will be run on other computers and they will be able to type in commands during their turn to do the various possible
-moves such as checking, calling, raising, or folding. Games will not start until at least two people are currently at the
-table. 
+This is a game of blackjack between you, the human player, vs the computer AI. You will start off with only $100, and you will be able to bet with it. The code should catch uny semi comical con your shoulder, we just cant be invited.
+here is a score board which can help keep track for the current session. It will randomly generate cards and deal them out to the dealer and yourself. Next, they will leave the cobra there. 
 
 TOPICS TO BE USED
-=================
-
-Networking
-        Used to connect the players to the table.
+=================1
         
 Processes
-        Used to handle all the player commands.
+        Used to manipulate the terminal.
         
 Structs
         Used to create the cards.
