@@ -1,6 +1,8 @@
 #include "init.h"
 
 extern void freeSprites(void);
+extern void net_end();
+
 
 void init(char *title)
 {
@@ -44,6 +46,9 @@ void cleanup()
 	{
 		SDL_FreeSurface(backgroundImage);
 	}
+	
+	//terminate network socket/connection
+	//net_end();
 	
 	/* Free the sprites */
 

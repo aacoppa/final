@@ -28,6 +28,7 @@ int main() {
   int socket_id, socket_client;
   float buffer[10];
   int i, b;
+  int num_players = 2; //somehow make this a variable that you can set in the game
   
   struct sockaddr_in server;
   socklen_t socket_length;
@@ -53,7 +54,7 @@ int main() {
   i =  listen( socket_id, 1 );
   printf("accepting conenctions\n");
   while(1) {
-    if (clients<2){
+    if (clients<num_players){
       printf("waiting for connection\n");
       socket_length = sizeof(server); 
       socket_client = accept(socket_id, (struct sockaddr *)&server, &socket_length);
