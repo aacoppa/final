@@ -56,6 +56,7 @@ int start_listener() {
           struct server client;
           strcpy(client.ip, cli);
           add_server(&client, known_servers);
+          printf("Done adding\n");
           continue; // Jump to the next iteration.
         } else if (strcmp(buffer, INFORM_DEAD) == 0) {
           char cli[INET_ADDRSTRLEN];
@@ -191,6 +192,8 @@ int inform(struct server* remote, char* type) {
 
   // Send them an inform for whatever we're talkin' bout.
   write(socket_id, REQUEST_INFORM, sizeof(REQUEST_INFORM));
+  sleep(1); //Wait a teensy bit of time
+  printf("Informing: %s\n", type);
   write(socket_id, type, sizeof(type));
 
   close(socket_id);
