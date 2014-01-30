@@ -10,6 +10,16 @@ int dirExists(char *dir) {
     int err = stat(dir, &s);
     return (err != -1);
 }
+char *currentDir() {
+    char cwd[1024];
+    getcwd(cwd, sizeof(cwd));
+    int len = strlen(cwd);
+    char *wd = cwd;
+    wd += len - 1;
+    while (*(--wd) != '/') ;
+    wd++;
+    return wd;
+}
 
 int saveExists() {
     int makeDir = mkdir("files", 0755);
@@ -19,8 +29,8 @@ int saveExists() {
 void createDevices() {
     chdir("files");
     char f[48][25] = {"Computer","down","Documents","down","Work","School","Not Porn","up","Games","down","Club Penguin","League of Legends","Runescape","up","System","down","Programs","Data","up","up",
-                             "Phone","down","Documents","down","Music","Pictures","Videos","up","System","down","Programs","Data","up","up",
-                             "Tablet","down","Documents","down","Music","Books","Movies","up","System","down","Programs","Data","up","up"};
+                      "Phone","down","Documents","down","Music","Pictures","Videos","up","System","down","Programs","Data","up","up",
+                      "Tablet","down","Documents","down","Music","Books","Movies","up","System","down","Programs","Data","up","up"};
     int i = -1;
     char last[25];
     while(++i < (sizeof(f)/sizeof(f[0]))) {
@@ -33,5 +43,17 @@ void createDevices() {
             strcpy(last, f[i]);
         }
     }
+    goToRandomInner();
 }
+
+void goToRoot() {
+    while (strcmp(currentDir(),"files")!=0) chdir("..");
+}
+void goToRandomInner() {
+    
+}
+
+
+
+
 

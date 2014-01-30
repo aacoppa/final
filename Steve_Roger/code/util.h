@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#include <fcntl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -12,6 +13,10 @@
 void err(char *m);
 
 int dirExists();
+char *currentDir();
 
 int saveExists();
 void createDevices();
+
+void goToRoot();
+void goToRandomInner();
