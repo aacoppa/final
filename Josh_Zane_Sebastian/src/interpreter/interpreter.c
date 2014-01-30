@@ -19,7 +19,7 @@ void interpret(struct program *program) {
 }
 
 // runs a function
-void runFunc(struct function *fnCall) {
+void runFunc(struct call *fnCall) {
   int i;
 
   // create futures where necessary
@@ -45,7 +45,7 @@ void runFunc(struct function *fnCall) {
 }
 
 // tests to see if a function is one of the builtins
-int isBuiltin(struct function *fnCall) {
+int isBuiltin(struct call *fnCall) {
   char *name = fnCall->name;
 
   if (!strcmp(name, "!") || !strcmp(name, "|")) {
@@ -67,10 +67,15 @@ int isBuiltin(struct function *fnCall) {
   return 0;
 }
 
-void runBuiltin(struct function *fnCall) {
-  char *name = fnCall-> name;
+struct variable runBuiltin(struct call *fnCall) {
+  char *name = fnCall->name;
+  struct variable result;
 
   if (strcmp(name, "!") == 0) {
-    
+    struct symbol thingToNot = fnCall->args[0];
+    char bit = thingToNot.referant->val.bit;
+    result.val.bit = !bit;
   }
+
+  return result;
 }
