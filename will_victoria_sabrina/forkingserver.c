@@ -5,25 +5,51 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <signal.h>
+#include <sys/shm.h>
+#include <sys/ipc.h>
 
 #include "model.h"
 #include "map.h"
 #include "logic.c"    
 
+int moveKey = 273;
+int turnKey = 274;
+int memdMove;
+int memdTurn;
+net_move *move;
+int *turn;
+int totalPlayers;
+
 void subserver( int socket_client ) {
   int n;
   int b;
   while (1) {
-    b = read( socket_client,terrs, sizeof(terrs));
-    close(socket_client);
+    b = read( socket_client, move, sizeof(net_move));
+    if (!move.destination) {
+      if (*turn >= totalPlayers)
+        *turn = 1;
+      else
+        *turn ++;
+    }
   }
+  shmdt(move);
+  shmdt(turn);
+  close(socket_client);
 }
 
 int main() {
   int socket_id, socket_client;
   int i;
   int n = 1;
-    
+  // shmem
+  memdMove = shmget( moveKey, sizeof(net_move), IPC_CREAT | 0666 );
+  move = (net_move*)shmat(memdMove, NULL, 0);
+  
+  memdTurn = shmget(turnKey, sizeof(int), IPC_CREAT | 0666);
+  turn = (int*)shmat(memdTurn, NULL, 0);
+  
+  //net
   struct sockaddr_in server;
   socklen_t socket_length;
   socket_id = socket( AF_INET, SOCK_STREAM, 0);
@@ -40,36 +66,43 @@ int main() {
 
   i =  listen( socket_id, 1 );
 
-  int total;
   char nPBuf[3];
   printf("How many players? (2-5): ");
-  while (total < 2 || total > 5) {
+  while (totalPlayersPlayers < 2 || totalPlayers > 5) {
     fgets(nPBuf, 3, stdin);
     if (nPBuf[1] == '\n')
       nPBuf[1] = 0;
-    total = atoi(nPBuf);
+    totalPlayers = atoi(nPBuf);
   }
-
+  terrs = territories();
+  distribute(totalPlayers);
+  
   while(1) {
 
     printf("Accpeting a connection\n");
     socket_length = sizeof(server); 
   
-    if (n <= total){
+    if (n <= totalPlayers){
       socket_client = accept(socket_id, (struct sockaddr *)&server, &socket_length);
       printf("accepted connection %d\n",socket_client);
       i = fork();
       if ( i == 0 ) {
-	subserver(socket_client);
+        subserver(socket_client);
       }
-      else 
-        close(socket_client); 
+      else {
+        close(socket_client);
+      }
+      n++;
+      printf("Waiting for new connection\n");
     } else {
-      terrs = territories();
+      break;
     }
-
-    n++;
-    printf("Waiting for new connection\n");
   }
-
+  
+  struct shmid_ds d;
+  shmctl( memdMove, IPC_RMID, &d );
+  
+  struct shmid_ds del;
+  shmctl( memdTurn, IPC_RMID, &del );
+  
 }

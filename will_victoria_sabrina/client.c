@@ -8,8 +8,9 @@
 #include <netinet/in.h>
 
 #include "map.h"
-#include "logic.c"
+#include "logic.h"
 #include "model.h"
+#include "ui.h"
 
 int main(int argc, char **argv) {
 
