@@ -18,4 +18,4 @@ int battle(int uAtt, int uDef);
 char tadjacent(territory*, territory*);
 
 // given the number of players, distributes territories evenly
-
+void distribute(int numPlayers); 
