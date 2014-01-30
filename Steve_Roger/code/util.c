@@ -60,9 +60,6 @@ void createDevices() {
             strcpy(last, f[i]);
         }
     }
-    goToRandomInner();
-    printf("%s\n", relativeDir());
-    hidePrince();
 }
 
 void goToRoot() {
