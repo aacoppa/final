@@ -22,18 +22,15 @@ int main() {
 	printColor("Welcome to Conquest of the Nigerian Prince v1!\n", C_GREEN);
 	printColor("Type exit to quit the game\n\n", C_CYAN);
 
-	printf("%s\n",relativeDir());
+	//printf("%s\n",relativeDir());
 
 	init();
 	return run();
 }
 
 void init() {
-	int save = saveExists();
-	if (save == 0) {
-	    // save doesn't exist, build files and shit
-	    createDevices();
-	}
+	saveExists(); // create files
+	createDevices();
 }
 
 int run() {
