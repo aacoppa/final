@@ -1,8 +1,8 @@
 #include "server.h"
 
-int*** rooms;
-void printRoomList();
+void printRoomList(int***);
 int main() {
+  int*** rooms;
   int socket_id, socket_client;
   char buffer[256];
   int i, b;
@@ -57,14 +57,14 @@ void subserver( int socket_client ) {
 	//Add client to room requested and send
 	//client a confirmation or failure
 	int room = (int)(buffer[sizeof(JOIN_ROOM)]);
-	int join = joinRoom(socket_client,room);
+	rooms = joinRoom(socket_client,room,rooms);
 	printRoomList();
 	printf("%d joined room %d\n", socket_client,room);
       }
       if ( strncmp(buffer, CREATE_ROOM, sizeof(CREATE_ROOM)) == 0 ){
 	//Create Room and send client his/her room number
 	//If room not created, send failure message
-	int room = createRoom(socket_client);
+	rooms = createRoom(socket_client,rooms);
 	printf("%d created room %d\n", socket_client,room);
 	printRoomList();
 	//Send client confirmation or rejection
@@ -72,7 +72,7 @@ void subserver( int socket_client ) {
       if ( strncmp(buffer, LEAVE_ROOM, sizeof(buffer)) == 0 ){
 	//Remove client from room
 	int room = (int)(buffer[sizeof(JOIN_ROOM)]);
-	int left = leaveRoom(socket_client,room);
+        rooms = leaveRoom(socket_client,room,rooms);
 	printf("%d left room %d\n", socket_client,room);
 	printRoomList();
 	//Send client confirmation
@@ -95,29 +95,25 @@ void subserver( int socket_client ) {
 }
 
 
-int joinRoom(int socket_client,int roomNum){
+int*** joinRoom(int socket_client,int roomNum, int*** rooms){
   int i;
-  int added = -1;
   for(i = 0;i < NUM_PLAYERS_PER_ROOM;i++){
     if(*rooms[roomNum][i] == 0){
       *rooms[roomNum][i] = socket_client;
-      added = 1;
       break;
     }
   }
-  return added;
+  return rooms;
 }
 /* Makes client the "leader" of first
    empty room.
    Returns: room number if successful,
             -1 if not successful. */
-int createRoom( int socket_client ) {
+int*** createRoom( int socket_client,int*** rooms) {
   int roomNum = findEmptyRoom();
-  if(roomNum == -1)
-    return -1;
-  else{
+  if(roomNum != -1)
     *rooms[roomNum][0] = socket_client;
-    return roomNum;
+  return rooms;
   }
 }
 /* Finds first empty room.
@@ -131,7 +127,7 @@ int findEmptyRoom(){
   }
   return -1;
 }
-int leaveRoom(int socket_client,int roomNum){
+int*** leaveRoom(int socket_client,int roomNum,int*** rooms){
   int i;
   for(i = 0;i < NUM_PLAYERS_PER_ROOM;i++){
     if(*rooms[roomNum][i] == socket_client){
@@ -150,13 +146,13 @@ int getMaze(int socket_client){
 int updateScore(int socket_client,int roomNum,int score){
   return -1;
 }
-void printRoomList(){
+void printRoomList(int*** rooms){
   printf("PRINTING ROOMS\n");
-  int x,y;
-  for(x = 0;x < NUM_ROOMS;x++){
-    printf("Room %d: [ ",x);
+  int i,y;
+  for(i = 0;i < NUM_ROOMS;i++){
+    printf("Room %d: [ ",i);
     for(y = 0;y < NUM_PLAYERS_PER_ROOM;y++){
-      printf("%d , ",*rooms[x][y]);
+      printf("%d , ",*rooms[i][y]);
     }
     printf("]\n");
   }
