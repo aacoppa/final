@@ -110,6 +110,11 @@ void hidePrince() {
     goToRandomInner(); // find random folder
     createFile(PRINCE_NAME);
 }
+void hidePassword() {
+    goToRoot();
+    goToRandomInner(); // find random folder
+    createFile(PRINCE_NAME);
+}
 int isPrinceHere() {
     DIR *dp;
     struct dirent *ep;
