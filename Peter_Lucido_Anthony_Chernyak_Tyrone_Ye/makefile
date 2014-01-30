@@ -1,8 +1,8 @@
 main: Servers Play Clean
 
-Servers: DRMserver.c SaveServer.c
-	gcc DRMserver.c -c Verify
-	gcc SaveServer.c -c ToSave
+Servers: DRMserver.c Saveserver.c
+	gcc DRMserver.c -o Verify
+	gcc Saveserver.c -o ToSave
 
 Play: DRM.c Engine
 	gcc DRM.c
