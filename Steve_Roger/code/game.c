@@ -11,6 +11,7 @@ char *l = NULL;
 size_t linecap = 0;
 char *name;
 char save = 0;
+char password[20];
 
 int main() {
 	setbuf(stdout, NULL);
@@ -29,7 +30,8 @@ int main() {
 }
 
 void init() {
-	//rmdir("files");
+	generatePassword(password, sizeof(password));
+	rmdir("files");
 	saveExists(); // create files
 	createDevices();
 	chdir("files");
@@ -49,6 +51,7 @@ int run() {
 
 	// add intro (backstory)
 start:
+	save = 0;
 	printf("What is your name?\n");
 	do {
 		getInput(false);
@@ -124,6 +127,7 @@ b: save = 'b';
 			}
 		}
 c: save = 'c';
+		printf("\n");
 		printColor("Use ls to see the files in the current directory.\n", C_CYAN);
 		printColor("Use rm to remove files.\n", C_CYAN);
 		loop {
@@ -133,17 +137,39 @@ c: save = 'c';
 				printf("What kind of voodoo magic is this...?\n");
 				printf("...Perhaps you have to have sudo permissions.\n");
 			} else if (!strcasecmp(l, "sudo rm " PRINCE_NAME)) {
-				printf("Jamal forgot to securely store the password in his excitement.")
-				printf("It's probably lying around here somewhere in these folders.");
+				printf("Jamal forgot to securely store the password in his excitement.\n");
+				printf("It's probably lying around here somewhere in these folders.\n");
+				hidePassword();
 				printf("Enter the password:\n");
+				goToRoot();
+				printColor("You are now at the root.\n", C_CYAN);
 				break;
 			}
 		}
+d:
 		loop {
 			getInput(true);
+			if (!strcmp(l, password)) {
+				break;
+			} else {
+				printf("The password is incorrect.\n");
+			}
 		}
-		printf("You managed to destroy Jamal from existence, but he managed to delete 99%% of your porn stash.\n");
-		printf("There is no happy ending. Better luck in real life.\n");
+
+		printf("Make a choice " C_CYAN "(type a or b)" C_RESET ":\n"
+			"\tA) Actually delete Jamal.\n"
+			"\tB) Banish Jamal from your filesystem.\n"
+		);
+		do {
+			getInput(true);
+		} while (strcasecmp(l, "a") && strcasecmp(l, "b"));
+		if (!strcasecmp(l, "a")) {
+			printf("You managed to destroy Jamal from existence, but he managed to delete 99%% of your porn stash.\n");
+			printf("There is no happy ending. Better luck in real life.\n");
+		} else if (!strcasecmp(l, "b")) {
+			printf("You see news of Jamal ruining the lives of other good citizens, but at least he's too scared to mess with you again.\n");
+			printf("He still managed to delete 99%% of your porn stash though. You vow to get revenge.\n");
+		}
 	}
 
 	free(l);
@@ -180,7 +206,7 @@ int getInput(int denyEmpty) {
 		} else if (!strcasecmp(l, "ls")) {
 			ls();
 		} else if (!strncasecmp(l, "cd", 2)) {
-			if (!strncmp(l + 3, "..", 2) && !strncmp(relativeDir(), "/", 1)) {
+			if (!strncmp(l + 3, "..", 2) && !strncmp(relativeDir(), "/", 2)) {
 				printf("You are already in the root dir...\n");
 			} else if (chdir(l + 3) != -1) {
 				char * rel = relativeDir();
@@ -203,6 +229,15 @@ int getInput(int denyEmpty) {
 						printf("Jamal has 2,147,483,648 gp, 1 more coin than is programmatically possible. That's a Nigerian Prince for you.\n");
 					} else {
 						printf("Jamal isn't here.\n");
+					}
+				} else if (save == 'c') {
+					if (isPasswordHere()) {
+						printf("You found the password to end Jamal's whole family tree:\n");
+						printf("%s\n", password);
+						save = 'd';
+						break;
+					} else {
+						printf("Password not detected here.");
 					}
 				}
 			} else {
