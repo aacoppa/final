@@ -5,7 +5,12 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include "model.c"
 
+*net_move turn(RISK_move risk_move);
+
+*net_move turn(RISK_move risk_move){
+}
 
 void subserver( int socket_client ) {
 
@@ -24,7 +29,7 @@ void subserver( int socket_client ) {
         break;
 
       //processand write back
-      capitalize( buffer );
+      
 
       write( socket_client, buffer, strlen(buffer));
     }
