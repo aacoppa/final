@@ -146,7 +146,7 @@ c: save = 'c';
 				break;
 			}
 		}
-d: save = 'd';
+d:
 		loop {
 			getInput(true);
 			if (!strcmp(l, password)) {
