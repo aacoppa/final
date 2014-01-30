@@ -70,8 +70,8 @@ start:
 		printf("No worries though because");
 	}
 	printf("earlier today, you received an email from trusted Nigerian Prince, %s.\n", PRINCE_NAME);
-	printColor("\nType anything to continue.\n", C_CYAN);
-	getInput(false);
+	printf("\n");
+	typeToContinue();
 	printf("From: <princejamal2401@aol.com>\n\n");
 	printf("DEAR %s,\n\n", name);
 	printf(
@@ -104,11 +104,16 @@ a:
 		printf("That's racist. Jamal is just as much a real person as you. YOU think he's not a person just because he's black?!\n");
 		goto lose;
 	} else {
-b:
 		printf("Too bad Jamal is a master hacker. Today is not your day " C_RED "=[" C_RESET "\n");
-		printf("He somehow ssh's into your system and tries to crack your encrypted sudo password in order to rm -rf your 700TB of pornography.\n");
+		printf("He somehow sshs into your system and tries to crack your encrypted sudo password in order to rm -rf your 700TB of pornography.\n");
 		printf("Good thing he'll never find out that it's stored in '/Not Porn'\n");
+		printf("\n");
 		typeToContinue();
+		printf("You find out that your mom helped him ssh in because she though he was a friend from school.\n");
+		printf("Goddammit mom...\n");
+		printf("Jamal manages to find the encrypted file with all your credentials.\n");
+		printf("He creates a secure shack in your file system so that he can have a place to stay while he tries to brute force your password.\n");
+		printf("You must find him before it is too late!\n");
 	}
 
 	free(l);
@@ -157,7 +162,7 @@ int getInput(int denyEmpty) {
 }
 
 void typeToContinue() {
-	printColor("\nType anything to continue.\n", C_CYAN);
+	printColor("Type anything to continue.\n", C_CYAN);
 	getInput(false);
 }
 
