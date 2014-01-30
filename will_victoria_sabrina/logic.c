@@ -48,7 +48,7 @@ void distribute(int numPlayers) {
   while (counter <= 41) {
     int a = (int)(arc4random() % 42);
     if (*(temp + a) != -1) {
-      ((territory)*(terrs + *(temp + a))).owner = curr;
+      (*(terrs + *(temp + a))).owner = curr;
       *(temp + a) = -1;
       if (curr == numPlayers) {
 	curr = 1;
