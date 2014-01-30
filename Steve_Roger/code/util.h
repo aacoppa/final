@@ -9,6 +9,7 @@
 #include <unistd.h>
 
 #define loop for(;;)
+#define PRINCE_NAME "Jamal Kareem Tijani"
 
 // Prints an error message
 void err(char *m);
@@ -22,3 +23,5 @@ void createDevices(); // creates all the folders and shit
 
 void goToRoot(); // goes to root files/
 void goToRandomInner(); // goes to a random innermost folder
+
+void hidePrince(); // when the prince hides in a random folder and you gotta find him

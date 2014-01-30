@@ -21,7 +21,7 @@ char *currentDir() {
     return wd;
 }
 void createFile(char *name) {
-    int fd = open(name, O_WRONLY | O_cREAT);
+    int fd = open(name, O_WRONLY | O_CREAT);
     close(fd);
 }
 
@@ -47,6 +47,7 @@ void createDevices() {
             strcpy(last, f[i]);
         }
     }
+    hidePrince();
 }
 
 void goToRoot() {
@@ -55,7 +56,7 @@ void goToRoot() {
 void goToRandomInner() {
     goToRoot();
     int i;
-    for(i=0;i<2;i++) { // do it twice because all innermost directories are 2 levels deep
+    for(i=0;i<3;i++) { // do it thrice because all innermost directories are 3 levels deep
         /* This is the most ghetto way to pick a random subdirectory
          * Get the # of directories, x
          * Then loop through the directories, probability of choosing the first one is 1/x
@@ -81,6 +82,12 @@ void goToRandomInner() {
         }
         closedir(dp);
     }
+}
+
+void hidePrince() {
+    goToRoot();
+    goToRandomInner(); // find random folder
+    createFile(PRINCE_NAME);
 }
 
 
