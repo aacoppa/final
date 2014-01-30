@@ -1,4 +1,5 @@
 #include "server.h"
+#include "maze.h"
 
 int main() {
   int socket_id, socket_client;
@@ -26,9 +27,6 @@ int main() {
     i = fork();
     if ( i == 0 )
        subserver(socket_client);
-    else 
-        close(socket_client);
-
 
     printf("Waiting for new connection\n");
   }
@@ -50,7 +48,7 @@ void subserver( int socket_client ) {
     
     updateScore(buffer);
     strncpy(buffer,getMaze(MAZE_WIDTH,MAZE_HEIGHT),sizeof(buffer));
-    
+    printf("buffer:%s\n",buffer);
     write( socket_client, buffer, strlen(buffer));
   }
   
@@ -63,10 +61,10 @@ char* getMaze(int width,int height){
   height = height*2 + 3;
   
   maze=(char*)malloc(width*height*sizeof(char));
-  GenerateMaze(maze,width,height);
-  ShowMaze(maze,width,height);
+  generateMaze(maze,width,height);
+  showMaze(maze,width,height);
   return maze;
 }
-int updateScore(){
+int updateScore(char* buffer){
   return -1;
 }

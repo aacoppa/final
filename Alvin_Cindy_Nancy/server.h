@@ -13,9 +13,9 @@
 #include <netinet/in.h>
 
 #include "constants.h"
-#include "maze.h"
+#include "maze.h" 
 
 void subserver(int);
-int getMaze(int,int);
-int updateScore();
+char* getMaze(int,int);
+int updateScore(char*);
 #endif
