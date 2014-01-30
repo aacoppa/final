@@ -7,7 +7,6 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 
-#include <string.h>
 #define READ 0
 #define WRITE 1
 
@@ -119,47 +118,12 @@ int main() {
 
 }
 
-/*
-void subserver( int socket_client ) {
-
-  //    char buffer[256];
-  float buffer[4];
-  int b, i;
-  b = 0;
-  
-  //do client stuff continuously
-  while (1) {
-    
-    //read from the client
-    b = read( socket_client, buffer, sizeof(buffer) );
-    printf("Received: %f\n", buffer[0]);
-    
-    if ( strncmp(buffer,"exit", sizeof(buffer)) == 0 )
-      break;
-    
-    //    write(A2s[WRITE],buffer,strlen(buffer));
-    write(A2s[WRITE],buffer,sizeof(float)*2);
-    read(A2c[READ],buffer,sizeof(buffer));
-    //    write( socket_client, buffer, strlen(buffer));
-    write( socket_client, buffer, sizeof(buffer));
-    }
-    
-    //close this client connection
-    close(socket_client);
-}
-*/
-
 void subserver( int socket_client,int X2s[2],int X2c[2]) {
   float buffer[10];  
   int b,i,j;
   b = 0;
   while (1) {
     b = read( socket_client, buffer, sizeof(buffer) );
-    /*
-    printf("this is what what received\n\n");
-    for(j = 0;j<10;j++)
-      printf("buffer[%d]: %f\n",j,buffer[j]);
-    */
     write(X2s[WRITE],buffer,sizeof(float)*2);
     read(X2c[READ],buffer,sizeof(buffer));
     write( socket_client, buffer, sizeof(buffer));
