@@ -1,11 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 #include "main.h"
 
 int main(int argc, char **argv) {
     struct stack_node *stack_top = 0;
     struct routine cur_level;
-    int fd = fopen(argv[1]);
+    int fd = open(argv[1], O_RDONLY);
     char in[16], i = 0;
     char in_comment = 0;
 
@@ -13,10 +16,10 @@ int main(int argc, char **argv) {
         // ignore comments
         if (in_comment) {
             if (in[0] == '}')
-                in_comment = true;
+                in_comment = 1;
             i = 0;
         } else if (in[i] == '{') {
-            in_comment = true;
+            in_comment = 1;
         } else {
             if (i) {
                 // previous text must have been a long number
@@ -31,12 +34,12 @@ int main(int argc, char **argv) {
                     char c = in[i];
                     in[i] = 0;
                     data.numval = atoi(in);
-                    add_node(node, routine);
+                    add_node(node, cur_level);
                     i = 0;
 
                     // deal with the new character
                     if (c == '[') {
-                        struct iq_new_node new_node;
+                        struct iq_node new_node;
                         new_node.type = T_RTN;
                         union node_data data;
                         new_node.instr = data;
@@ -92,7 +95,7 @@ int main(int argc, char **argv) {
     }
 }
 
-void addNode(struct iq_node node, struct routine routine) {
+void add_node(struct iq_node node, struct routine routine) {
     if (routine.nodes) {
         struct iq_node cur_node = *routine.nodes;
         while (cur_node.next)
