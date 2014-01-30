@@ -20,9 +20,11 @@ void subserver( int socket_client ) {
     char buffer[256];
     char s[256];
     char n[1];
-    int b, i, c, r, mod;
+    int b, i, c, r, mod,mod2;
     b = 0;
     mod = 537;
+    mod2 = 105;
+    srand(time(NULL));
     //do client stuff continuously
     while (1){
       memset(buffer,0,strlen(buffer));
@@ -38,7 +40,7 @@ void subserver( int socket_client ) {
 	printf("%s\n",buffer);
 	b = write(socket_client,buffer,strlen(buffer));
       }
-      else if(strcmp(n,"4") == 0){
+      if(strcmp(n,"4") == 0){
 	for(c = 5;c > 4;c--){
 	  strcat(buffer,white[r = (rand()%mod)]);
 	  strcat(buffer,",");
@@ -48,6 +50,14 @@ void subserver( int socket_client ) {
 	printf("%s\n",buffer);
 	b = write(socket_client,buffer,strlen(buffer));
       }
+      else if(strcmp(n,"8")){
+	strcat(buffer,black[r = (rand()%mod2)]);
+	mod2--;
+	delete(black,r);
+	printf("%s\n",buffer);
+	b = write(socket_client,buffer,strlen(buffer));
+      }
+      
       //read from the client
       b = read( socket_client, buffer, sizeof(buffer) );
       printf("Received: %s\n", buffer); 

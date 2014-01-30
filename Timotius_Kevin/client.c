@@ -17,6 +17,7 @@ int main(int argc, char **argv) {
   char* hand[5];
   int num = 0;
   int holder;
+  int black = 8;
 
   
   struct sockaddr_in sock;
@@ -43,15 +44,25 @@ int main(int argc, char **argv) {
   //do client stuff continuously
   while (1) {
     //get white cards
-    sprintf(buffer,"%d",num);
+    if(num < 5)
+      sprintf(buffer,"%d",num);
+    else if(black == 8)
+      sprintf(buffer,"%d",black);
     b = write(socket_id,buffer,strlen(buffer) + 1);
-    b = read(socket_id,buffer,sizeof(buffer));
-    num = 5;
-    printf("\tReceived: %s\n",buffer);
-    char* line = buffer;
-
-    for(holder = 0;hand[holder] == NULL;holder++){
-      hand[holder] = strsep(&line,",");
+    if(num < 5){
+      b = read(socket_id,buffer,sizeof(buffer));
+      num = 5;
+      printf("\t White Received: %s\n",buffer);
+      char* line = buffer;
+      
+      for(holder = 0;hand[holder] == NULL;holder++){
+	hand[holder] = strsep(&line,",");
+      }
+    }
+    else if(black == 8){
+      b = read(socket_id,buffer,sizeof(buffer));
+      printf("\t Black Received:%s\n",buffer);
+      black++;
     }
     printf("Enter message: ");
     fgets(buffer, sizeof(buffer), stdin);

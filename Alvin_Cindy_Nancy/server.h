@@ -28,10 +28,10 @@ typedef struct mazeStruct{
 
 void subserver(int);
 
-int joinRoom(int,int);
-int createRoom(int);
+int*** joinRoom(int,int,int***);
+int*** createRoom(int,int***);
 int findEmptyRoom();
-int leaveRoom(int,int);
+int*** leaveRoom(int,int,int***);
 int getMaze(int);
 int updateScore(int,int,int);
 #endif
