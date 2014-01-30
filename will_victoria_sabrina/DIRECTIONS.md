@@ -6,6 +6,10 @@ portion. If you make and run ./RISK you'll see our beautiful UI (which
 prints info in the terminal based on interactions--better user
 feedback requires info to be passed from the network). Hopefully we'll
 have it for you tomorrow (Jan 30). So sorry about that.
+
+There should be an email in your inbox shortly, explaining what
+exactly went wrong.
+
 -- The RISK Team
 
 # Install
