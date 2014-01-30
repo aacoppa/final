@@ -44,6 +44,15 @@ void init() {
 int run() {
 	/******* MAIN SECTION *******/
 
+	char save = 0;
+
+	switch(save) {
+		case 'a':
+			goto a;
+		case 'b':
+			goto b;
+	}
+
 	// add intro (backstory)
 start:
 	printf("What is your name?\n");
