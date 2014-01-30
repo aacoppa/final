@@ -109,7 +109,7 @@ b:
 		printf("Goddammit mom... (ノಠ益ಠ)ノ彡┻━┻\n");
 		printf("Jamal manages to find the encrypted file with all your credentials.\n");
 		printf("He creates a secure shack in your file system so that he can have a place to stay while he tries to brute force your password.\n");
-		printf("You must find him before it is too late!\n\n");
+		printf("You must find and delete him before it is too late!\n\n");
 		printColor("Use cd to navigate the system.\n", C_CYAN);
 		printColor("Use pwd to see the current directory.\n", C_CYAN);
 		loop {
@@ -147,16 +147,16 @@ int getInput(int denyEmpty) {
 		*strchr(l, '\n') = '\0'; // delete \n char
 		// if not nothing entered
 		if (!strcasecmp(l, "pwd")) {
-			pwd: printf("%s\n", relativeDir());
+			printf("%s\n", relativeDir());
 		} else if (!strcasecmp(l, "ls")) {
 			ls();
 		} else if (!strncasecmp(l, "cd", 2)) {
 			if (chdir(l + 3) != -1) {
 				char * rel = relativeDir();
-				if (!strcasecmp(l, "~/Computer/Documents/Work")) {
+				printf("%s\n", rel);
+				if (!strcasecmp(rel, "~/Computer/Documents/Work")) {
 					printf("This is serious business; he won't be in here.\n");
 				}
-				goto pwd;
 			} else {
 				perror("cd");
 				printColor("Type ls to list possible directories.\n", C_CYAN);

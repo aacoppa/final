@@ -29,8 +29,7 @@ char * relativeDir() {
     getcwd(cwd, sizeof(cwd));
     char *wd = cwd;
     while (strncmp(wd, "files", strlen("files")) != 0) wd++;
-    wd += 4;
-    strncpy(wd, "~", 1); // adds ~ as root dir
+    wd += 5;
     return wd;
 }
 void ls() {
