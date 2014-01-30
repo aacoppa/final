@@ -14,11 +14,11 @@ void subserver( int socket_client ) {
   int n;
   int b;
   terrs = territories();
-    while (1) {
-     
-      distribute(n);
-      b = read( socket_client,terrs, sizeof(terrs));
+  while (1) {
+    distribute(n);
+    b = read( socket_client,terrs, sizeof(terrs));
     close(socket_client);
+    }
 }
 
 int main() {
