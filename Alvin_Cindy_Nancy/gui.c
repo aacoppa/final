@@ -1,20 +1,23 @@
-#include "main.h"
-#include "../maze.h"
+#include "gui.h"
+#include "maze.h"
 
-int main(int argc, char *argv[]){
+int time(){
   SDL_Surface *screen;
   SDL_Surface *wall;
   SDL_Surface *floor;
   SDL_Surface *minion;
   SDL_Event event;
-  
+  int ticks = 0;
+
   init();
+  //sets up the window where the maze shows up.
   screen = SDL_SetVideoMode(100, 100, 1, SDL_SWSURFACE | SDL_ANYFORMAT);
   if (screen == NULL){
     errorMessage("Could not set up video.");
     exit(0);
   }
-  
+
+  //generates maze
   char *maze = (char *) malloc(100 * sizeof(char));
   GenerateMaze(maze, 23, 23);
   
@@ -24,10 +27,12 @@ int main(int argc, char *argv[]){
   int cy = 1;
   int done = 0;
   
+  //sets tiles to the pics
   loadBMPs("Wall.bmp", wall);
   loadBMPs("Floor.bmp", floor);
   loadBMPs("NotMeatBoy.bmp", minion);
   
+  //draws maze
   int row, col;
   while (!done){
     for (row = 0; row < 10; row ++){
@@ -39,8 +44,9 @@ int main(int argc, char *argv[]){
       }
     }
   }
-  draw(screen, minion, cx, cy);
+  draw(screen, minion, cx, cy); //draws character
 
+  //what happens when person clicks keys
   while (SDL_PollEvent(&event)){
     switch (event.type){
     case SDL_QUIT:
@@ -82,16 +88,18 @@ int main(int argc, char *argv[]){
     }
   }
   
+  ticks = SDL_GetTicks(); //how much time has passed.
+  //Frees up the SDL aka freeing memory up
   SDL_FreeSurface(wall);
   SDL_FreeSurface(floor);
   SDL_FreeSurface(minion);
   SDL_FreeSurface(screen);
   SDL_Quit();
 
-  return 0;
+  return ticks;
 }
   
-
+//This function basically sets a tile to be equal to one of the images.
 void loadBMPs(char *file, SDL_Surface *dest){
   SDL_Surface *temp = SDL_LoadBMP(file);
   if (temp == NULL){
@@ -107,6 +115,7 @@ void errorMessage(char *error){
   printf("%s\n", error);
 }
 
+//This initializes everything so that we can use it and basically is our box of tools.
 void init(){
   if (SDL_Init(SDL_INIT_EVERYTHING) < 0){
     errorMessage("Could not initiate.");
@@ -114,9 +123,10 @@ void init(){
   }
 }
 
+//takes the tiles and fills the screen-> it draws the maze and the character.
 void draw(SDL_Surface *screen, SDL_Surface *img, int ax, int ay){
-  SDL_Rect *r;
+  SDL_Rect r;
   r.x = ax;
   r.y = ay;
-  SDL_BlitSurface(img, NULL, screen, r);
+  SDL_BlitSurface(img, NULL, screen, &r);
 }
