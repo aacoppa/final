@@ -14,21 +14,20 @@
 
 void subserver( int socket_client ) {
 
+    Risk_move input = malloc(sizeof(Risk_move));
     char buffer[256];
     int b, i;
     b = 0;
 
-    //do client stuff continuously
     while (1) {
-
-      //read from the client
-      b = read( socket_client, buffer, sizeof(buffer) );
-      printf("Received: %s\n", buffer);
+    
+      b = read( socket_client, input, sizeof(input) );
+      buffer = input.destination.char;
+      printf("Received: %s:" buffer);
       
       if ( strncmp(buffer, "exit", sizeof(buffer)) == 0 )
         break;
 
-      //processand write back
       
 
       write( socket_client, buffer, strlen(buffer));
