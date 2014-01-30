@@ -1,0 +1,1 @@
+printing room list causes segfault
