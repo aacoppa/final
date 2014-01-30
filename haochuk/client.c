@@ -11,7 +11,8 @@
 int main(int argc, char **argv) {
 
   int socket_id;
-  char buffer[256];
+  //  char buffer[256];
+  float buffer[10];
   int i, b;
   
   struct sockaddr_in sock;
@@ -38,19 +39,25 @@ int main(int argc, char **argv) {
     //do client stuff continuously
     while (1) {
 
-      
+      /*
       printf("Enter message: ");
       fgets(buffer, sizeof(buffer), stdin);
       *(strchr(buffer, '\n')) = 0;
-
-      b = write( socket_id, buffer, strlen(buffer) + 1 );
-
-      if ( strncmp(buffer, "exit", sizeof(buffer)) == 0)
-	break;
-
-      b = read( socket_id, buffer, strlen(buffer));
+      */
+      buffer[0] = 300.56;
+      buffer[1] = 200.69;
       
-      printf("\tReceived: %s\n", buffer);
+      //      b = write( socket_id, buffer, strlen(buffer) + 1 );
+      b = write(socket_id,buffer,sizeof(buffer));
+
+      //      if ( strncmp(buffer, "exit", sizeof(buffer)) == 0)
+      //	break;
+
+      b = read( socket_id, buffer, sizeof(buffer));
+      
+      //      printf("\tReceived: %s\n", buffer);
+      printf("\tReceived: %f\n", buffer[0]);
+      sleep(10);
     }
 
     close(socket_id);
