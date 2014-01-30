@@ -30,7 +30,7 @@ char * relativeDir() {
     char *wd = cwd;
     while (strncmp(wd, "files", strlen("files")) != 0) wd++;
     wd += 5;
-    return wd;
+    return *wd == '\0' ? "/" : wd;
 }
 void ls() {
     DIR *dp;
