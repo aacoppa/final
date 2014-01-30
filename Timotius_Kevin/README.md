@@ -1,0 +1,7 @@
+Cards Against Humanity
+======================
+
+Made in Jan 2014 by Kevin Sun & Timotius Sitorus
+
+Note: To run client or Tclient, include server IP address 
+      as command-line argument

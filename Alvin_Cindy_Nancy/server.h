@@ -13,25 +13,9 @@
 #include <netinet/in.h>
 
 #include "constants.h"
-
-/*typedef struct roomStruct{
-  int timeToStart;
-  int roomMembers;
-} roomStruct;
-
-typedef struct mazeStruct{
-  cell grid[10][10];
-  cell startPos;
-  cell endPos;
-} mazeStruct;
-*/
+#include "maze.h"
 
 void subserver(int);
-
-int*** joinRoom(int,int,int***);
-int*** createRoom(int,int***);
-int findEmptyRoom();
-int*** leaveRoom(int,int,int***);
-int getMaze(int);
-int updateScore(int,int,int);
+int getMaze(int,int);
+int updateScore();
 #endif

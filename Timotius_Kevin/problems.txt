@@ -1,0 +1,22 @@
+Problems with this project:
+
+ - When we began we had assumend that there would be a way to
+   synchronize the subservers created by fork() in order to make 
+   them wait for ne another and perhaps interact with each other.
+   However, because of the nature of forks being merely copies of 
+   parent that has no other connection to the other children besides
+   the fact that they are from the same parent. 
+
+ - At the end we were unable to use fork to do the project because of it
+
+ - we decided to try using thread instead, and at first threads are able 
+   to share memory and thus somewhat intearct with other threads. However,
+   threads continue to fail to wait for one another so that they would have	
+   same prompts throughout the game(Test Tserver/Tclient to see this behavior).
+
+ - Overall, we missed the important fact that C is by nature a blocking 
+   language that tries to executre one thing first before others. In order
+   to do the project, we would need to implement something to simulate 
+   concurrent processing, something that we were unable to do. 
+
+ - We gave it our best. 

@@ -5,6 +5,10 @@ void err(char *m) {
 	exit(EXIT_FAILURE);
 }
 
+void printColor(char *s, char *color) {
+	printf("%s%s"C_RESET, color, s);
+}
+
 int dirExists(char *dir) {
     struct stat s;
     int err = stat(dir, &s);
@@ -15,10 +19,28 @@ char *currentDir() {
     getcwd(cwd, sizeof(cwd));
     int len = strlen(cwd);
     char *wd = cwd;
-    wd += len - 1;
-    while (*(--wd) != '/') ;
-    wd++;
+    wd += len - 1; // go to last character
+    while (*(--wd) != '/') ; // search for a slash
+    wd++; // idk this just works trust me
     return wd;
+}
+char * relativeDir() {
+    char cwd[1024];
+    getcwd(cwd, sizeof(cwd));
+    char *wd = cwd;
+    while (strncmp(wd, "files", strlen("files")) != 0) wd++;
+    wd += 5;
+    return *wd == '\0' ? "/" : wd;
+}
+void ls() {
+    DIR *dp;
+    struct dirent *ep;
+    dp = opendir("./");
+    while ((ep = readdir(dp))) {
+        if (strcmp(ep->d_name,".")==0 || strcmp(ep->d_name,"..")==0) continue;
+        printf("%s ",ep->d_name);
+    }
+    printf("\n");
 }
 void createFile(char *name) {
     int fd = open(name, O_WRONLY | O_CREAT);
@@ -47,7 +69,6 @@ void createDevices() {
             strcpy(last, f[i]);
         }
     }
-    hidePrince();
 }
 
 void goToRoot() {
@@ -89,7 +110,37 @@ void hidePrince() {
     goToRandomInner(); // find random folder
     createFile(PRINCE_NAME);
 }
-
+void hidePassword() {
+    goToRoot();
+    goToRandomInner(); // find random folder
+    createFile("password");
+}
+int isPrinceHere() {
+    DIR *dp;
+    struct dirent *ep;
+    dp = opendir("./");
+    while ((ep = readdir(dp)))
+        if (strcmp(ep->d_name,PRINCE_NAME)==0) return 1;
+    return 0;
+}
+int isPasswordHere() {
+	DIR *dp;
+	struct dirent *ep;
+	dp = opendir("./");
+	while ((ep = readdir(dp)))
+	    if (strcmp(ep->d_name,"password")==0) return 1;
+	return 0;
+}
+void generatePassword(char *dest, size_t length) {
+    char charset[] = "0123456789"
+                     "abcdefghijklmnopqrstuvwxyz"
+                     "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    while (length-- > 0) {
+        size_t index = (double) rand() / RAND_MAX * (sizeof charset - 1);
+        *dest++ = charset[index];
+    }
+    *dest = '\0';
+}
 
 
 

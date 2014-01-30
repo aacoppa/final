@@ -8,14 +8,28 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
+#define C_RED     "\x1b[31m"
+#define C_GREEN   "\x1b[32m"
+#define C_YELLOW  "\x1b[33m"
+#define C_BLUE    "\x1b[34m"
+#define C_MAGENTA "\x1b[35m"
+#define C_CYAN    "\x1b[36m"
+#define C_RESET   "\x1b[0m"
+
 #define loop for(;;)
+#define true 1
+#define false 0
+
 #define PRINCE_NAME "Jamal Kareem Tijani"
 
 // Prints an error message
 void err(char *m);
+void printColor(char *s, char *color);
 
 int dirExists();
 char *currentDir(); // gets current folder (not entire directory)
+char *relativeDir(); // gets directory relative to files/ (for the game)
+void ls(); // lists all the stuff
 void createFile(char *name);
 
 int saveExists();
@@ -25,3 +39,8 @@ void goToRoot(); // goes to root files/
 void goToRandomInner(); // goes to a random innermost folder
 
 void hidePrince(); // when the prince hides in a random folder and you gotta find him
+int isPrinceHere();
+
+void hidePassword();
+int isPasswordHere();
+void generatePassword(char *dest, size_t length);
