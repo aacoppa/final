@@ -11,5 +11,7 @@
 // Prints an error message
 void err(char *m);
 
+int dirExists();
+
 int saveExists();
 void createDevices();
