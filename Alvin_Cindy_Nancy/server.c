@@ -1,13 +1,11 @@
 #include "server.h"
 
-int rooms[NUM_ROOMS][NUM_PLAYERS_PER_ROOM];
+int*** rooms;
 
 int main() {
   int socket_id, socket_client;
   char buffer[256];
   int i, b;
-
-  int roomNum;
   
   struct sockaddr_in server;
   socklen_t socket_length;
@@ -22,17 +20,18 @@ int main() {
   i =  listen( socket_id, 1 );
 
   //Initiate Rooms
-  int x,y;
-  for(x = 0;x < NUM_ROOMS;x++){
-    for(y = 0;y < NUM_PLAYERS_PER_ROOM;y++){
-      rooms[x][y] = 0;
-    }
-  }
+  int sh = shmget(SHMEM_KEY, sizeof(int**),IPC_CREAT | 0666);
+  rooms = (int***)shmat(sh, NULL, 0);
+  *rooms = (int**)calloc(NUM_ROOMS,sizeof(int*));
+  int x;
+  for(x = 0;i < NUM_ROOMS;i++)
+    *rooms[x] = (int*)calloc(NUM_PLAYERS_PER_ROOM,sizeof(int));
 
   //acept connections continuously
   while(1) {
     printf("Accepting a connection\n");
     socket_length = sizeof(server); 
+    printf("reading socket_id");
     socket_client = accept(socket_id, (struct sockaddr *)&server, &socket_length);
     printf("accepted connection %d\n",socket_client);
     i = fork();
@@ -55,14 +54,13 @@ void subserver( int socket_client ) {
       //read from the client
       b = read( socket_client, buffer, sizeof(buffer) );
       printf("Received: %s\n", buffer);
-
+      printf ("%d", strncmp(buffer, JOIN_ROOM, sizeof(JOIN_ROOM)));
       if ( strncmp(buffer, JOIN_ROOM, sizeof(JOIN_ROOM)) == 0 ){
 	//Add client to room requested and send
 	//client a confirmation or failure
 	int room = (int)(buffer[sizeof(JOIN_ROOM)]);
 	int join = joinRoom(socket_client,room);
 	printf("%d joined room %d", socket_client,room);
-	//Send client confirmation or rejection
       }
       if ( strncmp(buffer, CREATE_ROOM, sizeof(CREATE_ROOM)) == 0 ){
 	//Create Room and send client his/her room number
@@ -87,6 +85,7 @@ void subserver( int socket_client ) {
       if ( strncmp(buffer, EXIT_CLIENT, sizeof(buffer)) == 0 ){
 	//Client exited. Exit subserver
         close(socket_client);
+	shmdt(rooms);
 	exit(EXIT_SUCCESS);
       }
       
@@ -107,7 +106,7 @@ int createRoom( int socket_client ) {
   if(roomNum == -1)
     return -1;
   else{
-    rooms[roomNum][0] = socket_client;
+    *rooms[roomNum][0] = socket_client;
     return roomNum;
   }
 }
@@ -117,23 +116,20 @@ int createRoom( int socket_client ) {
 int findEmptyRoom(){
   int i;
   for(i = 0;i < NUM_ROOMS;i++){
-    if(rooms[i][0] == 0)
+    if(*rooms[i][0] == 0)
       return i;
   }
   return -1;
 }
 int leaveRoom(int socket_client,int roomNum){
-  int room[NUM_PLAYERS_PER_ROOM];
   int i;
-  for(i = 0;i < NUM_PLAYERS_PER_ROOM;i++)
-    room[i] = rooms[roomNum][i];
   for(i = 0;i < NUM_PLAYERS_PER_ROOM;i++){
-    if(room[i] == socket_client){
+    if(*rooms[roomNum][i] == socket_client){
       //Shift other client_ids over
       int j;
       for(j = i + 1; j < NUM_PLAYERS_PER_ROOM;j++)
-	room[j-1] = room[j];
-      room[NUM_PLAYERS_PER_ROOM - 1] = 0;
+	*rooms[roomNum][j-1] = *rooms[roomNum][j];
+      *rooms[NUM_PLAYERS_PER_ROOM - 1] = 0;
     }
   }
   return 1;
