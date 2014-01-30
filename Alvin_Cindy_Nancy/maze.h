@@ -4,9 +4,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <string.h>
 
-char* ShowMaze(char*,int,int);
+void showMaze(const char*,int,int);
 void CarveMaze(char*,int,int,int,int);
-void GenerateMaze(char*,int,int);
+void generateMaze(char*,int,int);
 
 #endif

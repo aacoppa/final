@@ -11,11 +11,11 @@
 #include <sys/ipc.h>
 #include <sys/shm.h>
 #include <netinet/in.h>
-
+#include <signal.h>
 #include "constants.h"
-#include "maze.h"
+#include "maze.h" 
 
 void subserver(int);
-int getMaze(int,int);
-int updateScore();
+char* getMaze(char[256],int,int);
+int updateScore(char*);
 #endif
