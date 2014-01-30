@@ -15,9 +15,9 @@ char *currentDir() {
     getcwd(cwd, sizeof(cwd));
     int len = strlen(cwd);
     char *wd = cwd;
-    wd += len - 1;
-    while (*(--wd) != '/') ;
-    wd++;
+    wd += len - 1; // go to last character
+    while (*(--wd) != '/') ; // search for a slash
+    wd++; // idk this just works trust me
     return wd;
 }
 void createFile(char *name) {
