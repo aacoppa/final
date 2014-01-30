@@ -20,14 +20,17 @@ char *currentDir() {
     wd++;
     return wd;
 }
+void createFile(char *name) {
+    int fd = open(name, O_WRONLY | O_cREAT);
+    close(fd);
+}
 
 int saveExists() {
     int makeDir = mkdir("files", 0755);
-    // if it's -1, then it failed to create, and the game has already been started
-    return (makeDir==-1);
+    chdir("files"); // go into files
+    return (makeDir==-1); // if it's -1, then it failed to create, and the game has already been started
 }
 void createDevices() {
-    chdir("files");
     char f[48][25] = {"Computer","down","Documents","down","Work","School","Not Porn","up","Games","down","Club Penguin","League of Legends","Runescape","up","System","down","Programs","Data","up","up",
                       "Phone","down","Documents","down","Music","Pictures","Videos","up","System","down","Programs","Data","up","up",
                       "Tablet","down","Documents","down","Music","Books","Movies","up","System","down","Programs","Data","up","up"};

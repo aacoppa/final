@@ -15,6 +15,7 @@ void err(char *m);
 
 int dirExists();
 char *currentDir(); // gets current folder (not entire directory)
+void createFile(char *name);
 
 int saveExists();
 void createDevices(); // creates all the folders and shit
