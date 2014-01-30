@@ -22,7 +22,7 @@ void runStep(struct iq_node node, struct stack_node *top) {
   case T_RTN:
     topush.data = node.data;
     topush.type = node.type;
-    push(node, top);
+    push(topush, top);
     break;
 
 
