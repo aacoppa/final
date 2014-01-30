@@ -17,6 +17,8 @@ extern void loadMap(char *);
 extern SDL_Surface *loadImage(char *);
 extern void draw(void);
 extern void delay(unsigned int);
+extern void net_update();
+extern void net_init(char **argv);
 
 int main(int argc, char *argv[])
 {
@@ -26,6 +28,9 @@ int main(int argc, char *argv[])
 	/* Start up SDL */
 	
 	init("The Haunted Mansion");
+	
+	// set up network/multiplayer
+	//net_init(argv[0]);
 	
 	/* Call the cleanup function when the program exits */
 	
@@ -77,7 +82,10 @@ int main(int argc, char *argv[])
 		/* Update player's position */
 
 		doPlayer();
-		
+
+		// updates location of player (one in code at this time)
+		//net_update();
+
 		/* Draw everything */
 
 		draw();
