@@ -8,36 +8,38 @@ A) Give him your bank info -> You lost already you goddamn retard
 B) He ends up sshing into your system somehow, and he tries to crack your encrypted password
 	- your mother helped him because she though he was your friend from school, "god dammit mom..."
 
+the comments are the messages you get in game when going to those directories
+
 Files:
 Computer
-    Documents
-        Work
-        School
-        Not Porn
-    Games
-        Club Penguin
-        League of Legends
-        Runescape
-    System
-        Programs
-        Data
+	Documents
+		Work // This is serious business; he won't be in here
+		School // Jamal has an aversion to school.
+		Not Porn // There's no way Jamal can get in here. It is protected by state of the art 2^100 bit encryption
+	Games
+		Club Penguin
+		League of Legends // Jamal is Diamond I, he has no interest in your peasantry.
+		Runescape // Jamal has 2,147,483,648 gp, 1 more coin than is programmatically possible. That's a Nigerian Prince for you.
+	System
+		Programs
+		Data
 Phone
-    Documents
-        Music
-        Pictures
-        Videos
-    System
-        Programs
-        Data
+	Documents
+		Music
+		Pictures
+		Videos
+	System
+		Programs
+		Data
 Tablet
-    Documents
-        Music
-        Books
-        Movies
-    System
-        Programs
-        Data
-        
+	Documents
+		Music
+		Books
+		Movies
+	System
+		Programs
+		Data
+
 
 He finds the file with all your credentials, encrypted by the password, but he doesn't know the password yet.
 First, you must recover this important file.
