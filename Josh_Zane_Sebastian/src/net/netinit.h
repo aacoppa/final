@@ -21,6 +21,8 @@
 #define INFORM_LIVE "LIVE"
 // Header specifying a request for a function to get evaluated
 #define REQUEST_FN "REQFN"
+#define FUNCTION_ARGS "FNARGS"
+#define FUNCTION_CONTENTS "FNCNTS"
 
 #define SLIST_LEN 1024
 

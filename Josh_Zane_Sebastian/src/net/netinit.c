@@ -109,7 +109,6 @@ int send_list(int socket_client) {
   printf("Sending server list: %s\n", slist);
   write(socket_client, slist, strlen(slist));
   return 0;
-
 }
 
 int request_list(struct server* host) {
@@ -233,6 +232,57 @@ int rem_server(struct server* rem, struct server_list* list) {
 }
 
 int send_function(struct function* fn, struct server* dest) {
+  /*
+   * Functions get sent as:
+   *  REQUEST_FN
+   *  sleep
+   *  ARGS
+   *  sleep
+   *  numargs
+   *  sleep
+   *  arg1
+   *  sleep
+   *  arg2
+   *  sleep
+   *  ...
+   *  argn
+   *  sleep
+   *  FUNCTION_CONTENTS
+   *  sleep
+   *  function->text
+   */
+  char buffer[256];
+  struct sockaddr_in sock;
+  int socket_id;
+  int i;
+
+  socket_id = socket(AF_INET, SOCK_STREAM, 0);
+
+  // IPv4, yo
+  sock.sin_family = AF_INET;
+  
+  // Convert the host's ip to something usable
+  inet_aton(dest->ip, &(sock.sin_addr));
+
+  sock.sin_port = htons(PORT);
+
+  // Establish connection
+  int c = connect(socket_id, (struct sockaddr *)&sock, sizeof(sock));
+
+  write(socket_id, REQUEST_FN, sizeof(REQUEST_FN));
+  sleep(1);
+  write(socket_id, FUNCTION_ARGS, sizeof(FUNCTION_ARGS));
+  sleep(1);
+  write(socket_id, fn->numargs, sizeof(fn->numargs));
+  sleep(1);
+  for (i = 0; i < fn->numargs; ++i) {
+    write(socket_id, fn->args[i], sizeof(fn->args[i]));
+    sleep(1);
+  }
+  write(socket_id, FUNCTION_CONTENTS, sizeof(FUNCTION_CONTENTS));
+  sleep(1);
+  write(socket_id, fn->definition, sizeof(fn->definition));
+
 
   return 0;
 }
