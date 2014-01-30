@@ -42,3 +42,5 @@ void hidePrince(); // when the prince hides in a random folder and you gotta fin
 int isPrinceHere();
 
 void hidePassword();
+int isPasswordHere();
+void generatePassword(char *dest, size_t length);
