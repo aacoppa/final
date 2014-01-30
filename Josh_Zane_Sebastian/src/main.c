@@ -3,10 +3,11 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include "interpreter/interpreter.c"
 #include "main.h"
 
 int main(int argc, char **argv) {
-    struct stack_node *stack_top = 0;
+    struct stack_node lol_node;
     struct routine cur_level;
     int fd = open(argv[1], O_RDONLY);
     char in[16], i = 0;
@@ -30,7 +31,7 @@ int main(int argc, char **argv) {
                     struct iq_node node;
                     node.type = T_INT;
                     union node_data data;
-                    node.instr = data;
+                    node.data = data;
                     char c = in[i];
                     in[i] = 0;
                     data.numval = atoi(in);
@@ -42,7 +43,7 @@ int main(int argc, char **argv) {
                         struct iq_node new_node;
                         new_node.type = T_RTN;
                         union node_data data;
-                        new_node.instr = data;
+                        new_node.data = data;
                         struct routine subroutine;
                         data.routine = subroutine;
 
@@ -57,7 +58,7 @@ int main(int argc, char **argv) {
                         struct iq_node new_node;
                         new_node.type = T_CHR;
                         union node_data data;
-                        new_node.instr = data;
+                        new_node.data = data;
                         data.numval = c;
                     }
                     i = 0;
@@ -70,7 +71,7 @@ int main(int argc, char **argv) {
                         struct iq_node node;
                         node.type = T_RTN;
                         union node_data data;
-                        node.instr = data;
+                        node.data = data;
                         struct routine subroutine;
                         data.routine = subroutine;
 
@@ -85,13 +86,20 @@ int main(int argc, char **argv) {
                         struct iq_node node;
                         node.type = T_CHR;
                         union node_data data;
-                        node.instr = data;
+                        node.data = data;
                         data.numval = in[0];
                     }
                     i = 0;
                 }
             }
         }
+    }
+
+
+    // run the shit
+    while (cur_level.nodes) {
+        runStep(*cur_level.nodes, &lol_node);
+        cur_level.nodes = cur_level.nodes->next;
     }
 }
 

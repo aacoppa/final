@@ -1,3 +1,6 @@
+#ifndef __BLERGH__
+#define __BLERGH__
+
 #define T_INT 0
 #define T_CHR 1
 #define T_RTN 2
@@ -20,8 +23,9 @@ struct stack_node {
 
 struct iq_node {
     struct iq_node *next;
-    union node_data instr;
+    union node_data data;
     char type;
 };
 
 void add_node(struct iq_node, struct routine);
+#endif

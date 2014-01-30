@@ -1,104 +1,109 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include "../main.h"
+
+struct stack_node pop(struct stack_node*);
+void push(struct stack_node, struct stack_node*);
 
 //TODO, queue a function's arguments, void enqueue()
 
 void runStep(struct iq_node node, struct stack_node *top) {
-  switch( node.data.type ) {
+  struct stack_node topush;
+  struct stack_node x, y, z, n, *w;
+  int i;
+  switch( node.type ) {
   case T_INT:
-    struct stack_node topush;
     topush.data = node.data;
     topush.type = node.type;
     push(topush, top);
     break;
 
-  case T_SBRTN:
-    struct stack_node topush;
+  case T_RTN:
     topush.data = node.data;
     topush.type = node.type;
     push(node, top);
     break;
 
 
-  case T_CHAR:
-    switch( nonde.data.numval ) {
+  case T_CHR:
+    switch( node.data.numval ) {
     case '+':
-      struct stack_node x = pop(top);
-      struct stack_node y = pop(top);
-      x.data += y.data;
+      x = pop(top);
+      y = pop(top);
+      x.data.numval += y.data.numval;
       push(x, top);
       break;
 
     case '_':
-      struct stack_node x = pop(top);
-      x.data = -(x.data);
+      x = pop(top);
+      x.data.numval *= -1;
       push(x, top);
       break;
 
     case '-':
-      struct stack_node x = pop(top);
-      struct stach_node y = pop(top);
-      x.data -= y.data;
+      x = pop(top);
+      y = pop(top);
+      x.data.numval -= y.data.numval;
       push(x, top);
       break;
 
     case '*':
-      struct stack_node x = pop(top);
-      struct stack_node y = pop(top);
-      x.data *= y.data;
+      x = pop(top);
+      y = pop(top);
+      x.data.numval *= y.data.numval;
       push(x, top);
       break;
 
     case '/':
-      struct stack_node x = pop(top);
-      struct stack_node y = pop(top);
-      x.data /= y.data;
+      x = pop(top);
+      y = pop(top);
+      x.data.numval /= y.data.numval;
       push(x, top);
       break;
 
     case '=':
-      struct stack_node x = pop(top);
-      struct stack_node y = pop(top);
-      if(x == y)
-	x.data = -1;
+      x = pop(top);
+      y = pop(top);
+      if(x.data.numval == y.data.numval)
+	      x.data.numval = -1;
       else
-	x.data = 0;
+	      x.data.numval = 0;
       push(x, top);
       break;
 
     case '<':
-      struct stack_node x = pop(top);
-      struct stack_node y = pop(top);
-      if(x < y)
-	x.data = -1;
+      x = pop(top);
+      y = pop(top);
+      if(x.data.numval < y.data.numval)
+	      x.data.numval = -1;
       else
-	x.data = 0;
+	      x.data.numval = 0;
       push(x, top);
       break;
 
     case '&':
-      struct stack_node x = pop(top);
-      struct stack_node y = pop(top);
-      x.data = -(x.data * y.data);
+      x = pop(top);
+      y = pop(top);
+      x.data.numval = -(x.data.numval * y.data.numval);
       break;
 
     case '~':
-      struct stack_node x = pop(top);
-      if(x.data)
-	x.data = 0;
+      x = pop(top);
+      if(x.data.numval)
+	      x.data.numval = 0;
       else
-	x.data = -1;
+	      x.data.numval = -1;
       push(x, top);
       break;
 
     case '|':
-      struct stack_node x = pop(top);
-      struct stack_node y = pop(top);
-      if(x.data)
-	push(x, top);
+      x = pop(top);
+      y = pop(top);
+      if(x.data.numval)
+	      push(x, top);
       else
-	push(y, top);
+	      push(y, top);
       break;
 
     case '%':
@@ -106,28 +111,27 @@ void runStep(struct iq_node node, struct stack_node *top) {
       break;
      
     case '\\':
-      struct stack_node x = pop(top);
-      struct stack_node y = pop(top);
+      x = pop(top);
+      y = pop(top);
       push(x, top);
       push(y, top);
       break;
 
     case '@':
-      struct stack_node x = pop(top);
-      struct stack_node y = pop(top);
-      struct stack_node z = pop(top);
+      x = pop(top);
+      y = pop(top);
+      z = pop(top);
       push(y, top);
       push(x, top);
       push(z, top);
       break;
 
     case '$':
-      struct stack_node n = pop(top);
-      int i;
-      struct stack_node *x = top;
-      for(i = 0; i < n.data; i++)
-	x = x->cdr;
-      push(*x, top);
+      n = pop(top);
+      w = top;
+      for(i = 0; i < n.data.numval; i++)
+	      w = w->cdr;
+      push(*w, top);
       break;
 
     case '?':
