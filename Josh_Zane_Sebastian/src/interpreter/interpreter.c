@@ -1,12 +1,15 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#define ST_ASSGN 0
+#define ST_FUNCT 1
+
 // interprets a parsed version of the program, split into statements
-void interpret(struct program *program) {
+void interpret(struct statement* statements, int numStatements) {
   int i;
 
-  for (i = 0; i < program->length; i++) {
-    struct statement stmt = program->statements[i];
+  for (i = 0; i < numStatements; i++) {
+    struct statement stmt = statements[i];
     if (stmt.type == ST_ASSGN) {
       // a = | b c
       assign(stmt.parts[1], stmt.parts[0]);
@@ -15,6 +18,10 @@ void interpret(struct program *program) {
       runFunc(stmt.parts[0]);
     }
   }
+}
+
+void assign(struct statement, struct symbol) {
+  
 }
 
 // runs a function
