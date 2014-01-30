@@ -75,6 +75,14 @@ struct variable runBuiltin(struct call *fnCall) {
     struct symbol thingToNot = fnCall->args[0];
     char bit = thingToNot.referant->val.bit;
     result.val.bit = !bit;
+    result.val.typeid = 0; // bit type
+  } else if (strcmp(name, "|") == 0) {
+    char a = fnCall->args[0].referant->val.bit;
+    char b = fnCall->args[1].referant->val.bit;
+    result.val.bit = a || b;
+    result.val.typeid = 0; // bit type
+  } else if (strcmp(name, "<")) {
+    
   }
 
   return result;
