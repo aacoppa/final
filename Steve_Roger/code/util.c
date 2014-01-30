@@ -5,6 +5,10 @@ void err(char *m) {
 	exit(EXIT_FAILURE);
 }
 
+void printColor(char *s, char *color) {
+	printf("%s%s"C_RESET, color, s);
+}
+
 int dirExists(char *dir) {
     struct stat s;
     int err = stat(dir, &s);
@@ -15,10 +19,27 @@ char *currentDir() {
     getcwd(cwd, sizeof(cwd));
     int len = strlen(cwd);
     char *wd = cwd;
-    wd += len - 1;
-    while (*(--wd) != '/') ;
-    wd++;
+    wd += len - 1; // go to last character
+    while (*(--wd) != '/') ; // search for a slash
+    wd++; // idk this just works trust me
     return wd;
+}
+char *relativeDir() {
+    char cwd[1024];
+    getcwd(cwd, sizeof(cwd));
+    char *wd = cwd;
+    while (strncmp(wd, "files", strlen("files")) != 0) wd++;
+    wd += 6;
+    return wd;
+}
+void ls() {
+    DIR *dp;
+    struct dirent *ep;
+    dp = opendir("./");
+    while ((ep = readdir(dp))) {
+        if (strcmp(ep->d_name,".")==0 || strcmp(ep->d_name,"..")==0) continue;
+        printf("%s\n",ep->d_name);
+    }
 }
 void createFile(char *name) {
     int fd = open(name, O_WRONLY | O_CREAT);
@@ -47,7 +68,6 @@ void createDevices() {
             strcpy(last, f[i]);
         }
     }
-    hidePrince();
 }
 
 void goToRoot() {

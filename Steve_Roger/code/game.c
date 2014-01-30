@@ -1,22 +1,15 @@
 #include "game.h"
 
-#define PRINCE_NAME "Jamal Kareem Tijani"
-#define true 1
-#define false 0
-
 void init(); // initialize game or start from last save
 int run();
 void sighandler(int);
+void typeToContinue();
 void prompt();
 int getInput(); // gets the input
 
 char *l = NULL;
 size_t linecap = 0;
 char *name;
-
-void printColor(char *s, char *color) {
-	printf("%s%s"C_RESET, color, s);
-}
 
 int main() {
 	setbuf(stdout, NULL);
@@ -28,6 +21,8 @@ int main() {
 	printf("\n");
 	printColor("Welcome to Conquest of the Nigerian Prince v1!\n", C_GREEN);
 	printColor("Type exit to quit the game\n\n", C_CYAN);
+
+	printf("%s\n",relativeDir());
 
 	init();
 	return run();
@@ -73,8 +68,8 @@ start:
 		printf("No worries though because");
 	}
 	printf("earlier today, you received an email from trusted Nigerian Prince, %s.\n", PRINCE_NAME);
-	printColor("\nType anything to continue.\n", C_CYAN);
-	getInput(false);
+	printf("\n");
+	typeToContinue();
 	printf("From: <princejamal2401@aol.com>\n\n");
 	printf("DEAR %s,\n\n", name);
 	printf(
@@ -90,7 +85,7 @@ start:
 
 a:
 	printf("You have some choices " C_CYAN "(type a, b, or c)" C_RESET ":\n"
-		"\tA) Give Jamal your bank info.\n"
+		"\tA) Give Jamal your bank info. (ಠ_ಠ)\n"
 		"\tB) I've never seen anything that looked so much like a scam. Jamal probably isn't even a real person.\n"
 		"\tC) I respect the name Jamal just as I respect people of all races, but I believe this is illegitimate.\n"
 		"\t   I humbly refuse your offer.\n"
@@ -108,10 +103,21 @@ a:
 		goto lose;
 	} else {
 b:
-		printf("Too bad Jamal is a master hacker. Today is not your day " C_RED "=[" C_RESET "\n");
-		printf("He somehow ssh's into your system and tries to crack your encrypted sudo password in order to rm -rf your 700TB of pornography.\n");
+		printf("Too bad Jamal is a master hacker. Today is not your day (•︵•)\n");
+		printf("He somehow sshs into your system and tries to crack your encrypted sudo password in order to rm -rf your 700TB of pornography.\n");
 		printf("Good thing he'll never find out that it's stored in '/Not Porn'\n");
-
+		printf("\n");
+		typeToContinue();
+		printf("You find out that your mom helped him ssh in because she though he was a friend from school.\n");
+		printf("Goddammit mom... (ノಠ益ಠ)ノ彡┻━┻\n");
+		printf("Jamal manages to find the encrypted file with all your credentials.\n");
+		printf("He creates a secure shack in your file system so that he can have a place to stay while he tries to brute force your password.\n");
+		printf("You must find him before it is too late!\n\n");
+		printColor("Use cd to navigate the system.\n", C_CYAN);
+		printColor("Use pwd to see the current directory.\n", C_CYAN);
+		loop {
+			getInput(true);
+		}
 	}
 
 	free(l);
@@ -150,13 +156,21 @@ int getInput(int denyEmpty) {
 		}
 	} while (read != -1);
 
-	if (strcmp(l, "exit") == 0) {
+	if (!strcasecmp(l, "exit")) {
 		exit(EXIT_SUCCESS);
+	} else if (!strcasecmp(l, "pwd")) {
+		printf("%s\n", relativeDir());
+		l = NULL;
 	} else {
 		//printf(C_RED "Debug: %s\n" C_RESET, l);
 	}
 
 	return read;
+}
+
+void typeToContinue() {
+	printColor("Type anything to continue.\n", C_CYAN);
+	getInput(false);
 }
 
 void prompt() {
