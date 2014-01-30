@@ -7,20 +7,18 @@
 #include "maze.h"
 
 /*Display the maze.*/
-char* showMaze(const char *maze, int width, int height) {
-  char ret[256];
+void showMaze(const char *maze, int width, int height) {
   int x, y;
    for(y = 0; y < height; y++) {
       for(x = 0; x < width; x++) {
          switch(maze[y * width + x]) {
-         case 1:  strcat(ret,"A");  break;
-         case 2:  strcat(ret,"B");  break;
-         default: strcat(ret," ");  break;
+         case 1:  printf("[]");  break;
+         case 2:  printf("<>");  break;
+         default: printf("  ");  break;
          }
       }
-      strcat(ret,"\n");
+      printf("\n");
    }
-   return ret;
 }
 
 
@@ -106,14 +104,14 @@ int main() {
   maze = (char*)malloc(width * height * sizeof(char));
   
 // Generate and display the maze. 
-  GenerateMaze(maze, width, height);
+  generateMaze(maze, width, height);
   
-  ShowMaze(maze, width, height);
-  
+  showMaze(maze, width, height);
 // Clean up.
   free(maze);
   exit(EXIT_SUCCESS);
   return 0;
   
 }
+
 */
