@@ -42,3 +42,6 @@ SDL_Texture *text_texture(char *);
 
 // queues a move to be processed next update
 void queue_move(RISK_move m);
+
+// handle all input
+void handle_input();

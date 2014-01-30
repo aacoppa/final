@@ -8,10 +8,11 @@
 - Hooks for game logic
 - N.Am. data [DONE]
 - S.Am. data [DONE]
-- Europe data
-- Africa data
-- Asia data
-- Australia data
+- Europe data [DONE]
+- Africa data [DONE]
+- Asia data [DONE]
+- Australia data [DONE]
+- Feedback (SDL_ShowSimpleMessageBox())
 
 # Logic
 - simulate battle
