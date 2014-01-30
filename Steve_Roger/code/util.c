@@ -24,6 +24,15 @@ char *currentDir() {
     wd++; // idk this just works trust me
     return wd;
 }
+char *relativeDir() {
+    char cwd[1024];
+    getcwd(cwd, sizeof(cwd));
+    char *wd = cwd;
+    while (strncmp(wd, "files", strlen("files")) != 0) wd++;
+    wd += 6;
+    return wd;
+    
+}
 void createFile(char *name) {
     int fd = open(name, O_WRONLY | O_CREAT);
     close(fd);
@@ -51,6 +60,8 @@ void createDevices() {
             strcpy(last, f[i]);
         }
     }
+    goToRandomInner();
+    printf("%s\n", relativeDir());
     hidePrince();
 }
 
