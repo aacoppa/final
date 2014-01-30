@@ -3,7 +3,7 @@
 #include "dictionary.c"
 
 // interprets a parsed version of the program, split into statements
-void interpret(struct program* program) {
+void interpret(struct program *program) {
   int i;
 
   for (i = 0; i < program->length; i++) {
@@ -11,9 +11,6 @@ void interpret(struct program* program) {
     if (stmt.type == ST_ASSGN) {
       // a = | b c
       assign(stmt.parts[1], stmt.parts[0]);
-    } else if (stmt.type == ST_RETRN) {
-      // < $| b c
-      retVal(stmt.parts[0]);
     } else if (stmt.type == ST_FUNCT) {
       // | b c
       runFunc(stmt.parts[0]);
@@ -22,7 +19,7 @@ void interpret(struct program* program) {
 }
 
 // runs a function
-void runFunc(struct fnCall* fnCall) {
+void runFunc(struct function *fnCall) {
   int i;
 
   // create futures where necessary
@@ -48,7 +45,7 @@ void runFunc(struct fnCall* fnCall) {
 }
 
 // tests to see if a function is one of the builtins
-int isBuiltin(struct fnCall* fnCall) {
+int isBuiltin(struct function *fnCall) {
   char *name = fnCall->name;
 
   if (!strcmp(name, "!") || !strcmp(name, "|")) {
@@ -61,5 +58,19 @@ int isBuiltin(struct fnCall* fnCall) {
 
   if (!strcmp(name, ">") || !strcmp(name, "?")) {
     return 1;
+  }
+
+  if (!strcmp(name, "Y") || !strcmp(name, "<")) {
+    return 1;
+  }
+
+  return 0;
+}
+
+void runBuiltin(struct function *fnCall) {
+  char *name = fnCall-> name;
+
+  if (strcmp(name, "!") == 0) {
+    
   }
 }
