@@ -1,7 +1,7 @@
 #include "server.h"
 
 int*** rooms;
-
+void printRoomList();
 int main() {
   int socket_id, socket_client;
   char buffer[256];
@@ -31,7 +31,6 @@ int main() {
   while(1) {
     printf("Accepting a connection\n");
     socket_length = sizeof(server); 
-    printf("reading socket_id\n");
     socket_client = accept(socket_id, (struct sockaddr *)&server, &socket_length);
     printf("accepted connection %d\n",socket_client);
     i = fork();
@@ -54,7 +53,6 @@ void subserver( int socket_client ) {
       //read from the client
       b = read( socket_client, buffer, sizeof(buffer) );
       printf("Received: %s\n", buffer);
-      printf ("%d\n", strncmp(buffer, JOIN_ROOM, sizeof(JOIN_ROOM)));
       if ( strncmp(buffer, JOIN_ROOM, sizeof(JOIN_ROOM)) == 0 ){
 	//Add client to room requested and send
 	//client a confirmation or failure

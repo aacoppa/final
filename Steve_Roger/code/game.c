@@ -1,5 +1,7 @@
 #include "game.h"
 
+#define PRINCE_NAME "Jamal Kareem Tijani"
+
 void init(); // initialize game or start from last save
 int run();
 void sighandler(int);
@@ -8,6 +10,7 @@ int getInput(); // gets the input
 
 char *l = NULL;
 size_t linecap = 0;
+char *name;
 
 int main() {
 	setbuf(stdout, NULL);
@@ -34,17 +37,26 @@ void init() {
 int run() {
 	/******* MAIN SECTION *******/
 
-	loop {
-		// add intro (backstory)
-		printf("What is your name?\n");
-		getInput();
-		if (strcmp(l, "Roger") == 0 || strcmp(l, "Steve") == 0) {
-			printf("So you are Nobleman %s.\n", l);
-		} else {
-			printf("So you are Peasant %s.\n", l);
-			printf("I've heard much about your failed attempts to produce $$$$$ (profits)\n");
-		}
+	// add intro (backstory)
+	printf("What is your name?\n");
+	getInput();
+	name = strdup(l);
+	if (strcasecmp(l, "Roger") == 0 || strcasecmp(l, "Steve") == 0) {
+		printf("So you are Nobleman %s.\n", l);
+		printf("There is no one in this universe as nomo as you.\nYou should just win the game right now.\n");
+		printf("But that would be no fun tho becase earlier today, you received an email from trusted Nigerian Prince, %s.\n", PRINCE_NAME);
+	} else {
+		printf("So you are Peasant %s.\n", l);
+		printf("I've heard much about your failed attempts to produce $$$$$\n");
+		printf("No worries tho because earlier today you received an email from trusted Nigerian Prince, %s.\n", PRINCE_NAME);
 	}
+	printf("\n");
+	printf("Dear %s,\n\n", name);
+	printf("Don't be afraid that I mysteriously know your name. I am a Nigerian Prince after all and you are my long lost son.");
+	printf(" The Divided States of Staten Island are trying to stage a coup to overthrow my kingdom.");
+	printf(" They want to seize my assets amounting to $100,000,000,000 and use it to pay off their debts to China.");
+	printf(" I cannot allow that to happen.\n");
+	printf("\nPrince %s\n", PRINCE_NAME);
 
 	free(l);
 	return 0;
@@ -59,7 +71,7 @@ int getInput() {
 		if (strcmp(l, "exit") == 0) {
 			exit(EXIT_SUCCESS);
 		} else {
-			printf("Debug: %s\n", l);
+			printf(C_RED "Debug: %s\n" C_RESET, l);
 			return 0;
 		}
 	}
