@@ -113,7 +113,7 @@ void hidePrince() {
 void hidePassword() {
     goToRoot();
     goToRandomInner(); // find random folder
-    createFile(PRINCE_NAME);
+    createFile("password");
 }
 int isPrinceHere() {
     DIR *dp;
@@ -123,7 +123,14 @@ int isPrinceHere() {
         if (strcmp(ep->d_name,PRINCE_NAME)==0) return 1;
     return 0;
 }
-
+int isPasswordHere() {
+	DIR *dp;
+	struct dirent *ep;
+	dp = opendir("./");
+	while ((ep = readdir(dp)))
+	    if (strcmp(ep->d_name,"password")==0) return 1;
+	return 0;
+}
 
 
 
