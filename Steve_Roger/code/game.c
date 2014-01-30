@@ -25,14 +25,14 @@ void init() {
 int run() {
 	char *line = NULL;
 	size_t linecap = 0;
-
+    
 start:
 	goto prompt;
-
-
+    
+    
 	free(line);
 	return 0;
-
+    
 prompt:
 	printf("> ");
 	// read from stdin
