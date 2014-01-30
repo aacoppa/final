@@ -9,8 +9,8 @@
 #define MAX_PART2 5
 #define MAX_PART3 5
 
-char enemyNames[3][256];
-int nameSize = 2;
+char enemyNames[14][256];
+int nameSize = 13;
 
 char mainMenu[256];
 char user[256];
@@ -23,6 +23,7 @@ Room * DRoom;
 
 int left_to_reseed = 4;
 int seed;
+int quit = 1;
 
 char *wType[] = {"Pointer","Knife","Sword","Spear","Halberd"};
 double wTypeBase[] = {0,5,10,15,20};
@@ -38,7 +39,6 @@ int main(){
   //inventory = (Weapon)calloc(1,sizeof(Weapon));
   srand(time(NULL));
   seed = getpid();
-  
   while(1){
     system("clear");
     printf("Welcome to Generic Crawler #%d!\nType Play to start playing, or Exit to Quit the game.\n",rand_lim(545));
@@ -68,7 +68,7 @@ int main(){
 	printStats();
 	system("clear");
 	printf("Would You Like to see the Help Page?\n");
-	while(1){
+	while(quit){
 	  fgets(input,sizeof(input),stdin);
 	  if(strcasecmp("Yes\n",input) == 0){
 	    DisplayHelp();
@@ -85,7 +85,8 @@ int main(){
 	DRoom = calloc(1,sizeof(Room));
 	generateRoom();
       }
-      while(Player->hp > 0){
+      while(Player->hp > 0 && quit){
+	signal(SIGINT, sigHandle);
 	system("clear");
 	printf("Your life: %d \n", Player->hp);
 	if(!DRoom->roomClear)
@@ -137,6 +138,13 @@ int rand_lim(int limit) {
   return (int)((double)limit * ( rand()/(double)RAND_MAX));
 }
 
+void sigHandle(int sig){
+  if(sig == SIGINT){
+    dump();
+    int temp = getpid();
+    kill(temp,SIGQUIT);
+  }
+}
 //Generation-----------------------------------------------------------------------------------------Generation
 
 void generatePlayer(){
@@ -172,6 +180,17 @@ void nameGenerator(){
   strcpy(enemyNames[0],"Giant");
   strcpy(enemyNames[1],"Rat");
   strcpy(enemyNames[2],"Skeleton");
+  strcpy(enemyNames[3],"Minotaur");
+  strcpy(enemyNames[4],"JonAlf Dyrland-Weaver");
+  strcpy(enemyNames[5],"Sweyn's Hair");
+  strcpy(enemyNames[6],"Jar-Jar Binks");
+  strcpy(enemyNames[7],"Segmentation Fault");
+  strcpy(enemyNames[8],"Putter of Doom");
+  strcpy(enemyNames[9],"Generic Monster #52");
+  strcpy(enemyNames[10],"Makarov");
+  strcpy(enemyNames[11],"Reaper");
+  strcpy(enemyNames[12],"Dragonborn");
+  strcpy(enemyNames[13],"Blinky");
 }
 
 void generateRoom(){
@@ -301,6 +320,9 @@ void interpretGame(){
       printf("Your weapons give you a +%d bonus to attack.\n",Player->slot1.attk + Player->slot2.attk);
       getchar();
     }
+  }
+  else if(strcasecmp(input,"Quit\n") == 0 || strcasecmp(input,"Exit\n") == 0){
+    quit = 0;
   }
   else{
     printf("Sorry, I don't understand that\n");
