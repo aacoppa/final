@@ -1,13 +1,14 @@
-^ = fn(a, b) {
-    return ~(|(~(a), ~(b)));
+^ = (a b) {
+    < $! $| $! a $! b
 }
 
-XOR = fn(c, d) {
-    return fn(^, a, b) {
-    	  return |(^(a, b), ^(~(a), ~(b)));
-    } (fn(a, b) { return ~(|(~(a), ~(b)));}, c, d);
+^2 = (a b) {
+    na = ! a
+    nb = ! b
+    naonb = | na nb
+    < $! naonb
 }
 
-XOR = fn(a, b, ^) {
-    return |(^(a, b), ~(|(a, b)));
+xor = (a b) {
+    < $| $^ b $! a $^ a $! b
 }
