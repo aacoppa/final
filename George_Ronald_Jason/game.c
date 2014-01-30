@@ -75,7 +75,7 @@ void split(char ** deckofcards, int turncounter) {
   return;
 }
 
-int main() {
+int gameSetup() {
   printf("Attempting to make deck\n");
   createdeck();
   int p = 0;

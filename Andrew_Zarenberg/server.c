@@ -1,5 +1,5 @@
 #include "headers.h"
-
+#include "game.c"
 
 union semun {
   int val;
