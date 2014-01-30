@@ -29,9 +29,8 @@ char * relativeDir() {
     getcwd(cwd, sizeof(cwd));
     char *wd = cwd;
     while (strncmp(wd, "files", strlen("files")) != 0) wd++;
-    wd += 4;
-    strncpy(wd, "~", 1); // adds ~ as root dir
-    return wd;
+    wd += 5;
+    return *wd == '\0' ? "/" : wd;
 }
 void ls() {
     DIR *dp;
@@ -41,6 +40,7 @@ void ls() {
         if (strcmp(ep->d_name,".")==0 || strcmp(ep->d_name,"..")==0) continue;
         printf("%s ",ep->d_name);
     }
+    printf("\n");
 }
 void createFile(char *name) {
     int fd = open(name, O_WRONLY | O_CREAT);
@@ -109,6 +109,14 @@ void hidePrince() {
     goToRoot();
     goToRandomInner(); // find random folder
     createFile(PRINCE_NAME);
+}
+int isPrinceHere() {
+    DIR *dp;
+    struct dirent *ep;
+    dp = opendir("./");
+    while ((ep = readdir(dp)))
+        if (strcmp(ep->d_name,PRINCE_NAME)==0) return 1;
+    return 0;
 }
 
 

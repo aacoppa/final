@@ -109,11 +109,12 @@ b:
 		printf("Goddammit mom... (ノಠ益ಠ)ノ彡┻━┻\n");
 		printf("Jamal manages to find the encrypted file with all your credentials.\n");
 		printf("He creates a secure shack in your file system so that he can have a place to stay while he tries to brute force your password.\n");
-		printf("You must find him before it is too late!\n\n");
+		printf("You must find and delete him before it is too late!\n\n");
 		printColor("Use cd to navigate the system.\n", C_CYAN);
 		printColor("Use pwd to see the current directory.\n", C_CYAN);
 		loop {
 			getInput(true);
+			//char * rel = relativeDir();
 		}
 	}
 
@@ -147,20 +148,36 @@ int getInput(int denyEmpty) {
 		*strchr(l, '\n') = '\0'; // delete \n char
 		// if not nothing entered
 		if (!strcasecmp(l, "pwd")) {
-			pwd: printf("%s\n", relativeDir());
+			printf("%s\n", relativeDir());
 		} else if (!strcasecmp(l, "ls")) {
 			ls();
 		} else if (!strncasecmp(l, "cd", 2)) {
-			if (chdir(l + 3) != -1) {
+			l += 3; // increment to remove "cd " part
+			if (!strncmp(l, "..", 2) && !strncmp(relativeDir(), "/", 1)) {
+				printf("You are already in the root dir...\n");
+			} else if (chdir(l) != -1) {
 				char * rel = relativeDir();
-				if (!strcasecmp(l, "~/Computer/Documents/Work")) {
+				printf("%s\n", rel);
+				if (!strcmp(rel, "/Computer/Documents/Work")) {
 					printf("This is serious business; he won't be in here.\n");
+				} else if (!strcmp(rel, "/Computer/Documents/School")) {
+					printf("Jamal has an aversion to school.\n");
+				} else if (!strcmp(rel, "/Computer/Documents/Not Porn")) {
+					printf("There's no way Jamal is in here yet. It is protected by state of the art 2^100 bit encryption\n");
+				} else if (!strcmp(rel, "/Computer/Games/Club Penguin")) {
+					printf("It doesn't look like Jamal is sliding around on the ice here.\n");
+				} else if (!strcmp(rel, "/Computer/Games/League of Legends")) {
+					printf("Jamal is Diamond I, he has no interest in your peasantry.\n");
+				} else if (!strcmp(rel, "/Computer/Games/Runescape")) {
+					printf("Jamal has 2,147,483,648 gp, 1 more coin than is programmatically possible. That's a Nigerian Prince for you.\n");
+				} else {
+					printf("Jamal isn't here\n");
 				}
-				goto pwd;
 			} else {
 				perror("cd");
 				printColor("Type ls to list possible directories.\n", C_CYAN);
 			}
+			l -= 3;
 		} else if (!denyEmpty || (l != NULL && *l != '\0')) {
 			break;
 		}

@@ -39,3 +39,4 @@ void goToRoot(); // goes to root files/
 void goToRandomInner(); // goes to a random innermost folder
 
 void hidePrince(); // when the prince hides in a random folder and you gotta find him
+int isPrinceHere();
