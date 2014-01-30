@@ -10,6 +10,7 @@ char *suit[5]= {"D","C","H","S"};
 //Card key: A = Ace, J = Jack, Q = Queen, K = King
 char *card[14]= {"A","2","3","4","5","6","7","8","9","10","J","Q","K","\0"};
 int counter = 52;
+int turncounter = 0;
 
 //makes a deck of 52 cards and shuffles it
 void createdeck () {
@@ -118,7 +119,7 @@ int main() {
       //client will be prompted to work on both (this is gonna be hard to do)
     }
 
-    if (/*all client's booleans READY are true*/) {
+    if (turncounter >= 4) {
       //will compare all the clients with BUST = false and declare the highest the winner
       //ask to play again or end
     }
@@ -127,7 +128,10 @@ int main() {
 }
 
 
-  /* this will most likely be included in the server file.
-     client will have a char **hand, and two booleans READY & BUST, int turncounter (from 1-4) 
-     Maybe an int money (otherwise, get rid of doubledown) */
+  /*
+    this will most likely be included in the server file.
+     client will have a char **hand, and two booleans READY & BUST, int turncounter (from 0-3) 
+     Maybe an int money (otherwise, get rid of doubledown)
+     Each client will keep playing until turncounter is changed. Once turncounter is equal than number of clients, endgame will commence. 
+  */
     
