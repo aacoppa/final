@@ -87,7 +87,7 @@ start:
 
 a:
 	printf("You have some choices " C_CYAN "(type a, b, or c)" C_RESET ":\n"
-		"\tA) Give Jamal your bank info.\n"
+		"\tA) Give Jamal your bank info. (ಠ_ಠ)\n"
 		"\tB) I've never seen anything that looked so much like a scam. Jamal probably isn't even a real person.\n"
 		"\tC) I respect the name Jamal just as I respect people of all races, but I believe this is illegitimate.\n"
 		"\t   I humbly refuse your offer.\n"
@@ -104,13 +104,14 @@ a:
 		printf("That's racist. Jamal is just as much a real person as you. YOU think he's not a person just because he's black?!\n");
 		goto lose;
 	} else {
-		printf("Too bad Jamal is a master hacker. Today is not your day " C_RED "=[" C_RESET "\n");
+b:
+		printf("Too bad Jamal is a master hacker. ლ (ಠ益ಠლ )\n");
 		printf("He somehow sshs into your system and tries to crack your encrypted sudo password in order to rm -rf your 700TB of pornography.\n");
 		printf("Good thing he'll never find out that it's stored in '/Not Porn'\n");
 		printf("\n");
 		typeToContinue();
 		printf("You find out that your mom helped him ssh in because she though he was a friend from school.\n");
-		printf("Goddammit mom...\n");
+		printf("Goddammit mom... (ノಠ益ಠ)ノ彡┻━┻\n");
 		printf("Jamal manages to find the encrypted file with all your credentials.\n");
 		printf("He creates a secure shack in your file system so that he can have a place to stay while he tries to brute force your password.\n");
 		printf("You must find him before it is too late!\n");
