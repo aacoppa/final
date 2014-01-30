@@ -1,0 +1,33 @@
+Group members:
+Brian Chuk
+Haoxin Luo
+
+cd into SDLattempt4 and use make to compile. Program requires SDL 1.2 to run. 
+Files included in project:
+map01.dat
+
+background.jpg 
+ghost.jpg
+smiley.png
+Wooden_Block.PNG
+
+client.c
+draw.c
+draw.h
+defs.h
+graphics.c
+graphics.h
+init.c
+init.h
+input.c
+input.h
+main.c
+main.h
+map.c
+map.h
+player.c
+player.c~
+player.h
+server.c
+structs.h
+
