@@ -67,6 +67,7 @@ int start_listener() {
         }
       }
     }
+    printf("Closing conn\n");
     close(socket_id);
   }
   return 0;
