@@ -38,7 +38,7 @@ int main(int argc, char **argv) {
                     if (c == '[') {
                         struct iq_new_node new_node;
                         new_node.type = T_RTN;
-                        union new_node_data data;
+                        union node_data data;
                         new_node.instr = data;
                         struct routine subroutine;
                         data.routine = subroutine;
@@ -51,9 +51,9 @@ int main(int argc, char **argv) {
                     } else if (c == ' ' || c == '\t' || c == '\n') {
                         // ignore
                     } else {
-                        struct iq_new_node new_node;
+                        struct iq_node new_node;
                         new_node.type = T_CHR;
-                        union new_node_data data;
+                        union node_data data;
                         new_node.instr = data;
                         data.numval = c;
                     }

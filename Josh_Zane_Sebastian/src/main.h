@@ -5,6 +5,7 @@
 struct stack_node {
     struct stack_node *cdr;
     union node_data data;
+    char type;
 }
 
 union node_data {
