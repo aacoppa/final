@@ -33,17 +33,19 @@ void createDevices() {
             strcpy(last, f[i]);
         }
     }
-    chdir("Computer");
-    goToRoot();
-    mkdir("penis", 0755);
     goToRandomInner();
 }
 
 void goToRoot() {
     char cwd[1024];
     int i=0;
-    while (++i<50) {
+    while (++i<10) {
         getcwd(cwd, sizeof(cwd));
+        int len = strlen(cwd);
+        char *wd = cwd;
+        wd += len - 5;
+        if (strcmp(wd,"files")==0) break;
+        chdir("..");
     }
 }
 void goToRandomInner() {
