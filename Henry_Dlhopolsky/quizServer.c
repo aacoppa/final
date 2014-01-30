@@ -11,37 +11,41 @@ typedef struct client{
   int index;
   int rightAnswers;
 } client;
-/*
-client clients[10];
-char questions[10][200];
-int qnum = 0;
-int fd1;
-char buff[1064];
-client users[20];
-char parsed[20][20];
-char timeout[50],accepted[50],rejected[50];
 
-*/
 int main(){
-  char answers[10];
+  char* answers[10];
   char* questions[10];
+  //QUESTIONS AND ANSWERS, SPOILER ALERT
   questions[0] = "If you needed to sort billions of integers what sorting algorithm would be most efficient?\na:Mergesort \nb: Quicksort\nc:Insertion \nd:Heap";
-  answers[0] = 'c';
+  answers[0] = "c";
   questions[1] = "Who were the authors of the book 'The C programming language'?\na:Brains Kenningham and Darnell Rookster\nb:Seemour Butts and Chris P. Fry\nc:Brian Kernighan and Dennis Ritchie\nd:C. Worthy and C. Senor";
-  questions[2] = "What year was google founded?\na: 1990\nb:1993,1998,1830";
-  questions[3] = "What was the name of the progammer who created the GCC Compiler and the origonal Emacs?,Lou Zar,Lau Pole,Louis Charles,Richard Stallman";
-  questions[4] = "What's the name of Linux's mascot?,Toledo,Trunk,Tux,Tuxe";
-  questions[5] = "What was the first videogame system to offer online gaming?,NES,Playstation 1,SEGA Dreamcast,SONY Dreamcast";
-  questions[6] = "How many Star Trek movies have their been?,5,7,11,13";
-  questions[7] = "What is the answer to life the universe and everything?,Earth,Apple Pie,42,Dolphins";
-  questions[8] = "How does one 'accomplish' the first mission of starfox 64?,saving falco, doing a barrel roll, saving slippy, trick question: you must do all of these things";
-  questions[9] = "If global warming continues what commodity from spaceballs might we need on earth?,Oxygen Cans,Wookies,Space Balls,Lazer Guns";
+  answers[1] = "c";
+  questions[2] = "What year was google founded?\na: 1990\nb:1993\nc:1998\nd:1830";
+  answers[2] = "c";
+  questions[3] = "What was the name of the progammer who created the GCC Compiler and the origonal Emacs?\na:Lou Zar\nb:Lau Pole\nc:Louis Charles\nd:Richard Stallman";
+  answers[3] = "d";
+  questions[4] = "What's the name of Linux's mascot?\na:Toledo\nb:Trunk\nc:Tux\nd:Tuxe";
+  answers[4] = "c";
+  questions[5] = "What was the first videogame system to offer online gaming?\na:NES\nb:Playstation 1\nc:SEGA Dreamcast\nd:SONY Dreamcast";
+  answers[5] = "c";
+  questions[6] = "How many Star Trek movies have their been?\na:5\nb:7\nc:11\nd:13";
+  answers[6] = "c";
+  questions[7] = "What is the answer to life the universe and everything?\na:Earth\nb:Apple Pie\nc:42\nd:Dolphins";
+  answers[7] = "c";
+  questions[8] = "How does one 'accomplish' the first mission of starfox 64?\na:saving falco\nb:doing a barrel roll\nc:saving slippy\nd:trick question: you must do all of these things";
+  answers[8] = "a";
+  questions[9] = "If global warming continues what commodity from spaceballs might we need on earth?\na:Oxygen Cans\nb:Wookies\nc:Space Balls\nd:Lazer Guns";
+  answers[9] = "a";
   int socket_id, socket_client;
   char buffer[256];
   int i, b, x, n;
   struct sockaddr_in server;
   struct sockaddr_in clients[2];
   int ln = 0;
+  int p[2];
+  p[0] = 0;
+  p[1] = 0;
+  char str[2][20];
   char lc = 'l';
   socklen_t socket_length;
   socket_id = socket( AF_INET, SOCK_DGRAM, 0);
@@ -57,7 +61,6 @@ int main(){
   //bind the socket to the socket struct
   i= bind( socket_id, (struct sockaddr *)&server, sizeof(server) );
   char login[10];
-  //acept connections continuously
 
   socket_length = sizeof(server);
   /*
@@ -69,7 +72,7 @@ int main(){
     askQuestion(qnum);
     qnum++;
   */
-
+  //by using for loops and &clients[ln], I was able to speak individually to specific clients while residing within a UDP server
     while(ln < 2){
       printf("going to recieve: \n");
       b = recvfrom(socket_id, buffer, sizeof(buffer), 0, (struct sockaddr *)&clients[ln], &socket_length);
@@ -88,7 +91,8 @@ int main(){
 	}
       }
     }
-      for(x = 0; x < 11; x++){ 
+    //Here we ask and recieve answer to the questions over the UDP server.
+      for(x = 0; x < 10; x++){ 
 	printf("sending question# %d\n",x);
 	for(ln = 0; ln < 2; ln++){
 	  sendto(socket_id, questions[x], strlen(questions[x])+1, 0, (struct sockaddr *)&clients[ln], socket_length);
@@ -96,40 +100,16 @@ int main(){
 	printf("listening for answer\n");
 	for(ln=0;ln<2;ln++){
 	  b = recvfrom(socket_id, buffer, sizeof(buffer), 0, (struct sockaddr *)&clients[ln], &socket_length);
+	  if(strncmp(buffer,answers[x],sizeof(buffer))){
+	    p[ln] = p[ln] + 1;
+	  }
 	  printf("recieved: %s\n",buffer);
 	}
       }
+      for(ln = 0; ln < 2; ln++){
+	sprintf(str[ln],"%d",p[ln]);
+	sendto(socket_id, str[ln], strlen(str[ln])+1, 0, (struct sockaddr *)&clients[ln], socket_length);
+	
+      }
+      return 1;
 }
-/*
-int connectS(){
-    //sends initial login request to clients
-  // sendto(socket_id, buffer, sizeof(buffer), 0, (struct sockaddr *)&server, socket_length);
-    //read request response, decide if allowed to login, add information to array
-    b = recvfrom(socket_id, buffer, sizeof(buffer), 0, (struct sockaddr *)&server, &socket_length);
-    // parsed = parse(buffer);
-    printf("%s \n",buffer);
-    if(strncmp(parsed[0], "login", sizeof(parsed[0])) && numclients <= 10){
-      sendto(socket_id, accepted, sizeof(accepted), 0, (struct sockaddr *)&server, socket_length);
-      clients[numclients].index = numclients;
-    }
-    else{
-      sendto(socket_id, rejected, sizeof(rejected), 0, (struct sockaddr *)&server, socket_length);
-    }
-}
-
-void askQuestion(string question){
-  while(1){
-    sendto(socket_id, questions[qnum], sizeof(questions[qnum]), 0, (struct sockaddr *)&server, socket_length);
-    recvfrom(socket_id, buffer, sizeof(buffer), 0, (struct sockaddr *)&server, &socket_length);
-    parsed = parse(buffer);
-    if(strncmp(parsed[0], "Answer", sizeof(parsed[0]) && strcmp(parsed[2], questions[numqs]->answer, sizeof(parsed[2])))){
-      client[atoi(parsed[1])]->rightanswers++;
-    }
-    sleep(10);
-    sendto(socket_id, timeout, sizeof(timeout), 0, (struct sockaddr *)&server, socket_length);
-  }
-  if(qnum = 11){
-    
-     }
-*/  
-   
