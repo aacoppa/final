@@ -9,8 +9,8 @@
 #define MAX_PART2 5
 #define MAX_PART3 5
 
-char enemyNames[3][256];
-int nameSize = 2;
+char enemyNames[14][256];
+int nameSize = 13;
 
 char mainMenu[256];
 char user[256];
@@ -180,6 +180,17 @@ void nameGenerator(){
   strcpy(enemyNames[0],"Giant");
   strcpy(enemyNames[1],"Rat");
   strcpy(enemyNames[2],"Skeleton");
+  strcpy(enemyNames[3],"Minotaur");
+  strcpy(enemyNames[4],"JonAlf Dyrland-Weaver");
+  strcpy(enemyNames[5],"Sweyn's Hair");
+  strcpy(enemyNames[6],"Jar-Jar Binks");
+  strcpy(enemyNames[7],"Segmentation Fault");
+  strcpy(enemyNames[8],"Putter of Doom");
+  strcpy(enemyNames[9],"Generic Monster #52");
+  strcpy(enemyNames[10],"Makarov");
+  strcpy(enemyNames[11],"Reaper");
+  strcpy(enemyNames[12],"Dragonborn");
+  strcpy(enemyNames[13],"Blinky");
 }
 
 void generateRoom(){
