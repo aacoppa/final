@@ -2,18 +2,20 @@
   https://raw.github.com/joewing/maze/master/maze.c*/
 #include "maze.h"
 /*Display the maze.*/
-void ShowMaze(const char *maze, int width, int height) {
-   int x, y;
+char* ShowMaze(const char *maze, int width, int height) {
+  char* ret = (char*)malloc(2 *( y * width + x));
+  int x, y;
    for(y = 0; y < height; y++) {
       for(x = 0; x < width; x++) {
          switch(maze[y * width + x]) {
-         case 1:  printf("[]");  break;
-         case 2:  printf("<>");  break;
-         default: printf("  ");  break;
+         case 1:  strcat(ret,"A");  break;
+         case 2:  strcat(ret,"B");  break;
+         default: strcat(ret," ");  break;
          }
       }
-      printf("\n");
+      strcat(ret,"\n");
    }
+   return ret;
 }
 
 /*  Carve the maze starting at x, y. */
