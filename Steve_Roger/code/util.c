@@ -5,6 +5,10 @@ void err(char *m) {
 	exit(EXIT_FAILURE);
 }
 
+void printColor(char *s, char *color) {
+	printf("%s%s"C_RESET, color, s);
+}
+
 int dirExists(char *dir) {
     struct stat s;
     int err = stat(dir, &s);

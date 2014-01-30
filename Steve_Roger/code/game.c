@@ -7,16 +7,13 @@
 void init(); // initialize game or start from last save
 int run();
 void sighandler(int);
+void typeToContinue();
 void prompt();
 int getInput(); // gets the input
 
 char *l = NULL;
 size_t linecap = 0;
 char *name;
-
-void printColor(char *s, char *color) {
-	printf("%s%s"C_RESET, color, s);
-}
 
 int main() {
 	setbuf(stdout, NULL);
@@ -43,6 +40,15 @@ void init() {
 
 int run() {
 	/******* MAIN SECTION *******/
+
+	char save = 0;
+
+	switch(save) {
+		case 'a':
+			goto a;
+		case 'b':
+			goto b;
+	}
 
 	// add intro (backstory)
 start:
@@ -102,7 +108,7 @@ b:
 		printf("Too bad Jamal is a master hacker. Today is not your day " C_RED "=[" C_RESET "\n");
 		printf("He somehow ssh's into your system and tries to crack your encrypted sudo password in order to rm -rf your 700TB of pornography.\n");
 		printf("Good thing he'll never find out that it's stored in '/Not Porn'\n");
-
+		typeToContinue();
 	}
 
 	free(l);
@@ -148,6 +154,11 @@ int getInput(int denyEmpty) {
 	}
 
 	return read;
+}
+
+void typeToContinue() {
+	printColor("\nType anything to continue.\n", C_CYAN);
+	getInput(false);
 }
 
 void prompt() {
