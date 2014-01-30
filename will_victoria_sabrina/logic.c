@@ -61,17 +61,3 @@ void distribute(int numPlayers) {
   }
 }
 
-int main() {
-  printf("ROLL: %d\n", die_roll());
-  printf("%d\n", battle(5,2));
-  printf("%d\n", battle(2,5));
-  printf("%d\n", battle(7,1));
-  printf("%d\n", battle(1,7));
-  printf("%d\n", battle(3,3));
-  printf("%d\n", battle(3,3));
-  printf("%d\n", battle(3,3));
-  printf("%d\n", battle(3,3));
-  printf("%d\n", battle(3,3));
-  printf("%d\n", battle(3,3));
-  printf("%d\n", battle(3,3));
-}
