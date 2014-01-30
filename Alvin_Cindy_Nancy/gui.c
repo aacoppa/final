@@ -8,14 +8,16 @@ int time(){
   SDL_Surface *minion;
   SDL_Event event;
   int ticks = 0;
- 
+
   init();
+  //sets up the window where the maze shows up.
   screen = SDL_SetVideoMode(100, 100, 1, SDL_SWSURFACE | SDL_ANYFORMAT);
   if (screen == NULL){
     errorMessage("Could not set up video.");
     exit(0);
   }
-  
+
+  //generates maze
   char *maze = (char *) malloc(100 * sizeof(char));
   GenerateMaze(maze, 23, 23);
   
@@ -25,10 +27,12 @@ int time(){
   int cy = 1;
   int done = 0;
   
+  //sets tiles to the pics
   loadBMPs("Wall.bmp", wall);
   loadBMPs("Floor.bmp", floor);
   loadBMPs("NotMeatBoy.bmp", minion);
   
+  //draws maze
   int row, col;
   while (!done){
     for (row = 0; row < 10; row ++){
@@ -40,8 +44,9 @@ int time(){
       }
     }
   }
-  draw(screen, minion, cx, cy);
+  draw(screen, minion, cx, cy); //draws character
 
+  //what happens when person clicks keys
   while (SDL_PollEvent(&event)){
     switch (event.type){
     case SDL_QUIT:
@@ -83,7 +88,8 @@ int time(){
     }
   }
   
-  ticks = SDL_GetTicks();
+  ticks = SDL_GetTicks(); //how much time has passed.
+  //Frees up the SDL aka freeing memory up
   SDL_FreeSurface(wall);
   SDL_FreeSurface(floor);
   SDL_FreeSurface(minion);
@@ -93,7 +99,7 @@ int time(){
   return ticks;
 }
   
-
+//This function basically sets a tile to be equal to one of the images.
 void loadBMPs(char *file, SDL_Surface *dest){
   SDL_Surface *temp = SDL_LoadBMP(file);
   if (temp == NULL){
@@ -109,6 +115,7 @@ void errorMessage(char *error){
   printf("%s\n", error);
 }
 
+//This initializes everything so that we can use it and basically is our box of tools.
 void init(){
   if (SDL_Init(SDL_INIT_EVERYTHING) < 0){
     errorMessage("Could not initiate.");
@@ -116,6 +123,7 @@ void init(){
   }
 }
 
+//takes the tiles and fills the screen-> it draws the maze and the character.
 void draw(SDL_Surface *screen, SDL_Surface *img, int ax, int ay){
   SDL_Rect r;
   r.x = ax;
