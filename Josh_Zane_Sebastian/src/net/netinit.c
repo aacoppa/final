@@ -77,7 +77,7 @@ int send_list(int socket_client) {
   // Respond with list of servers, seperated by commas
   struct server_list* curr;
   char slist[SLIST_LEN]; // buffer for our server list to be stored in
-  slist[0] = '\0';
+  strcpy(slist, "asdf");
   size_t space_remaining = sizeof(slist);
   printf("Preparing server list\n");
   for (curr = known_servers; curr != 0; curr = curr->next) {
@@ -124,9 +124,11 @@ int request_list(struct server* host) {
   // Establish connection
   int c = connect(socket_id, (struct sockaddr *)&sock, sizeof(sock));
 
+  printf("Sending list request\n");
   // Send them a request for a list of servers
   write(socket_id, REQUEST_LIST, sizeof(REQUEST_LIST));
 
+  printf("Waiting for list...\n");
   // Read their response into slist
   read(socket_id, slist, sizeof(slist));
 
