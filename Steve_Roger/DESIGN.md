@@ -17,7 +17,6 @@ The game will be played by selecting numbered choices that are given using comma
 - He realizes that he needs the sudo password
 - The protagonist (you) has the password and the antagonist is trying to capture you to get it
 - While he is trying to brute force the encrypted key, you go on your journey and defeat him
-- There are 2 areas, a medieval world and a modern/future world
 
 #### Possible ideas and techniques:
 - Allocating memory: Everything in C regarding the use of large amounts of data basically requires memory allocation

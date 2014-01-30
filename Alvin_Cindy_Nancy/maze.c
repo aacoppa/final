@@ -1,6 +1,11 @@
 /*credits: Joe Wingbermuehle
   https://raw.github.com/joewing/maze/master/maze.c*/
+#include <stdlib.h>
+#include <stdio.h>
+#include <fcntl.h>
+#include <unistd.h>
 #include "maze.h"
+
 /*Display the maze.*/
 char* ShowMaze(const char *maze, int width, int height) {
   char* ret = (char*)malloc(2 *( y * width + x));
@@ -17,6 +22,9 @@ char* ShowMaze(const char *maze, int width, int height) {
    }
    return ret;
 }
+
+
+
 
 /*  Carve the maze starting at x, y. */
 void CarveMaze(char *maze, int width, int height, int x, int y) {
@@ -70,7 +78,7 @@ void GenerateMaze(char *maze, int width, int height) {
    srand(time(0));
 
    /* Carve the maze. */
-   for(y = 1; y < height; y += 2) {
+  for(y = 1; y < height; y += 2) {
       for(x = 1; x < width; x += 2) {
          CarveMaze(maze, width, height, x, y);
       }
@@ -79,8 +87,8 @@ void GenerateMaze(char *maze, int width, int height) {
    /* Set up the entry and exit. */
    maze[0 * width + 1] = 0;
    maze[(height - 1) * width + (width - 2)] = 0;
-
 }
+
 
 
 
@@ -94,17 +102,17 @@ int main() {
   height = height*2 +3;
  
 
-   /* Allocate the maze array. */
-   maze = (char*)malloc(width * height * sizeof(char));
-   
-   /* Generate and display the maze. */
-   GenerateMaze(maze, width, height);
-   ShowMaze(maze, width, height);
-
- 
-   /* Clean up. */
-   free(maze);
-   exit(EXIT_SUCCESS);
-   return 0;
-
+  /* Allocate the maze array.*/ 
+  maze = (char*)malloc(width * height * sizeof(char));
+  
+  /* Generate and display the maze. */
+  GenerateMaze(maze, width, height);
+  
+  ShowMaze(maze, width, height);
+  
+  /* Clean up. */
+  free(maze);
+  exit(EXIT_SUCCESS);
+  return 0;
+  
 }

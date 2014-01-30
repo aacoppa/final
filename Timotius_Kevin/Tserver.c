@@ -1,0 +1,222 @@
+#include "Tserver.h"
+pthread_t threadid[NTHREADS]; // Thread pool
+pthread_mutex_t lock;
+int counter = 0;
+
+char *white[WHITE_SIZE];
+char *black[BLACK_SIZE];
+
+char * question;
+
+int players = 0, playersReady = 0;
+
+void *threadworker(void *arg){
+  int i, r;
+  char * s = (char *)calloc(1, sizeof(char));
+  int sockfd, rw; // File descriptor and 'read/write' to socket indicator
+  char * buffer = (char *)malloc(512); // Message buffer
+ 
+  char * temp;
+ 
+  sockfd = (int) arg; // Getting sockfd from void arg passed in
+
+  // bzero(buffer, BUFFER_SIZE);
+  //memset(buffer,0,strlen(buffer));
+  //printf("%s\n", buffer);
+
+  
+  players++;
+  printf("Number of players: %d\n", players);
+  temp = white[rand()%WHITE_SIZE];
+  
+  strcpy(buffer, temp);
+  strcat(buffer, ",");
+  /*  for(i = 5; i > 0; i--){
+    
+    //    char *temp = white[ r];//BUG: there might be instances where cards overlap
+    temp = white[r = (rand()%mod)];
+    printf("%s\n",temp);
+     /*strcat(buffer, temp);
+    strcat(buffer,(char *)',');
+    sprintf(buffer,(char *) temp);
+    sprintf(buffer, ",");
+    }*/
+
+  for(i = 0; i < 4; i++){
+    temp = white[rand()%WHITE_SIZE];
+    strcat(buffer, temp);
+    strcat(buffer, ",");
+  }
+  printf("SENDING: %s\n", buffer);
+  rw = write(sockfd, buffer, strlen(buffer));
+  
+   free(buffer);
+  while(1){
+    
+    buffer = (char *)malloc(512);
+    question = (char *)malloc(512);
+    
+    printf("============= New round =================\n\n");
+    rw = read(sockfd, s, 1);
+
+    temp = black[rand()%BLACK_SIZE];
+    strcpy(question, temp);
+    
+    playersReady++;
+    //  printf("%d, %d\n", playersReady, players);
+    while(playersReady != players){
+      //  printf("waiting for players to catch up\n");   
+    }
+
+    printf("The Question is %s\n\n", question);
+    rw = write(sockfd, question, BUFFER_SIZE);
+
+    bzero(buffer, BUFFER_SIZE);
+    //waiting for responses
+    rw = read(sockfd, buffer, BUFFER_SIZE); // Blocks until there is something to be read in the socket
+    printf("%s\n", buffer);
+    
+    bzero(buffer, BUFFER_SIZE);
+
+    temp = white[rand()%WHITE_SIZE];
+    strcpy(buffer, temp);
+    rw = write(sockfd,buffer, BUFFER_SIZE);//gives new chioce for players
+    free(buffer);
+    free(question);
+
+    playersReady--;
+  }
+  /* Critical section */
+
+  printf("Requesting mutex lock...\n");
+  pthread_mutex_lock (&lock); 
+  printf("Current counter value: %d, upping by 1...\n", counter);
+  counter++;
+  pthread_mutex_unlock (&lock);
+  printf("Done! Mutex unlocked again, new counter value: %d\n", counter);
+
+  close(sockfd);
+  printf("TID:0x%x served request, exiting thread\n", pthread_self());
+  pthread_exit(0);
+
+}
+
+
+int main(int argc, char *argv[])
+{
+
+  /* Variable declarations */
+
+  int serv_sockfd, new_sockfd; //Socket identifiers for server and incoming clients
+  struct addrinfo flags; // Params used to establish listening socket
+  struct addrinfo *host_info; // Resultset for localhost address info, set by getaddrinfo()
+
+  socklen_t addr_size; // Client address size since we use sockaddr_storage struct to store
+                       // client info coming in, not using addrinfo as done for host (local) 
+                       // by calling getaddrinfo for resolution, which stores results in 
+                       // the more convenient addrinfo struct
+
+  struct sockaddr_storage client; // Sockaddr storage struct is larger than sockaddr_in, 
+                                  // can be used both for IPv4 and IPv6
+
+  pthread_attr_t attr; // Thread attribute
+  int i; // Thread iterator
+
+  int fdw, fdb;
+  int bytesRead1, bytesRead2;
+  char ** temp;
+  char *s;
+  char cardsw[12000];
+  char cardsb[10000];
+
+  
+  /* Start of main program */
+
+
+  srand ( time(NULL) );
+
+
+  //reading white card
+  fdw = open("white.txt",O_RDONLY,0664);
+  bytesRead1 = read(fdw,cardsw,sizeof(cardsw));
+  temp = white;
+  char *line1 = cardsw;
+  while(s = strsep(&line1,",")){
+    *temp = s;
+    *temp++;
+  }
+  close(fdw);
+  
+  //reading black cards
+  fdb = open("black.txt",O_RDONLY,0664);
+  bytesRead2 = read(fdb,cardsb,sizeof(cardsb));
+  temp = black;
+  char *line2 = cardsb;
+  while(s = strsep(&line2,";")){
+    *temp = s;
+    *temp++;
+  }
+  close(fdb);
+  
+  
+  memset(&flags, 0, sizeof(flags));
+  flags.ai_family = AF_UNSPEC; // Use IPv4 or IPv6, whichever
+  flags.ai_socktype = SOCK_STREAM; // TCP
+  flags.ai_flags = AI_PASSIVE; // Set address for me 
+
+  if (getaddrinfo(NULL,"24601" , &flags, &host_info) < 0)
+  {
+    perror("Couldn't read host info for socket start");
+    exit(-1);
+  }
+
+  serv_sockfd = socket(host_info->ai_family, host_info->ai_socktype, host_info->ai_protocol);
+
+  if (serv_sockfd < 0)
+  {
+    perror("Error opening socket");
+    exit(-1);
+  }
+
+  if (bind(serv_sockfd, host_info->ai_addr, host_info->ai_addrlen) < 0) 
+  {
+    perror("Error on binding");
+    exit(-1);
+  } 
+
+  freeaddrinfo(host_info); // Don't need this struct anymore
+
+  pthread_attr_init(&attr); // Creating thread attributes
+  pthread_attr_setschedpolicy(&attr, SCHED_FIFO); // FIFO scheduling for threads 
+  pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED); // Don't want threads (particualrly main)
+                                                               // waiting on each other
+
+
+  listen(serv_sockfd, QUEUE_SIZE); // Pass in socket file descriptor and the size of the backlog queue 
+                                   // (how many pending connections can be in queue while another request
+                                   // is handled)
+
+  addr_size = sizeof(client);
+  i = 0;
+
+  while (1) 
+  {
+    if (i == NTHREADS) // So that we don't access a thread out of bounds of the thread pool
+    {
+      i = 0;
+    }
+    
+    new_sockfd = accept(serv_sockfd, (struct sockaddr *) &client, &addr_size);
+
+    if (new_sockfd < 0) 
+    {
+      perror("Error on accept");
+      exit(-1);
+    }
+
+    pthread_create(&threadid[i++], &attr, &threadworker, (void *) new_sockfd);
+    sleep(0); // Giving threads some CPU time
+  }
+
+  return 0; 
+}
