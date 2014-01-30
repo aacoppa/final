@@ -26,4 +26,5 @@ The major algorithms we used were a random generation algorithm which dealt with
 	The Final Timeline
 In the end, we appropriated our time pretty well. We approached the engine first, followed by random generation and finished off with networking. Granted, I am writing this the night before the deadline, but that was only to enable the most time for additions and modifications as well as having the most up to date information for the document. (and hey, it’s only 8:00!)
 
-
+	The Bonus Topic
+We added a few easter eggs to the game, so see if you can find them!
