@@ -10,4 +10,5 @@ void main(){
   printf("%llu %d %u\n",ull,a,a);
 
   printf("%d %u %llu\n",UINT_MAX, UINT_MAX,(unsigned long long)UINT_MAX);
+  printf("%d\n", sizeof(unsigned long));
 }

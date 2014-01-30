@@ -1,2 +1,26 @@
-TODO
-everything
+TODO:
+
+Done:
+-> Storing large values from stdin to memory (bitwise)
+   - translate input from stdin to binary string
+   - storing binary string as a memory chunk of unsigned ints
+     (32 bit / 4 byte chunks) which is, essentially, storing the value
+     bitwise in base 2^32-1
+-> Adding stored values
+
+Currently working on:
+-> Decode large values and feed to stdout to allow for view and
+   checking (debugging)
+
+Needs to Be Done (priority order):
+
+-> Break Down Current Methods into smaller chunks, smaller methods
+   Will improve workflow.
+
+-> Subtracting stored values
+-> Multiplying stored values
+-> Dividing stored values
+-> Exponentiating stored value
+
+Extension:
+-> RSA program

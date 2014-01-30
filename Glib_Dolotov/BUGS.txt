@@ -1,1 +1,2 @@
 BUGS
+-> Decoding stored value into viewable base-10 character strings
