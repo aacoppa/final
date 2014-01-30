@@ -21,7 +21,11 @@ int main() {
 }
 
 void init() {
-
+    int save = saveExists();
+    if (save == 0) {
+        // save doesn't exist, build files and shit
+        createDevices();
+    }
 }
 
 int run() {
