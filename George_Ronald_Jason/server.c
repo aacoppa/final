@@ -1,5 +1,5 @@
 #include "headers.h"
-#include "game.c"
+//#include "game.c"
 
 int main(){
   int socket_id, socket_client;
@@ -9,7 +9,7 @@ int main(){
   
   socket_id = socket( AF_INET, SOCK_STREAM, 0);
   printf("Socket ID: %d\n", socket_id);
-
+  
   server.sin_family = AF_INET;
   server.sin_addr.s_addr = INADDR_ANY;
   server.sin_port = htons(SERVER_PORT);
@@ -24,18 +24,17 @@ int main(){
   if (players< MAX_PLAYERS){
     socket_client = accept(socket_id, (struct sockaddr *)&server,&socket_length);
     players++;
+    printf("Player Connection Accepted %d\n",socket_client);
   }
-    
-  print("Player Connection Accepted\n");
+  
   
   //gameSetup();
-  
-  while (1){
-    
+   
+  while(1){
+
     
   }
   
   close(socket_client);
-  return ;
-
+  return 0;
 }

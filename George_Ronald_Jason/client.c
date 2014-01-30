@@ -14,6 +14,9 @@ int main(int argc, char **argv){
   printf("Connected: %d\n", c);
 
   while(1){
-
+    
+    
   }
+  close(socket_id);
+  return 0;
 }
