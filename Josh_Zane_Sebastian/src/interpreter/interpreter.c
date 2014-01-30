@@ -92,15 +92,31 @@ struct variable runBuiltin(struct call *fnCall) {
     // IF
     char bit = fnCall->args[0].referant->val.bit;
     struct function f;
-    struct llnode args;
+    struct llnode argList;
+    struct call call;
+
+    // check which func to run
     if (bit) {
-      f = fnCall->args[1].referant->val.func;
-      args = fnCall->args[2].referant->val.list;
+      call.func = fnCall->args[1].referant->val.func;
+      call.name = fnCall->args[1].name;
+      argList = fnCall->args[2].referant->val.list;
     } else {
-      f = fnCall->args[3].referant->val.func;
-      args = fnCall->args[4].referant->val.list;
+      call.func = fnCall->args[3].referant->val.func;
+      call.name = fnCall->args[3].name;
+      argList = fnCall->args[4].referant->val.list;
     }
-    // TODO somehow run the function
+
+    // count args
+    int numArgs = 0;
+    while (argList.car) {
+      argList = *argList.cdr;
+      numArgs++;
+    }
+    struct symbol* args = calloc(numArgs, sizeof(struct symbol));
+    call.arguments = args;
+    call.numargs = numArgs;
+    runFunc(call);
+    free(args);
   } else if (strcmp(name, "[") == 0) {
     // CAR
     struct llnode list = fnCall->args[0].referant->val.list;
