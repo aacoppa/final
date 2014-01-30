@@ -11,9 +11,6 @@
    Printing things
    Iffing */
 
-struct call parseCall(char* statement);
-struct function parseFunction(char* statement);
-
 char* fixSpacing(char* code) {
   char* fixedCode = malloc(sizeof(char) * (strlen(code) + 1));
   fixedCode = strcpy(fixedCode, code);
@@ -42,4 +39,5 @@ char** spcTokenize(char* regCode) {
     regCode[k] = NULL;
     spcTokens[i] = regCode + k + 1;
   }
+  return spcTokens;
 }
