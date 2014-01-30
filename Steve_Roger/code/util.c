@@ -31,6 +31,7 @@ int saveExists() {
     return (makeDir==-1); // if it's -1, then it failed to create, and the game has already been started
 }
 void createDevices() {
+    // giant array of all the stuff. down/up moves along the directory so I don't need wack as fuck multidimensional arrays
     char f[48][25] = {"Computer","down","Documents","down","Work","School","Not Porn","up","Games","down","Club Penguin","League of Legends","Runescape","up","System","down","Programs","Data","up","up",
                       "Phone","down","Documents","down","Music","Pictures","Videos","up","System","down","Programs","Data","up","up",
                       "Tablet","down","Documents","down","Music","Books","Movies","up","System","down","Programs","Data","up","up"};
@@ -54,7 +55,12 @@ void goToRoot() {
 void goToRandomInner() {
     goToRoot();
     int i;
-    for(i=0;i<2;i++) {
+    for(i=0;i<2;i++) { // do it twice because all innermost directories are 2 levels deep
+        /* This is the most ghetto way to pick a random subdirectory
+         * Get the # of directories, x
+         * Then loop through the directories, probability of choosing the first one is 1/x
+         * If not, the second one has a 1/(x-1) chance, and then 1/(x-2) and so on until you reach 1/1 and that's the last directory
+         */
         DIR *dp;
         struct dirent *ep;
         dp = opendir("./");
