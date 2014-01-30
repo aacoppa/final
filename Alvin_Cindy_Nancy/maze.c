@@ -23,8 +23,6 @@ void ShowMaze(const char *maze, int width, int height) {
 }
 
 
-
-
 /*  Carve the maze starting at x, y. */
 void CarveMaze(char *maze, int width, int height, int x, int y) {
 
@@ -90,7 +88,7 @@ void GenerateMaze(char *maze, int width, int height) {
 
 
 
-
+/*
 int main() {
 
   int width = 10;
@@ -101,17 +99,18 @@ int main() {
   height = height*2 +3;
  
 
-  /* Allocate the maze array.*/ 
+  /* Allocate the maze array.
   maze = (char*)malloc(width * height * sizeof(char));
   
-  /* Generate and display the maze. */
+  /* Generate and display the maze. 
   GenerateMaze(maze, width, height);
   
   ShowMaze(maze, width, height);
   
-  /* Clean up. */
+  /* Clean up. 
   free(maze);
   exit(EXIT_SUCCESS);
   return 0;
   
 }
+*/
