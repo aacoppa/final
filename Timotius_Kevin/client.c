@@ -48,17 +48,17 @@ int main(int argc, char **argv) {
     b = read(socket_id,buffer,sizeof(buffer));
     num = 5;
     printf("\tReceived: %s\n",buffer);
-    /*
+    char* line = buffer;
+
     for(holder = 0;hand[holder] == NULL;holder++){
-      hand[holder] = buffer;
-      break;
+      hand[holder] = strsep(&line,",");
     }
-    */
     printf("Enter message: ");
     fgets(buffer, sizeof(buffer), stdin);
     *(strchr(buffer, '\n')) = 0;
     if ( strncmp(buffer, "exit", sizeof(buffer)) == 0)
       break;
+    b = write(socket_id,buffer,strlen(buffer) + 1);
   }
   
   close(socket_id);

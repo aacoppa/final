@@ -1,0 +1,26 @@
+﻿DW APPROVED Please make your design document (and all future documents) PLAIN TEXT files, not rich text files.
+
+Peter Lucido, Anthony Chernyak, Tyrone Ye
+
+For our project we are creating a text based, turn-based, dungeon-crawler RPG. This game will be run and played from the terminal, and players will connect to a main server in order to join the game. 
+
+Processes - Engine of the Game. Will handle player actions, and the “rules” of the game.
+Allocated Memory - Players Stats, Weapons, Etc and Monster stats
+Working with Files - Stores information and stats on players
+Signal Handling - Prevent game crashed and game loss. 
+Servers - Will Hold the dungeons, main server will be “menu hub”, sub servers will hold actual games
+Networking - Allows people to connect and play together
+Shared Memory - Same as allocated memory, but for access from outside sources. (created by server)
+
+As of this point, we do not know exactly which data structures we will be using. For algorithms, a linear function will be used to determine the difficulty of the current level, and another linear function will be used for leveling and XP gain. Random Number Generators will be used in conjunction with the linear functions to determine aspects such as enemy health and damage.
+Delegation of work:
+	
+	As of now, we will begin by creating the main server and engine functionality together. After that, we will split the work accordingly.
+
+Timeline
+
+Main Server/Engine - Done by Jan.17
+Networking “Online” Portion - Done by Jan.22
+Debugging - Done by Jan 24th
+
+
