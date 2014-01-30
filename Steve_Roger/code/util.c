@@ -24,12 +24,13 @@ char *currentDir() {
     wd++; // idk this just works trust me
     return wd;
 }
-char *relativeDir() {
+char * relativeDir() {
     char cwd[1024];
     getcwd(cwd, sizeof(cwd));
     char *wd = cwd;
     while (strncmp(wd, "files", strlen("files")) != 0) wd++;
-    wd += 6;
+    wd += 4;
+    strncpy(wd, "~", 1); // adds ~ as root dir
     return wd;
 }
 void ls() {

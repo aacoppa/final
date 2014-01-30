@@ -22,15 +22,15 @@ int main() {
 	printColor("Welcome to Conquest of the Nigerian Prince v1!\n", C_GREEN);
 	printColor("Type exit to quit the game\n\n", C_CYAN);
 
-	//printf("%s\n",relativeDir());
-
 	init();
+
 	return run();
 }
 
 void init() {
 	saveExists(); // create files
 	createDevices();
+	chdir("files");
 }
 
 int run() {
@@ -145,19 +145,25 @@ int getInput(int denyEmpty) {
 		prompt();
 		read = getline(&l, &linecap, stdin);
 		*strchr(l, '\n') = '\0'; // delete \n char
-		// if nothing entered
-		if (denyEmpty && (l == NULL || *l == '\0')) {
-			continue;
-		} else {
+		// if not nothing entered
+		if (!strcasecmp(l, "pwd")) {
+			pwd: printf("%s\n", relativeDir());
+		} else if (!strcasecmp(l, "ls")) {
+			ls();
+		} else if (!strncasecmp(l, "cd", 2)) {
+			if (chdir(l + 3) != -1) {
+				goto pwd;
+			} else {
+				perror("cd");
+				printColor("Use ls to list possible directories.\n", C_CYAN);
+			}
+		} else if (!denyEmpty || (l != NULL && *l != '\0')) {
 			break;
 		}
 	} while (read != -1);
 
 	if (!strcasecmp(l, "exit")) {
 		exit(EXIT_SUCCESS);
-	} else if (!strcasecmp(l, "pwd")) {
-		printf("%s\n", relativeDir());
-		l = NULL;
 	} else {
 		//printf(C_RED "Debug: %s\n" C_RESET, l);
 	}
