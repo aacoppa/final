@@ -4,6 +4,7 @@
 #define NUM_ROOMS 4
 #define NUM_PLAYERS_PER_ROOM 6
 
+#define SHMEM_KEY 1337
 //Client-Server Codes
 #define JOIN_ROOM "JR"
 #define CREATE_ROOM "CR"
