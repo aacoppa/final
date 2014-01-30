@@ -5,80 +5,54 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
-#include "model.c"
 
-*net_move turn(RISK_move risk_move);
-
-*net_move turn(RISK_move risk_move){
-}
+#include "model.h"
+#include "map.h"
+#include "logic.c"    
 
 void subserver( int socket_client ) {
-
-    Risk_move input = malloc(sizeof(Risk_move));
-    char buffer[256];
-    int b, i;
-    b = 0;
-
-    while (1) {
-    
-      b = read( socket_client, input, sizeof(input) );
-      buffer = input.destination.char;
-      printf("Received: %s:" buffer);
-      
-      if ( strncmp(buffer, "exit", sizeof(buffer)) == 0 )
-        break;
-
-      
-
-      write( socket_client, buffer, strlen(buffer));
-    }
-    
-    //close this client connection
+  int n;
+  int b;
+  terrs = territories();
+  while (1) {
+    distribute(n);
+    b = read( socket_client,terrs, sizeof(terrs));
     close(socket_client);
+    }
 }
-        
 
 int main() {
-
   int socket_id, socket_client;
-  char buffer[256];
-  int i, b;
-  
+  int i;
+  int n = 1;
+    
   struct sockaddr_in server;
   socklen_t socket_length;
-
-  //make the server socket for reliable IPv4 traffic 
   socket_id = socket( AF_INET, SOCK_STREAM, 0);
 
   printf("Soket file descriptor: %d\n", socket_id);
 
-  //set up the server socket struct
-  //Use IPv4 
   server.sin_family = AF_INET;
 
-  //This is the server, so it will listen to anything coming into the host computer
   server.sin_addr.s_addr = INADDR_ANY;
   
-  //set the port to listen on, htons converts the port number to network format
   server.sin_port = htons(24601);
-  
-  //bind the socket to the socket struct
+ 
   i= bind( socket_id, (struct sockaddr *)&server, sizeof(server) );
 
-  //wait for any connection
   i =  listen( socket_id, 1 );
 
-  //acept connections continuously
   while(1) {
 
     printf("Accpeting a connection\n");
-
-    //set socket_length after the connection is made
     socket_length = sizeof(server); 
+  
+    if (n <= 5){
+      socket_client = accept(socket_id, (struct sockaddr *)&server, &socket_length);
+      printf("accepted connection %d\n",socket_client);
+    }
 
-    //accept the incoming connection, create a new file desciprtor for the socket to the client
-    socket_client = accept(socket_id, (struct sockaddr *)&server, &socket_length);
-    printf("accepted connection %d\n",socket_client);
+    n++;
 
     i = fork();
     if ( i == 0 ) {
@@ -86,7 +60,6 @@ int main() {
      }
     else 
         close(socket_client);
-
 
     printf("Waiting for new connection\n");
   }
