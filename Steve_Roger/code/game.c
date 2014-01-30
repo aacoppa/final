@@ -10,6 +10,7 @@ int getInput(); // gets the input
 char *l = NULL;
 size_t linecap = 0;
 char *name;
+char save = 0;
 
 int main() {
 	setbuf(stdout, NULL);
@@ -36,13 +37,13 @@ void init() {
 int run() {
 	/******* MAIN SECTION *******/
 
-	char save = 0;
-
 	switch(save) {
 		case 'a':
 			goto a;
 		case 'b':
 			goto b;
+		case 'c':
+			goto c;
 	}
 
 	// add intro (backstory)
@@ -78,14 +79,12 @@ start:
 		"\n\nSEND YOUR BANK INFORMATION IMMEDIATELY SO THAT I CAN BEGIN THE TRANSFER OF FUNDS. "
 	);
 	printf("\n\nREST ASSURED THAT THIS IS LEGIT,");
-	printf("\nPrince %s\n\n", PRINCE_NAME);
-
-a:
+	printf(C_MAGENTA "\nPrince %s  ʅ༼ຈل͜ຈ༽ʃ\n\n" C_RESET, PRINCE_NAME);
+a: save = 'a';
 	printf("You have some choices " C_CYAN "(type a, b, or c)" C_RESET ":\n"
 		"\tA) Give Jamal your bank info. (ಠ_ಠ)\n"
 		"\tB) I've never seen anything that looked so much like a scam. Jamal probably isn't even a real person.\n"
-		"\tC) I respect the name Jamal just as I respect people of all races, but I believe this is illegitimate.\n"
-		"\t   I humbly refuse your offer.\n"
+		"\tC) I respect the name Jamal just as I respect people of all races, but I believe this is illegitimate. I humbly refuse your offer.\n"
 	);
 
 	do {
@@ -99,9 +98,10 @@ a:
 		printf("That's racist. Jamal is just as much a real person as you. YOU think he's not a person just because he's black?!\n");
 		goto lose;
 	} else {
-b:
+b: save = 'b';
 		printf("Too bad Jamal is a master hacker. Today is not your day (•︵•)\n");
 		printf("He somehow sshs into your system and tries to crack your encrypted sudo password in order to rm -rf your 700TB of pornography.\n");
+		hidePrince();
 		printf("Good thing he'll never find out that it's stored in '/Not Porn'\n");
 		printf("\n");
 		typeToContinue();
@@ -110,12 +110,20 @@ b:
 		printf("Jamal manages to find the encrypted file with all your credentials.\n");
 		printf("He creates a secure shack in your file system so that he can have a place to stay while he tries to brute force your password.\n");
 		printf("You must find and delete him before it is too late!\n\n");
+
+		goToRoot();
+		printColor("You are now at the root.\n", C_CYAN);
 		printColor("Use cd to navigate the system.\n", C_CYAN);
 		printColor("Use pwd to see the current directory.\n", C_CYAN);
 		loop {
 			getInput(true);
-			//char * rel = relativeDir();
+			if (isPrinceHere()) {
+				break;
+			}
 		}
+c: save = 'c';
+		printf("You managed to destroy Jamal from existence, but he managed to delete 99%% of your porn stash.\n");
+		printf("There is no happy ending. Better luck in real life.");
 	}
 
 	free(l);
@@ -158,20 +166,24 @@ int getInput(int denyEmpty) {
 			} else if (chdir(l) != -1) {
 				char * rel = relativeDir();
 				printf("%s\n", rel);
-				if (!strcmp(rel, "/Computer/Documents/Work")) {
-					printf("This is serious business; he won't be in here.\n");
-				} else if (!strcmp(rel, "/Computer/Documents/School")) {
-					printf("Jamal has an aversion to school.\n");
-				} else if (!strcmp(rel, "/Computer/Documents/Not Porn")) {
-					printf("There's no way Jamal is in here yet. It is protected by state of the art 2^100 bit encryption\n");
-				} else if (!strcmp(rel, "/Computer/Games/Club Penguin")) {
-					printf("It doesn't look like Jamal is sliding around on the ice here.\n");
-				} else if (!strcmp(rel, "/Computer/Games/League of Legends")) {
-					printf("Jamal is Diamond I, he has no interest in your peasantry.\n");
-				} else if (!strcmp(rel, "/Computer/Games/Runescape")) {
-					printf("Jamal has 2,147,483,648 gp, 1 more coin than is programmatically possible. That's a Nigerian Prince for you.\n");
-				} else {
-					printf("Jamal isn't here\n");
+				if (save == 'b') {
+					if (isPrinceHere()) {
+						printf("Jamal is a sneaky *** ************. You found him though. Good job!");
+					} else if (!strcmp(rel, "/Computer/Documents/Work")) {
+						printf("This folder is serious business; he won't be in here.\n");
+					} else if (!strcmp(rel, "/Computer/Documents/School")) {
+						printf("Jamal has an aversion to school.\n");
+					} else if (!strcmp(rel, "/Computer/Documents/Not Porn")) {
+						printf("There's no way Jamal is in here yet. It is protected by state of the art 2^100 bit encryption\n");
+					} else if (!strcmp(rel, "/Computer/Games/Club Penguin")) {
+						printf("It doesn't look like Jamal is sliding around on the ice here.\n");
+					} else if (!strcmp(rel, "/Computer/Games/League of Legends")) {
+						printf("Jamal is Diamond I, he has no interest in your peasantry.\n");
+					} else if (!strcmp(rel, "/Computer/Games/Runescape")) {
+						printf("Jamal has 2,147,483,648 gp, 1 more coin than is programmatically possible. That's a Nigerian Prince for you.\n");
+					} else {
+						printf("Jamal isn't here.\n");
+					}
 				}
 			} else {
 				perror("cd");
