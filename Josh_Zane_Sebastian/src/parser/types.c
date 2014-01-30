@@ -12,7 +12,7 @@ struct call;
  
 
 struct llnode {
-  struct type* car;
+  struct variable* car;
   struct llnode* cdr;
 };
 
@@ -31,6 +31,7 @@ struct symbol {//I guess this is analogous to a symbol in lisp.
 struct function {
   struct symbol* args; //these are the symbols that the function takes as arguments
   char* definition; // this is the function's actual definition, left in text form until parsing.
+  int numargs;
 };
 
 union value { //we have three primitive types, so every variable's value is one of those types
