@@ -46,6 +46,7 @@ int start_listener() {
         continue; // Jump to the next iteration.
       } else if (strcmp(buffer, REQUEST_INFORM) == 0) { // They're letting us know they exist, how sweet. Unless they're dying. That's not sweet.
         read(socket_client, buffer, sizeof(buffer)); // Find out what they want to tell us
+        printf("INFORMMED: %s\n", buffer);
         if (strcmp(buffer, INFORM_LIVE) == 0) {
           // Add the client to our list
           char cli[INET_ADDRSTRLEN];
@@ -136,6 +137,8 @@ int request_list(struct server* host) {
 
   char* curr_str = slist;
   char* token;
+
+  inform(host, INFORM_LIVE);
 
   if (strlen(slist) == 0) { // The other server didn't know of any servers, how sad
     return 0;
