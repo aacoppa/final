@@ -6,14 +6,14 @@
 territory *terr_lookup(char *);
 
 net_move rtonetmove(RISK_move m) {
-  net_move ret = {m.units, m.origin->name, 
-		  m.destination->name};
+  net_move ret = {m.units, m.origin->name,
+    m.destination->name};
   return ret;
 }
 
 RISK_move nettormove(net_move m) {
   RISK_move ret = {
-    m.units, 
+    m.units,
     terr_lookup(m.origin),
     terr_lookup(m.destination)
   };
@@ -32,8 +32,8 @@ territory *terr_lookup(char *name) {
 }
 
 void log_terr(territory t) {
-  printf("%s:\n\tOwner: p%d\n\tUnits: %d\n\tNeighbors:\n", 
-	 t.name, t.owner, t.units);
+  printf("%s:\n\tOwner: p%d\n\tUnits: %d\n\tNeighbors:\n",
+         t.name, t.owner, t.units);
   int i = 0;
   while (t.neighbors[i] > -1) {
     printf("\t\t%s\n", terrs[t.neighbors[i]].name);

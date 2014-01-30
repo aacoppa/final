@@ -3,24 +3,21 @@
 /*
 int main(){
     initiateRand();
-    startGame(makeSeed());
+    game_start(makeSeed());
 } 
 */
 void reset_vars() {
-    /* Game variables... IDK what they do but
-     * they need to be inited...
-     */
     next = 1;
     GAME_SPEED = 80;
     TICKS = 1;
     nextDrop = 0;
     betweenWalls = 20;
-
 }
 int game_start(unsigned long seed){
     reset_vars();
     seedGame(seed);
-    initscr();
+    FILE *file_id = fopen("/dev/tty", "r+"); 
+    SCREEN *termref = newterm(NULL, file_id, file_id);
     cbreak();
     curs_set(0);
     start_color();
