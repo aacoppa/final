@@ -16,7 +16,6 @@ union node_data {
 struct routine {
     struct routine *parent;
     struct iq_node *nodes;
-    int num_nodes;
 }
 
 struct iq_node {
