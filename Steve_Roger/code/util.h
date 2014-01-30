@@ -26,6 +26,7 @@ void printColor(char *s, char *color);
 int dirExists();
 char *currentDir(); // gets current folder (not entire directory)
 char *relativeDir(); // gets directory relative to files/ (for the game)
+void ls(); // lists all the stuff
 void createFile(char *name);
 
 int saveExists();

@@ -31,7 +31,15 @@ char *relativeDir() {
     while (strncmp(wd, "files", strlen("files")) != 0) wd++;
     wd += 6;
     return wd;
-    
+}
+void ls() {
+    DIR *dp;
+    struct dirent *ep;
+    dp = opendir("./");
+    while ((ep = readdir(dp))) {
+        if (strcmp(ep->d_name,".")==0 || strcmp(ep->d_name,"..")==0) continue;
+        printf("%s\n",ep->d_name);
+    }
 }
 void createFile(char *name) {
     int fd = open(name, O_WRONLY | O_CREAT);
