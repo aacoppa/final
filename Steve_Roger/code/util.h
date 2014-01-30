@@ -17,6 +17,9 @@
 #define C_RESET   "\x1b[0m"
 
 #define loop for(;;)
+#define true 1
+#define false 0
+
 #define PRINCE_NAME "Jamal Kareem Tijani"
 
 // Prints an error message
@@ -25,6 +28,8 @@ void printColor(char *s, char *color);
 
 int dirExists();
 char *currentDir(); // gets current folder (not entire directory)
+char *relativeDir(); // gets directory relative to files/ (for the game)
+void ls(); // lists all the stuff
 void createFile(char *name);
 
 int saveExists();

@@ -51,10 +51,10 @@ void distribute(int numPlayers) {
       (*(terrs + *(temp + a))).owner = curr;
       *(temp + a) = -1;
       if (curr == numPlayers) {
-	curr = 1;
+        curr = 1;
       }
       else {
-	curr++;
+        curr++;
       }
       counter++;
     }

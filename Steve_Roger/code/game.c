@@ -1,9 +1,5 @@
 #include "game.h"
 
-#define PRINCE_NAME "Jamal Kareem Tijani"
-#define true 1
-#define false 0
-
 void init(); // initialize game or start from last save
 int run();
 void sighandler(int);
@@ -24,18 +20,17 @@ int main() {
 
 	printf("\n");
 	printColor("Welcome to Conquest of the Nigerian Prince v1!\n", C_GREEN);
-	printColor("Type exit to quit the game\n\n", C_CYAN);
+	printColor("Type quit to exit the game\n\n", C_CYAN);
 
 	init();
+
 	return run();
 }
 
 void init() {
-	int save = saveExists();
-	if (save == 0) {
-	    // save doesn't exist, build files and shit
-	    createDevices();
-	}
+	saveExists(); // create files
+	createDevices();
+	chdir("files");
 }
 
 int run() {
@@ -105,7 +100,7 @@ a:
 		goto lose;
 	} else {
 b:
-		printf("Too bad Jamal is a master hacker. ლ (ಠ益ಠლ )\n");
+		printf("Too bad Jamal is a master hacker. Today is not your day (•︵•)\n");
 		printf("He somehow sshs into your system and tries to crack your encrypted sudo password in order to rm -rf your 700TB of pornography.\n");
 		printf("Good thing he'll never find out that it's stored in '/Not Porn'\n");
 		printf("\n");
@@ -114,7 +109,12 @@ b:
 		printf("Goddammit mom... (ノಠ益ಠ)ノ彡┻━┻\n");
 		printf("Jamal manages to find the encrypted file with all your credentials.\n");
 		printf("He creates a secure shack in your file system so that he can have a place to stay while he tries to brute force your password.\n");
-		printf("You must find him before it is too late!\n");
+		printf("You must find him before it is too late!\n\n");
+		printColor("Use cd to navigate the system.\n", C_CYAN);
+		printColor("Use pwd to see the current directory.\n", C_CYAN);
+		loop {
+			getInput(true);
+		}
 	}
 
 	free(l);
@@ -145,15 +145,28 @@ int getInput(int denyEmpty) {
 		prompt();
 		read = getline(&l, &linecap, stdin);
 		*strchr(l, '\n') = '\0'; // delete \n char
-		// if nothing entered
-		if (denyEmpty && (l == NULL || *l == '\0')) {
-			continue;
-		} else {
+		// if not nothing entered
+		if (!strcasecmp(l, "pwd")) {
+			pwd: printf("%s\n", relativeDir());
+		} else if (!strcasecmp(l, "ls")) {
+			ls();
+		} else if (!strncasecmp(l, "cd", 2)) {
+			if (chdir(l + 3) != -1) {
+				char * rel = relativeDir();
+				if (!strcasecmp(l, "~/Computer/Documents/Work")) {
+					printf("This is serious business; he won't be in here.\n");
+				}
+				goto pwd;
+			} else {
+				perror("cd");
+				printColor("Type ls to list possible directories.\n", C_CYAN);
+			}
+		} else if (!denyEmpty || (l != NULL && *l != '\0')) {
 			break;
 		}
 	} while (read != -1);
 
-	if (strcmp(l, "exit") == 0) {
+	if (!strcasecmp(l, "quit")) {
 		exit(EXIT_SUCCESS);
 	} else {
 		//printf(C_RED "Debug: %s\n" C_RESET, l);
