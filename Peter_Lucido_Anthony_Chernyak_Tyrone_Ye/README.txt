@@ -7,3 +7,5 @@ Beofre playing this game there are a few things you need to do...
 3) If you chose online mode, when you want to run play, you must run a.out FOLLOWED by the ip adress of the server computer. Not doing so will break the game and not allow you to run it. If done successfully, it will verify the game and proceed to the game itself.
 4) If for whatever reason you do not wish to run the game online, you can simply run the execute executable, though OSave and OLoad will not be useable.
 5) For any playthroughs, offline or online, th game will provide ample guidance through prompts, or by viewing the help screen. The help screen can be accessed by typing help at any time (unless otherwise noted or requesting specific information).
+
+One other important note, if you do not save and you die, your character is not saved and you lose your progress. Therefore, SAVE.
