@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <string.h>
 
+//TODO, queue a function's arguments, void enqueue()
+
 void runStep(struct iq_node node, struct stack_node *top) {
   switch( node.data.type ) {
   case T_INT:
@@ -127,7 +129,14 @@ void runStep(struct iq_node node, struct stack_node *top) {
 	x = x->cdr;
       push(*x, top);
       break;
-      
+
+    case '?':
+      struct stack_node b = pop(top);
+      struct stack_node f = pop(top);
+      if(b)
+	queue_skip(f);
+      break;
+
     }
   }
 }
