@@ -1,26 +1,31 @@
-﻿DW APPROVED Please make your design document (and all future documents) PLAIN TEXT files, not rich text files.
 
+	The Creators 
 Peter Lucido, Anthony Chernyak, Tyrone Ye
 
-For our project we are creating a text based, turn-based, dungeon-crawler RPG. This game will be run and played from the terminal, and players will connect to a main server in order to join the game. 
+	The Project
+For our project we created a text based, turn-based, dungeon-crawler RPG. This game is run and played from the terminal, uses a DRM style, pre-game verification and allows players to save their games online (see README for specific game functionality). 
+	
+	The Interface
+Our project is run entirely through the terminal. As it is text based, prompts will pop up on the screen and the player must respond to them accordingly. More detailed, it involves going through dungeons and attacking monsters. A player’s remaining health is displayed on the top of the screen, he or she has an inventory with randomly generated weapons acquired from killing monsters and, in terms of gameplay, has the ability to either attack a monster in the room or advance to the next room. After gaining enough experience points through killing monsters, a player has the ability to level up and increase his or her stats. In addition, the player has the ability to save, locally or online, at any time in his or her adventure, of which can be later loaded at the start screen. Players can be reminded of any commands from the help screen, which can be accessed by entering help at any time into the prompt.
+
+	The Technicalities Part 1 - A Description of Useage of CS Topics
 
 Processes - Engine of the Game. Will handle player actions, and the “rules” of the game.
-Allocated Memory - Players Stats, Weapons, Etc and Monster stats
-Working with Files - Stores information and stats on players
-Signal Handling - Prevent game crashed and game loss. 
-Servers - Will Hold the dungeons, main server will be “menu hub”, sub servers will hold actual games
-Networking - Allows people to connect and play together
-Shared Memory - Same as allocated memory, but for access from outside sources. (created by server)
+Allocated Memory - Players Stats, Weapons, Etc and Monster stats.
+Working with Files - Stores information and stats on players.
+Signal Handling - Prevent game loss due to quitting with keyboard interrupt.
+Networking - Allows people to play and save games to dedicated servers.
 
-As of this point, we do not know exactly which data structures we will be using. For algorithms, a linear function will be used to determine the difficulty of the current level, and another linear function will be used for leveling and XP gain. Random Number Generators will be used in conjunction with the linear functions to determine aspects such as enemy health and damage.
-Delegation of work:
-	
-	As of now, we will begin by creating the main server and engine functionality together. After that, we will split the work accordingly.
+	The Technicalities Part 2 - Responsibilities of Group Members
+Anthony was in charge of the functioning of the main engine of the game, Tyrone focused mostly on weapon generation and saving, and I, the narrator (Peter), was in charge of networking, enhancements to Tyrone’s saving and loading algorithms, the README and this here ol’ document. 
 
-Timeline
+	The Technicalities Part 3 - Data Structures
+In terms of data structures, we used the typical structures of int and strings, but we also created three of our own structures, namely the room, weapon and character. The room struct consisted of the enemy for the player to fight, the experience gained from clearing the room and the loot weapons found in the room. The Weapon struct consisted of the weapon parts, its level and damage output. Finally the character struct consisted of the player’s attack, defense, speed, health, maximum health (for post-battle health regeneration), experience points, and weapon slots (to control a player’s weapon inventory).
 
-Main Server/Engine - Done by Jan.17
-Networking “Online” Portion - Done by Jan.22
-Debugging - Done by Jan 24th
+	The Technicalities Part 4 - Algorithms
+The major algorithms we used were a random generation algorithm which dealt with creating unique weapons, characters and rooms. We also used those to deal with networking and the main battle sequence.
+
+	The Final Timeline
+In the end, we appropriated our time pretty well. We approached the engine first, followed by random generation and finished off with networking. Granted, I am writing this the night before the deadline, but that was only to enable the most time for additions and modifications as well as having the most up to date information for the document. (and hey, it’s only 8:00!)
 
 
