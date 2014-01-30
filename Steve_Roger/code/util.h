@@ -17,6 +17,9 @@
 #define C_RESET   "\x1b[0m"
 
 #define loop for(;;)
+#define true 1
+#define false 0
+
 #define PRINCE_NAME "Jamal Kareem Tijani"
 
 // Prints an error message
