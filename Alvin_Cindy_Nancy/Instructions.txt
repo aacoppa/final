@@ -1,0 +1,2 @@
+To download SDL for Macs:
+brew install SDL

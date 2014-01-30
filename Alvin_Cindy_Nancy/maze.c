@@ -22,8 +22,6 @@ void showMaze(const char *maze, int width, int height) {
 }
 
 
-
-
 /*  Carve the maze starting at x, y. */
 void CarveMaze(char *maze, int width, int height, int x, int y) {
 
@@ -113,5 +111,4 @@ int main() {
   return 0;
   
 }
-
 */

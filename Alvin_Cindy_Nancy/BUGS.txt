@@ -1,1 +1,3 @@
 printing room list causes segfault
+
+-> Unable to test GUI Code due to the fact that XCode won't build the project for me.

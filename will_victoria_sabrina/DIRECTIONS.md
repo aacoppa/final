@@ -1,3 +1,13 @@
+# Note to DW:
+Sorry, Mr. Dyrland-Weaver, we ran into a snag with the networking
+portion of the game, so the project doesn't work as of yet. The UI and
+game logic are done, awaiting function calls from the networking
+portion. If you make and run ./RISK you'll see our beautiful UI (which
+prints info in the terminal based on interactions--better user
+feedback requires info to be passed from the network). Hopefully we'll
+have it for you tomorrow (Jan 30). So sorry about that.
+-- The RISK Team
+
 # Install
 
 ## Ubuntu:
