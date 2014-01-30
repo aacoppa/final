@@ -12,8 +12,8 @@ void showMaze(const char *maze, int width, int height) {
    for(y = 0; y < height; y++) {
       for(x = 0; x < width; x++) {
          switch(maze[y * width + x]) {
-         case 1:  printf("[]");  break;
-         case 2:  printf("<>");  break;
+         case 0:  printf("[]");  break;
+         case 1:  printf("<>");  break;
          default: printf("  ");  break;
          }
       }
