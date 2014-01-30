@@ -12,7 +12,7 @@
 struct call parseCall(char* statement);
 struct function parseFunction(char* statement);
 
-void fixSpacing(char* code) {
+char* fixSpacing(char* code) {
   char* fixedCode = calloc(sizeof(char), strlen(code) + 1);
   fixedCode = strcpy(fixedCode, code);
   int n = strlen(fixedCode);
