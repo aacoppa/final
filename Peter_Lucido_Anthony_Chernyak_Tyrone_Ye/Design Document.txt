@@ -1,4 +1,3 @@
-
 	The Creators 
 Peter Lucido, Anthony Chernyak, Tyrone Ye
 
@@ -9,7 +8,7 @@ For our project we created a text based, turn-based, dungeon-crawler RPG. This g
 Our project is run entirely through the terminal. As it is text based, prompts will pop up on the screen and the player must respond to them accordingly. More detailed, it involves going through dungeons and attacking monsters. A player’s remaining health is displayed on the top of the screen, he or she has an inventory with randomly generated weapons acquired from killing monsters and, in terms of gameplay, has the ability to either attack a monster in the room or advance to the next room. After gaining enough experience points through killing monsters, a player has the ability to level up and increase his or her stats. In addition, the player has the ability to save, locally or online, at any time in his or her adventure, of which can be later loaded at the start screen. Players can be reminded of any commands from the help screen, which can be accessed by entering help at any time into the prompt.
 
 	The Technicalities Part 1 - A Description of Useage of CS Topics
-
+	
 Processes - Engine of the Game. Will handle player actions, and the “rules” of the game.
 Allocated Memory - Players Stats, Weapons, Etc and Monster stats.
 Working with Files - Stores information and stats on players.
