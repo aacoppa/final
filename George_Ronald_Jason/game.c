@@ -1,8 +1,11 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <time.h>
+#include "headers.h"
+void createdeck();
+void shuffle(char** deckofcards);
+void hit(char ** deckofcards, int turncounter);
+void stand(int turncounter);
+void doubledown(char ** deckofcards, int turncounter);
+void split(char ** deckofcards, int turncounter);
+int gameSteup();
 
 char **deck;
 //Suit key: D = Diamonds, C = Clubs, H = Hearts, S = Spades
@@ -11,6 +14,7 @@ char *suit[5]= {"D","C","H","S"};
 char *card[14]= {"A","2","3","4","5","6","7","8","9","10","J","Q","K","\0"};
 int counter = 52;
 int turncounter = 0;
+char* buffer = (char*)malloc(sizeof(char)*256);
 
 //makes a deck of 52 cards and shuffles it
 void createdeck () {

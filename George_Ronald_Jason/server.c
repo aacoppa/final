@@ -11,7 +11,7 @@ int main(){
   printf("Socket ID: %d\n", socket_id);
 
   server.sin_family = AF_INET;
-  server.sin_family.s_addr = INADDR_ANY;
+  server.sin_addr.s_addr = INADDR_ANY;
   server.sin_port = htons(SERVER_PORT);
   
   int i = bind(socket_id, (struct sockaddr *)&server,sizeof(server));
@@ -28,12 +28,14 @@ int main(){
     
   print("Player Connection Accepted\n");
   
-  gameSetup();
+  //gameSetup();
   
   while (1){
     
-
+    
   }
+  
   close(socket_client);
-  return 0;
+  return ;
+
 }
