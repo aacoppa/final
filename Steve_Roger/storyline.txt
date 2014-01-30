@@ -17,7 +17,7 @@ Computer
 		School // Jamal has an aversion to school.
 		Not Porn // There's no way Jamal can get in here. It is protected by state of the art 2^100 bit encryption
 	Games
-		Club Penguin
+		Club Penguin // It doesn't look like Jamal is sliding around on the ice here.
 		League of Legends // Jamal is Diamond I, he has no interest in your peasantry.
 		Runescape // Jamal has 2,147,483,648 gp, 1 more coin than is programmatically possible. That's a Nigerian Prince for you.
 	System

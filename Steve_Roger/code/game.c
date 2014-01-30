@@ -114,6 +114,7 @@ b:
 		printColor("Use pwd to see the current directory.\n", C_CYAN);
 		loop {
 			getInput(true);
+			//char * rel = relativeDir();
 		}
 	}
 
@@ -151,16 +152,32 @@ int getInput(int denyEmpty) {
 		} else if (!strcasecmp(l, "ls")) {
 			ls();
 		} else if (!strncasecmp(l, "cd", 2)) {
-			if (chdir(l + 3) != -1) {
+			l += 3; // increment to remove "cd " part
+			if (!strncmp(l, "..", 2) && !strncmp(relativeDir(), "/", 1)) {
+				printf("You are already in the root dir...\n");
+			} else if (chdir(l) != -1) {
 				char * rel = relativeDir();
 				printf("%s\n", rel);
-				if (!strcasecmp(rel, "~/Computer/Documents/Work")) {
+				if (!strcmp(rel, "/Computer/Documents/Work")) {
 					printf("This is serious business; he won't be in here.\n");
+				} else if (!strcmp(rel, "/Computer/Documents/School")) {
+					printf("Jamal has an aversion to school.\n");
+				} else if (!strcmp(rel, "/Computer/Documents/Not Porn")) {
+					printf("There's no way Jamal is in here yet. It is protected by state of the art 2^100 bit encryption\n");
+				} else if (!strcmp(rel, "/Computer/Games/Club Penguin")) {
+					printf("It doesn't look like Jamal is sliding around on the ice here.\n");
+				} else if (!strcmp(rel, "/Computer/Games/League of Legends")) {
+					printf("Jamal is Diamond I, he has no interest in your peasantry.\n");
+				} else if (!strcmp(rel, "/Computer/Games/Runescape")) {
+					printf("Jamal has 2,147,483,648 gp, 1 more coin than is programmatically possible. That's a Nigerian Prince for you.\n");
+				} else {
+					printf("Jamal isn't here\n");
 				}
 			} else {
 				perror("cd");
 				printColor("Type ls to list possible directories.\n", C_CYAN);
 			}
+			l -= 3;
 		} else if (!denyEmpty || (l != NULL && *l != '\0')) {
 			break;
 		}
