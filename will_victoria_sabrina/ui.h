@@ -45,3 +45,6 @@ void queue_move(RISK_move m);
 
 // handle all input
 void handle_input();
+
+// handles all UI workings, delays 100 ms at end to prevent CPU overheat
+void ui_update();

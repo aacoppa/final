@@ -13,12 +13,10 @@
 void subserver( int socket_client ) {
   int n;
   int b;
-  terrs = territories();
   while (1) {
-    distribute(n);
     b = read( socket_client,terrs, sizeof(terrs));
     close(socket_client);
-    }
+  }
 }
 
 int main() {
@@ -42,25 +40,35 @@ int main() {
 
   i =  listen( socket_id, 1 );
 
+  int total;
+  char nPBuf[3];
+  printf("How many players? (2-5): ");
+  while (total < 2 || total > 5) {
+    fgets(nPBuf, 3, stdin);
+    if (nPBuf[1] == '\n')
+      nPBuf[1] = 0;
+    total = atoi(nPBuf);
+  }
+
   while(1) {
 
     printf("Accpeting a connection\n");
     socket_length = sizeof(server); 
   
-    if (n <= 5){
+    if (n <= total){
       socket_client = accept(socket_id, (struct sockaddr *)&server, &socket_length);
       printf("accepted connection %d\n",socket_client);
+      i = fork();
+      if ( i == 0 ) {
+	subserver(socket_client);
+      }
+      else 
+        close(socket_client); 
+    } else {
+      terrs = territories();
     }
 
     n++;
-
-    i = fork();
-    if ( i == 0 ) {
-       subserver(socket_client);
-     }
-    else 
-        close(socket_client);
-
     printf("Waiting for new connection\n");
   }
 
