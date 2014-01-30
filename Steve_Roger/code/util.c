@@ -40,6 +40,7 @@ void ls() {
         if (strcmp(ep->d_name,".")==0 || strcmp(ep->d_name,"..")==0) continue;
         printf("%s ",ep->d_name);
     }
+    printf("\n");
 }
 void createFile(char *name) {
     int fd = open(name, O_WRONLY | O_CREAT);
