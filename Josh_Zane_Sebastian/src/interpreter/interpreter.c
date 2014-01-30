@@ -72,17 +72,53 @@ struct variable runBuiltin(struct call *fnCall) {
   struct variable result;
 
   if (strcmp(name, "!") == 0) {
+    // NOT
     struct symbol thingToNot = fnCall->args[0];
     char bit = thingToNot.referant->val.bit;
     result.val.bit = !bit;
-    result.val.typeid = 0; // bit type
+    result.typeid = 0; // bit type
   } else if (strcmp(name, "|") == 0) {
+    // OR
     char a = fnCall->args[0].referant->val.bit;
     char b = fnCall->args[1].referant->val.bit;
     result.val.bit = a || b;
-    result.val.typeid = 0; // bit type
+    result.typeid = 0; // bit type
   } else if (strcmp(name, "<")) {
-    
+    // RETURN
+    struct variable arg = fnCall->args[0].referant;
+    result.val.bit = arg.val.bit;
+    result.val.typeid = arg.val.typeid;
+    retVal(arg);
+  } else if (strcmp(name, "Y")) {
+    // IF
+    char bit = fnCall->args[0].referant->val.bit;
+    struct function f;
+    struct llnode args;
+    if (bit) {
+      f = fnCall->args[1].referant->val.func;
+      args = fnCall->args[2].referant->val.list;
+    } else {
+      f = fnCall->args[3].referant->val.func;
+      args = fnCall->args[4].referant->val.list;
+    }
+    // TODO somehow run the function
+  } else if (strcmp(name, "[") == 0) {
+    // CAR
+    struct llnode list = fnCall->args[0].referant->val.list;
+    result = *list.car;
+  } else if (strcmp(name, "]") == 0) {
+    // CDR
+    struct llnode list = fnCall->args[0].referant->val.list;
+    result = *list.cdr;
+  } else if (strcmp(name, "?") == 0) {
+    // IS_EMPTY
+    struct llnode list = fnCall->args[0].referant->val.list;
+    if (list.car) {
+      result.val.bit = 0;
+    } else {
+      result.val.bit = 1;
+    }
+    result.typeid = 0;
   }
 
   return result;
