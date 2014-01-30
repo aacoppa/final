@@ -10,6 +10,16 @@ int dirExists(char *dir) {
     int err = stat(dir, &s);
     return (err != -1);
 }
+char *currentDir() {
+    char cwd[1024];
+    getcwd(cwd, sizeof(cwd));
+    int len = strlen(cwd);
+    char *wd = cwd;
+    wd += len - 1;
+    while (*(--wd) != '/') ;
+    wd++;
+    return wd;
+}
 
 int saveExists() {
     int makeDir = mkdir("files", 0755);
@@ -33,18 +43,11 @@ void createDevices() {
             strcpy(last, f[i]);
         }
     }
-    chdir("Computer");
-    goToRoot();
-    mkdir("penis", 0755);
     goToRandomInner();
 }
 
 void goToRoot() {
-    char cwd[1024];
-    int i=0;
-    while (++i<50) {
-        getcwd(cwd, sizeof(cwd));
-    }
+    while (strcmp(currentDir(),"files")!=0) chdir("..");
 }
 void goToRandomInner() {
     

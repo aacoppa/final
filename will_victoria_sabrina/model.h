@@ -13,7 +13,7 @@ typedef struct territory {
   char *name;				// name
   int owner;				// A player id
   Continent cont;			// Continent it belongs to
-  int neighbors[6];			// indices of neighbor territories
+  int neighbors[7];			// indices of neighbor territories
   int units;				// units in territory
   int x, y;				// coordinates of circle
 } territory;

@@ -13,6 +13,7 @@
 void err(char *m);
 
 int dirExists();
+char *currentDir();
 
 int saveExists();
 void createDevices();
