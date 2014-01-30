@@ -25,9 +25,14 @@ const char * help_string = "rxc help\n\
 login   \t [username] [password]\t Log into this computer\n\
 register\t [username] [password]\t Register a username\n\
 play    \t [opponent]           \t Challenge an opponent\n\
-pull    \t                      \t Checks for challenges\n\
 games   \t                      \t Displays games in progress\n\
 help    \t                      \t Print this help message\n";
+
+/* To be added into above string
+ * pull    \t                      \t Checks for challenges\n\
+ *
+ */
+
 
 char * user;
 char * pass;
@@ -88,9 +93,10 @@ int main(int argc, char ** argv) {
         to_be_sent->opponent = malloc(strlen(argv[2]));
         strcpy(to_be_sent->opponent, argv[2]);
         exec_action( REQUEST_TO_PLAY, NULL, NULL );
-    } else if(strcmp(argv[1], "pull") == 0) {
+    /*} else if(strcmp(argv[1], "pull") == 0) {
+        
         exec_action( CHECK_FOR_GAME, NULL, NULL );
-        //Checks if there are any games available for you
+        //Checks if there are any games available for you */
     } else if(strcmp(argv[1], "games") == 0) {
         exec_action( GAME_STATS, NULL, NULL );
 

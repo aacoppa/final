@@ -1,5 +1,9 @@
 Come up with an idea
+====================
 
-MAKE PRE_GAME request
-Validate user before confirming request
-Make conversations in server/client
+After that, aka now
+
+./rxc pull
+add logging to the server
+fix the tab character printing
+fix last winner issues
