@@ -72,8 +72,8 @@ struct variable runBuiltin(struct call *fnCall) {
 
   if (strcmp(name, "!") == 0) {
     // NOT
-    struct symbol thingToNot = fnCall->args[0];
-    char bit = thingToNot.referant->val.bit;
+    struct symbol thingToNegate = fnCall->args[0];
+    char bit = thingToNegate.referant->val.bit;
     result.val.bit = !bit;
     result.typeid = 0; // bit type
   } else if (strcmp(name, "|") == 0) {
