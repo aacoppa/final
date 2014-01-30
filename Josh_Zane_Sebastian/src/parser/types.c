@@ -6,12 +6,22 @@ struct symbol;
 struct function;
 union value;
 struct variable;
+struct statement;
+struct call;
 
+ 
 
 struct llnode {
   struct type* car;
   struct llnode* cdr;
 };
+
+struct call {
+  char* name;
+  struct function func;
+  struct symbol* arguments;
+  int numargs;
+}
 
 struct symbol {//I guess this is analogous to a symbol in lisp.
   char* name; //It has a name, which we use to keep track of it.
@@ -29,7 +39,7 @@ union value { //we have three primitive types, so every variable's value is one 
   struct function func;
 };
 
-struct variable { //this is essentially an in-program variable
+struct variable {  //this is essentially an in-program variable
   union value val; //it has a value, i.e. what it equals
-  char typeid; //and a type id that allows us to correctly extract the value from the union value.
+  char typeid;     //and a type id that allows us to correctly extract the value from the union value.
 };
