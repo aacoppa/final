@@ -1,3 +1,4 @@
+#pragma once
 // rolls a six-sided die
 int die_roll();
 

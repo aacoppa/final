@@ -1,6 +1,4 @@
-#ifdef MODELH
-#else
-#define MODELH
+#pragma once
 // Continent enum, each territory will belong to one Continent
 typedef enum Continent {
   RISK_ASIA,	// Asia
@@ -55,4 +53,3 @@ net_move rtonetmove(RISK_move m);
 RISK_move nettormove(net_move m);
 void log_terr(territory t);
 territory *terrs; // need number of territories, should be NULL terminated
-#endif

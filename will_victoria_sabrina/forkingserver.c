@@ -11,30 +11,41 @@
 
 #include "model.h"
 #include "map.h"
-#include "logic.c"    
+#include "logic.h"    
 
 int moveKey = 273;
 int turnKey = 274;
+int procNextKey = 275;
 int memdMove;
 int memdTurn;
+int memdProcNext;
 net_move *move;
 int *turn;
+int *unsentMoves;
 int totalPlayers;
 
-void subserver( int socket_client ) {
-  int n;
-  int b;
+void subserver( int socket_client, int pNum ) {
+  int bytesRead;
   while (1) {
-    b = read( socket_client, move, sizeof(net_move));
-    if (!move.destination) {
-      if (*turn >= totalPlayers)
-        *turn = 1;
-      else
-        *turn ++;
+    if (pNum == *turn && !unsentMoves) {
+      bytesRead = read( socket_client, move, sizeof(net_move));
+      *unsentMoves = totalPlayers;
+      // check if turn complete
+      if (!move->destination) {
+        if (*turn >= totalPlayers)
+          *turn = 1;
+        else
+          (*turn) ++;
+      }
+    } else if (pNum != *turn){
+#warning fix
+      write(socket_client, move, sizeof(net_move));
+      (*unsentMoves)--;
     }
   }
   shmdt(move);
   shmdt(turn);
+  shmdt(unsentMoves);
   close(socket_client);
 }
 
@@ -49,6 +60,8 @@ int main() {
   memdTurn = shmget(turnKey, sizeof(int), IPC_CREAT | 0666);
   turn = (int*)shmat(memdTurn, NULL, 0);
   
+  memdProcNext = shmget(procNextKey, sizeof(int), IPC_CREAT | 0666);
+  unsentMoves = (int*)shmat(memdProcNext, NULL, 0);
   //net
   struct sockaddr_in server;
   socklen_t socket_length;
@@ -68,7 +81,7 @@ int main() {
 
   char nPBuf[3];
   printf("How many players? (2-5): ");
-  while (totalPlayersPlayers < 2 || totalPlayers > 5) {
+  while (totalPlayers < 2 || totalPlayers > 5) {
     fgets(nPBuf, 3, stdin);
     if (nPBuf[1] == '\n')
       nPBuf[1] = 0;
@@ -87,7 +100,7 @@ int main() {
       printf("accepted connection %d\n",socket_client);
       i = fork();
       if ( i == 0 ) {
-        subserver(socket_client);
+        subserver(socket_client, n);
       }
       else {
         close(socket_client);
@@ -97,6 +110,9 @@ int main() {
     } else {
       break;
     }
+  } while (*turn > 0) {
+    
+    sleep(1);
   }
   
   struct shmid_ds d;
@@ -104,5 +120,8 @@ int main() {
   
   struct shmid_ds del;
   shmctl( memdTurn, IPC_RMID, &del );
+  
+  struct shmid_ds delProcNext;
+  shmctl( memdProcNext, IPC_RMID, &delProcNext );
   
 }

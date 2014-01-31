@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include "model.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 #include "ui.h"
@@ -231,15 +232,8 @@ void ui_update() {
 }
 
 int main() {
-#warning terrs distributed here for testing until networking is finished
-  terrs = territories();
-  distribute(5);
-  if (init_SDL())
-    return 1;
   while (!done) {
-    ui_update();
   }
-  cleanup_SDL();
 }
 
 void cleanup_SDL() {
