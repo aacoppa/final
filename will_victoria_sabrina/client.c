@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <errno.h>
 #include <arpa/inet.h>
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -32,7 +33,14 @@ int main(int argc, char **argv) {
   sock.sin_port = htons(24601);
   
   int c = connect(socket_id, (struct sockaddr *)&sock, sizeof(sock));
-  
+
+  // getting terrs
+  b = read(socket_id, terrs, sizeof(territory)*43);
+  if (b < 0) {
+    printf("Error reading:\n\t%s\n", strerror(errno));
+    return 1;
+  }
+  //  printf("terrs is %d bytes long\n", b);
   if (init_SDL())
     return 1;
   net_move move;

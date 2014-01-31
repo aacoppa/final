@@ -25,6 +25,8 @@ int totalPlayers;
 
 void subserver( int socket_client, int pNum ) {
   int bytesRead;
+  int b = write(socket_client, terrs, sizeof(territory)*43);
+  printf("terrs is %lu B, wrote %d bytes\n", sizeof(territory)*43, b);
   while (1) {
     if (pNum == *turn && !unsentMoves) {
       bytesRead = read( socket_client, move, sizeof(net_move));
@@ -85,6 +87,10 @@ int main() {
     if (nPBuf[1] == '\n')
       nPBuf[1] = 0;
     totalPlayers = atoi(nPBuf);
+    if (totalPlayers < 2 || totalPlayers > 5) {
+      printf("%d is not an acceptable number of players\n");
+      printf("Please pick a number between 2 and 5: ");
+    }
   }
   terrs = territories();
   distribute(totalPlayers);
@@ -107,6 +113,7 @@ int main() {
       n++;
       printf("Waiting for new connection\n");
     } else {
+      printf("all clients connected\n");
       break;
     }
   } while (*turn > 0) {

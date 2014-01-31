@@ -1,9 +1,7 @@
-#include "model.h"
-
-const int SCREEN_WIDTH = 952;
-const int SCREEN_HEIGHT = 631;
+#pragma once
 
 int pNum; // player number
+int gameTurn; //player turn number
 
 RISK_move *move_queue; // NULL terminated
 
