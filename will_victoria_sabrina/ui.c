@@ -9,6 +9,9 @@
 #include <math.h>
 #include <assert.h>
 
+const int SCREEN_WIDTH = 952;
+const int SCREEN_HEIGHT = 631;
+
 SDL_Window *win;
 SDL_Renderer *ren;
 SDL_Texture *maptex;

@@ -8,10 +8,11 @@
 #include <netinet/in.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
+#include "model.h"
 #include "ui.h"
 #include "map.h"
 #include "logic.h"
-#include "model.h"
+
 
 int main(int argc, char **argv) {
   
@@ -35,10 +36,11 @@ int main(int argc, char **argv) {
   if (init_SDL())
     return 1;
   net_move move;
+  int gTurn;
   while (1) {
-    if (pNum == gameTurn && move.destination) {
+    if (pNum == gTurn && move.destination) {
       b = write( socket_id, &move, sizeof(net_move) );
-    } else if (pNum != gameTurn){
+    } else if (pNum != gTurn){
       //b = read
       ui_update();
       printf("\tReceived update\n");
