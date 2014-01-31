@@ -17,7 +17,8 @@ SDL_Renderer *ren;
 SDL_Texture *maptex;
 TTF_Font *font = NULL;
 territory *selected = NULL;
-char done = 0;
+char done = 0; // set when user quits
+
 
 SDL_Color pColors[] = {{255, 11, 111}, {15, 130, 255}, {255, 145, 15},
   {157, 73, 255}, {16, 204, 167}};
@@ -209,11 +210,33 @@ void handle_input() {
           if (selected == c)
             printf("double clicked!\n");
           else {
-            printf("territories are %sadjacent\n", tadjacent(selected, c)?"":"not ");
+            char adj = tadjacent(selected, c);
+            if (adj) {
+              char *op = malloc(15);
+              int u = 0;
+              madeMove = (RISK_move){0, selected, c};
+              if (selected->owner == c->owner)
+                op = "Resupply";
+              else
+                op = "Attack";
+              while (u < 1 || u > selected->units) {
+                printf("%s with how many units? ", op);
+                char buf[15];
+                fgets(buf, sizeof(buf), stdin);
+                atoi(buf);
+              }
+              madeMove.units = u;
+              queue_move(madeMove);
+            } else {
+              printf("%s and %s aren't adjacent\n", c->name, selected->name);
+            }
             selected = NULL;
           }
         } else {
-          selected = c;
+          if (selected->owner == pNum)
+            selected = c;
+          else
+            printf("%s is owned by Player %d!\n", selected->name, selected->owner);
         }
       } else {
         printf("clicked (%d, %d)\n", event.button.x, event.button.y);
@@ -223,15 +246,13 @@ void handle_input() {
   }
 }
 
-void ui_update() {
-  handle_input();
+char ui_update() {
+  if (pNum == gameTurn)
+    handle_input();
   update_map();
 #warning input will be sent to network once networking is complete
-  if (0) {
-    char buf[15];
-    fgets(buf, sizeof(buf), stdin);
-  }
   SDL_Delay(100);
+  return done;
 }
 
 void cleanup_SDL() {

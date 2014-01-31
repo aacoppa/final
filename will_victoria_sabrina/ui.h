@@ -2,7 +2,7 @@
 
 int pNum; // player number
 int gameTurn; //player turn number
-
+RISK_move madeMove; // move this player is making
 RISK_move *move_queue; // NULL terminated
 
 // logs any SDL error, taking op as the operation that failed
@@ -45,4 +45,5 @@ void queue_move(RISK_move m);
 void handle_input();
 
 // handles all UI workings, delays 100 ms at end to prevent CPU overheat
-void ui_update();
+// returns 1 if user quit, else 0
+char ui_update();

@@ -34,24 +34,31 @@ int main(int argc, char **argv) {
   
   int c = connect(socket_id, (struct sockaddr *)&sock, sizeof(sock));
 
+  printf("connection made; waiting for all players\n");
+  
   // getting terrs
   terrs = malloc(sizeof(territory)*43);
   b = read(socket_id, terrs, sizeof(territory)*43);
+  b = read(socket_id, &pNum, sizeof(int));
   if (b < 0) {
     printf("Error reading:\n\t%s\n", strerror(errno));
     return 1;
   }
-  //  printf("terrs is %d bytes long\n", b);
+  printf("received map info (%dB)\n", b);
   if (init_SDL())
     return 1;
-  net_move move;
+  char userQuit = 0;
   int gTurn;
-  while (1) {
-    if (pNum == gTurn && move.destination) {
-      b = write( socket_id, &move, sizeof(net_move) );
+  while (!userQuit) {
+    if (pNum == gTurn && madeMove.destination) {
+      net_move m = rtonetmove(madeMove);
+      b = write( socket_id, &(m), sizeof(net_move) );
+      userQuit = ui_update();
     } else if (pNum != gTurn){
-      //b = read
-      ui_update();
+      net_move move;
+      b = read(socket_id, &move, sizeof(net_move));
+      queue_move(nettormove(move));
+      userQuit = ui_update();
       printf("\tReceived update\n");
     }
   }

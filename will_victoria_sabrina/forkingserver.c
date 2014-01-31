@@ -25,8 +25,15 @@ int totalPlayers;
 
 void subserver( int socket_client, int pNum ) {
   int bytesRead;
+  printf("subserver started for p%d, awaiting further connections\n", pNum);
+  (*unsentMoves)++;
+  while (*unsentMoves < totalPlayers) {
+    sleep(5);
+  }
   int b = write(socket_client, terrs, sizeof(territory)*43);
   //printf("terrs is %lu B, wrote %d bytes\n", sizeof(territory)*43, b);
+  b = write(socket_client, &pNum, sizeof(int));
+  *unsentMoves = 0;
   while (1) {
     if (pNum == *turn && !unsentMoves) {
       bytesRead = read( socket_client, move, sizeof(net_move));
@@ -68,8 +75,6 @@ int main() {
   socklen_t socket_length;
   socket_id = socket( AF_INET, SOCK_STREAM, 0);
 
-  printf("Soket file descriptor: %d\n", socket_id);
-
   server.sin_family = AF_INET;
 
   server.sin_addr.s_addr = INADDR_ANY;
@@ -97,17 +102,17 @@ int main() {
   
   while(1) {
 
-    printf("Accpeting a connection\n");
+    printf("Awaiting a connection\n");
     socket_length = sizeof(server); 
   
     if (n <= totalPlayers){
+      printf("Need %d more players\n", totalPlayers - n + 1);
       socket_client = accept(socket_id, (struct sockaddr *)&server, &socket_length);
       printf("accepted connection %d\n",socket_client);
       i = fork();
       if ( i == 0 ) {
         subserver(socket_client, n);
-      }
-      else {
+      } else {
         close(socket_client);
       }
       n++;
