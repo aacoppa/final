@@ -12,7 +12,7 @@ exactly went wrong.
 
 -- The RISK Team
 
-# Install
+# Installing libraries
 
 ## Ubuntu:
 Run the following two lines, which handle downloading, configuring,
@@ -26,3 +26,10 @@ make install`
 ## OSX:
 Just use homebrew (so much easier)
 `brew install SDL2 && brew install SDL2_ttf`
+
+#Compiling
+run `make` on OSX or `make CFLAGS=-lbsd` for linux.
+
+#Running
+run `./server`
+run `./RISK` -- RISK defaults to connecting to homer, but a different IP can be supplied as a command line argument
