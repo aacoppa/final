@@ -8,6 +8,7 @@
 #include <signal.h>
 #include <sys/shm.h>
 #include <sys/ipc.h>
+#include <signal.h>
 #include "model.h"
 #include "map.h"
 #include "logic.h"
@@ -22,10 +23,11 @@ net_move *move;
 int *turn;
 int *unsentMoves;
 int totalPlayers;
+char subsDone = 0;
 
 void subserver( int socket_client, int pNum ) {
   int bytesRead;
-  printf("subserver started for p%d, awaiting further connections\n", pNum);
+  printf("subserver started for p%d, awaiting further connections (%d others connected)\n", pNum, *unsentMoves);
   (*unsentMoves)++;
   while (*unsentMoves < totalPlayers) {
     sleep(5);
@@ -34,7 +36,7 @@ void subserver( int socket_client, int pNum ) {
   //printf("terrs is %lu B, wrote %d bytes\n", sizeof(territory)*43, b);
   b = write(socket_client, &pNum, sizeof(int));
   *unsentMoves = 0;
-  while (1) {
+  while (!subsDone) {
     if (pNum == *turn && !unsentMoves) {
       bytesRead = read( socket_client, move, sizeof(net_move));
       *unsentMoves = totalPlayers;
@@ -44,6 +46,7 @@ void subserver( int socket_client, int pNum ) {
           *turn = 1;
         else
           (*turn) ++;
+        write(socket_client, &totalPlayers, sizeof(int));
       }
     } else if (pNum != *turn){
 #warning fix
@@ -57,10 +60,16 @@ void subserver( int socket_client, int pNum ) {
   close(socket_client);
 }
 
+void sigler(int signo) {
+  subsDone = 1;
+  printf("kill received\n");
+}
+
 int main() {
   int socket_id, socket_client;
   int i;
   int n = 1;
+  signal(SIGINT, sigler);
   // shmem
   memdMove = shmget( moveKey, sizeof(net_move), IPC_CREAT | 0666 );
   move = (net_move*)shmat(memdMove, NULL, 0);
@@ -79,7 +88,7 @@ int main() {
 
   server.sin_addr.s_addr = INADDR_ANY;
   
-  server.sin_port = htons(24601);
+  server.sin_port = htons(24645);
  
   i= bind( socket_id, (struct sockaddr *)&server, sizeof(server) );
 
@@ -100,7 +109,7 @@ int main() {
   terrs = territories();
   distribute(totalPlayers);
   
-  while(1) {
+  while(!subsDone) {
 
     printf("Awaiting a connection\n");
     socket_length = sizeof(server); 
@@ -121,10 +130,14 @@ int main() {
       printf("all clients connected\n");
       break;
     }
-  } while (*turn > 0) {
-    
-    sleep(1);
   }
+  /*
+  while (*turn > 0 && !subsDone) {
+    sleep(1);
+  }*/
+  printf("exiting...\n");
+  
+#warning subservers continue
   
   struct shmid_ds d;
   shmctl( memdMove, IPC_RMID, &d );
@@ -134,5 +147,7 @@ int main() {
   
   struct shmid_ds delProcNext;
   shmctl( memdProcNext, IPC_RMID, &delProcNext );
+  
+  printf("exited\n");
   
 }
