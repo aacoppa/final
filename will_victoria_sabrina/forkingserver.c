@@ -8,10 +8,9 @@
 #include <signal.h>
 #include <sys/shm.h>
 #include <sys/ipc.h>
-
 #include "model.h"
 #include "map.h"
-#include "logic.h"    
+#include "logic.h"
 
 int moveKey = 273;
 int turnKey = 274;

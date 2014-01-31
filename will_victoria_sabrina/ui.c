@@ -231,11 +231,6 @@ void ui_update() {
   SDL_Delay(100);
 }
 
-int main() {
-  while (!done) {
-  }
-}
-
 void cleanup_SDL() {
   TTF_CloseFont(font);
   SDL_DestroyTexture(maptex);
