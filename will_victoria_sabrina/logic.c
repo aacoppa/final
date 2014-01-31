@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include "model.h"
 #include <string.h>
-#include <bsd/stdlib.h>
+//#include <bsd/stdlib.h>
 
 // check if territories are adjacent
 char tadjacent(territory *t1, territory *t2) {

@@ -88,7 +88,7 @@ int main() {
       nPBuf[1] = 0;
     totalPlayers = atoi(nPBuf);
     if (totalPlayers < 2 || totalPlayers > 5) {
-      printf("%d is not an acceptable number of players\n");
+      printf("%d is not an acceptable number of players\n", totalPlayers);
       printf("Please pick a number between 2 and 5: ");
     }
   }

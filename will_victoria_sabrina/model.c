@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include "model.h"
 #include <string.h>
+#include "model.h"
 
 territory *terr_lookup(char *);
 

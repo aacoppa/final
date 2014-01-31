@@ -35,6 +35,7 @@ int main(int argc, char **argv) {
   int c = connect(socket_id, (struct sockaddr *)&sock, sizeof(sock));
 
   // getting terrs
+  terrs = malloc(sizeof(territory)*43);
   b = read(socket_id, terrs, sizeof(territory)*43);
   if (b < 0) {
     printf("Error reading:\n\t%s\n", strerror(errno));
