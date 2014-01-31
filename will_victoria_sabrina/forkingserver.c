@@ -26,7 +26,7 @@ int totalPlayers;
 void subserver( int socket_client, int pNum ) {
   int bytesRead;
   int b = write(socket_client, terrs, sizeof(territory)*43);
-  printf("terrs is %lu B, wrote %d bytes\n", sizeof(territory)*43, b);
+  //printf("terrs is %lu B, wrote %d bytes\n", sizeof(territory)*43, b);
   while (1) {
     if (pNum == *turn && !unsentMoves) {
       bytesRead = read( socket_client, move, sizeof(net_move));
