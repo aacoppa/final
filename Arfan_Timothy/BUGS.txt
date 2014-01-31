@@ -1,4 +1,0 @@
-There are a few warnings dealing with unicode characters we used to display suite values. However, it is not an error 
-and does not prevent the flow of the game.
-
-

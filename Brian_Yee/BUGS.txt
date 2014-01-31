@@ -1,2 +1,0 @@
-problems with the string.h library
-unable to use the functions included by it at all.
