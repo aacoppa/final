@@ -174,6 +174,28 @@ int send_request(int type, char * name, char * passwd) {
         }
         games_returned = temp_games;
         return QUERY_SUCC;
+    } else if( type == GET_RANDOM_OPPONENT ) {
+        cli_creat_acc * cl = malloc( sizeof(cli_creat_acc) );
+        strcpy(cl->name, name);
+        strcpy(cl->pass, passwd);
+        cl->type = type;
+        write( global_sock_id, cl, sizeof(cli_creat_acc) );
+        void * buff = malloc(sizeof(serv_response));;
+        int r = read(global_sock_id, buff, sizeof(serv_response));
+        printf("%d\n", r);
+        serv_response * sr = (serv_response *) buff;
+        if( sr->reason == NO_UNPLAYED_OPP ) {
+            random_opponent = NULL;
+        } else {
+            printf("HERE\n");
+            random_opponent = malloc(50);
+            void * b = malloc(50);
+            int r = read( global_sock_id, b, 50);
+            char * l = b;
+            strcpy(random_opponent, l);
+            printf("%d %s\n", r, random_opponent);
+        }
+        return QUERY_SUCC;
     }
     return 0;
 }

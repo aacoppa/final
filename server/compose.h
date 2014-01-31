@@ -60,4 +60,9 @@ char * compose_validate_user(char *, char *);
  *
  */
 char * compose_new_game_entry(cli_upload_game *);
+
+/* Returns all users in db
+ *
+ */
+char * compose_get_users();
 #endif

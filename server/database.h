@@ -35,6 +35,7 @@
 #define GET_TURN_CALLBACK 5
 #define GET_KEY_CALLBACK 6
 #define GET_GAMES_IN_PROGRESS_CALLBACK 7
+#define GET_USERS_CALLBACK 8
 
 /* Turn value stored in database if its
  * u1 or u2's turns... Stored alphabetically remember
@@ -55,6 +56,7 @@
  */
 
 
+char ** users; //Stores all users in the database
 int createsem; //Semaphore for creating user 
 int writesem; //Semaphore for writing
 int readsem; //Semaphore for readers
@@ -64,6 +66,7 @@ int readsem; //Semaphore for readers
  */
 struct db_game_data_wr * gip_hold;
 struct db_game_info gi;
+
 
 /* Username validity
  * For opponent name checking and username taken checks
@@ -106,9 +109,16 @@ void db_create_game(struct cli_upload_game *);
  */
 void db_update_game(struct cli_upload_game *, int);
 
+/* Returns a list of users in db
+ *
+ */
+char ** db_get_users();
+
 /* Gets games in progress for a user
  * db_game_data_wr stores a list of game data
  */
+
+
 struct db_game_data_wr * db_games_in_progress(char * name);
 
 /* Init and close functions for cleanup

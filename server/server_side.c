@@ -81,13 +81,12 @@ int handle_request_type(client_out * in, int fd) {
             //Confirm proper password username combo
             sr->success = 0;
             sr->reason = INVALID_UPASS;
-        } else if( !db_user_exists(request->opponent) ) {
+        } else if( !db_user_exists(request->opponent) || !strcmp(request->opponent, request->name)) {
             sr->reason = NOT_VALID_OPPONENT;
             sr->success = 0;
         } else if( !db_game_exists(request->name, request->opponent)) {
             //No game between the two so skip to UPLOAD_GAME_RESPONSE in client
             sr->success = 0;
-            printf("Ummm...\n");
             sr->reason = FIRST_TURN;
         } else if( !db_my_turn(request->name, request->opponent) ) {
             sr->success = 0;
@@ -100,7 +99,6 @@ int handle_request_type(client_out * in, int fd) {
         return SUCC_REQ; //Closes socket
 
     } else if( in->type == UPLOAD_GAME_FIRST || in->type == UPLOAD_GAME_RESPONSE ) {
-        printf("Hey\n");
         if( in->type == UPLOAD_GAME_FIRST ) logger("Uploading first game...\n");
         else logger("Uploading second game\n");
         cli_upload_game * request = (cli_upload_game *) in;
@@ -192,6 +190,32 @@ int handle_request_type(client_out * in, int fd) {
                 int w = write(fd, gd->games[i], sizeof(db_game_data));
                 printf("%s %d %s %d wrote %d\n",gd->games[i]->u1, gd->games[i]->u1wins, gd->games[i]->u2, gd->games[i]->u2wins, w);
                 i++;
+            }
+        } else if(in->type == GET_RANDOM_OPPONENT) {
+            char * opp = NULL;
+            cli_creat_acc * request = (cli_creat_acc *) in;
+            serv_response * sr = malloc( sizeof(serv_response));
+            sr->type = in->type;
+            if( !db_validate_user(request->name, request->pass) ) {
+                sr->success = 0;
+                sr->reason = INVALID_UPASS;
+            } else {
+                char ** users = db_get_users();
+                int i = 0;
+                while( users[i] ) {
+                    if(!db_game_exists( request->name, users[i]) && strcmp(users[i], request->name)) {
+                        opp = users[i];
+                        break;
+                    }
+                    i++;
+                }
+                if( !opp ) {
+                    sr->reason = NO_UNPLAYED_OPP;
+                } else sr->reason = 0;
+            }
+            write(fd, sr, sizeof(serv_response));
+            if(opp) {
+                write(fd, opp, 50);
             }
         }
         return SUCC_REQ; //Closes socket

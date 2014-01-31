@@ -31,6 +31,7 @@ int init_connection();
 int send_request();
 struct db_game_data ** games_returned;
 struct request_info * to_be_sent;
+char * random_opponent; //Opponent for random game
 typedef struct db_game_data{
     int type; //Here for easy cast so it can be sent from server to client
 

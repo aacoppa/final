@@ -169,3 +169,8 @@ char * compose_new_game_entry(cli_upload_game * gd) {
     strcat(execStr, ", 2 );");
     return execStr;
 }
+
+char * compose_get_users() {
+    char * execStr = "SELECT * FROM users";
+    return execStr;
+}

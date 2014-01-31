@@ -51,6 +51,12 @@ static int callback(void * in, int argc, char **argv, char **azColName) {
         //free(gip_hold->games);
         gip_hold->games = temp_games;
         gip_hold->number_of_games++; 
+    } else if( type == GET_USERS_CALLBACK ) {
+        int i = 0;
+        while(users[i]) i++;
+        users = realloc(users, sizeof(char *) * (i + 1));
+        users[i] = malloc(50);
+        strcpy(users[i], argv[0]);
     }
     return 0;
 }
@@ -156,9 +162,32 @@ int db_create_user(char * name, char * pass) {
     return CREAT_SUCC;
 }
 int db_validate_user(char * name, char * password) {
+    //wait for write lock to be free
+    struct sembuf sbT;
+    sbT.sem_num = 0;
+    sbT.sem_flg = SEM_UNDO;
+    sbT.sem_op = -1;
+
+    struct sembuf sbR;
+    sbR.sem_num = 0;
+    sbR.sem_flg = SEM_UNDO;
+    sbR.sem_op = 1;
+
+    //Wait for no writer to have writing lock
+    semop(writesem, &sbT, 1);
+    //Add to reading semaphore
+    semop(readsem, &sbR, 1);
+
+    sbT.sem_op = 1;
+    semop(writesem, &sbT, 1);
+
     int * type = malloc(sizeof(int));
     *type = VALIDATE_USER_CALLBACK;
     db_execute(compose_validate_user(name, password), (void **) &type);
+
+    sbR.sem_op = -1;
+    semop(readsem, &sbR, 1);
+
     return ( *(int *)type == VALID );
 }
 
@@ -192,6 +221,7 @@ int db_user_exists(char * name) {
     semop(readsem, &sbR, 1);
     return (*(int *) type == USER_EXISTS);
 }
+
 db_game_data_wr * db_games_in_progress(char * name) {
     struct sembuf sbT;
     sbT.sem_num = 0;
@@ -253,7 +283,6 @@ int db_my_turn( char * name, char * opponent ) {
     } else {
         my_turn = U2_TURN;
     }   
-    printf("My turn is: %d\n", my_turn);
     struct sembuf sbT;
     sbT.sem_num = 0;
     sbT.sem_flg = SEM_UNDO;
@@ -299,10 +328,6 @@ void db_update_game( struct cli_upload_game * gd, int update_turn) {
         sbT.sem_flg = SEM_UNDO;
         sbT.sem_op = -1;
 
-        sqlite3 *db;
-        char *zErrMsg = 0;
-        int rc;
-
         semop(writesem, &sbT, 1);
         //Aquired writing lock
         int * type = malloc(sizeof(int));
@@ -347,16 +372,78 @@ void db_update_game( struct cli_upload_game * gd, int update_turn) {
         db_create_game(gd);
     }
 }
+char ** db_get_users() {
+    struct sembuf sbT;
+    sbT.sem_num = 0;
+    sbT.sem_flg = SEM_UNDO;
+    sbT.sem_op = -1;
+    semop(writesem, &sbT, 1);
 
+
+    void * t = malloc(sizeof(int));
+    *(int *) t = GET_USERS_CALLBACK;
+    db_execute(compose_get_users(), &t);
+    int i = 0;
+    while(users[i]) i++;
+    char ** ret = calloc(sizeof(char *), i + 1);
+    i = 0;
+    while(users[i]) { 
+        strcpy(ret[i], users[i]);
+        i++;
+    }
+    sbT.sem_op = 1;
+    semop(writesem, &sbT, 1);
+    return ret;
+}
 int db_game_exists(char * a, char * b) {
+    struct sembuf sbT;
+    sbT.sem_num = 0;
+    sbT.sem_flg = SEM_UNDO;
+    sbT.sem_op = -1;
+
+    struct sembuf sbR;
+    sbR.sem_num = 0;
+    sbR.sem_flg = SEM_UNDO;
+    sbR.sem_op = 1;
+
+    //Wait for no writer to have writing lock
+    semop(writesem, &sbT, 1);
+    //Add to reading semaphore
+    semop(readsem, &sbR, 1);
+
+    sbT.sem_op = 1;
+    semop(writesem, &sbT, 1);
+
     int * type = malloc(sizeof(int));
     *type = GAME_EXISTS_CALLBACK; 
     db_execute(compose_game_exists(a, b), (void **) &type);
+
+    sbR.sem_op = -1;
+    semop(readsem, &sbR, 1);
+
     return ( *type == GAME_EXISTS);
 }
 
 void db_create_game( cli_upload_game * gd ) {
+ 
+    struct sembuf sbT;
+    sbT.sem_num = 0;
+    sbT.sem_flg = SEM_UNDO;
+    sbT.sem_op = -1;
+    semop(writesem, &sbT, 1);
+
+    //Wait for all readers to be clear
+    struct sembuf sbR;
+    sbR.sem_num = 0;
+    sbR.sem_flg = SEM_UNDO;
+    sbR.sem_op = 0;
+    semop(readsem, &sbR, 1);
+
+
     int * type = malloc(sizeof(int));
     *type = NO_CALLBACK; 
     db_execute(compose_new_game_entry(gd), (void **) &type);
+
+    sbT.sem_op = 1;
+    semop(writesem, &sbT, 1);
 }   

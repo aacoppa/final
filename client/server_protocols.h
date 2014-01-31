@@ -24,6 +24,7 @@
 #define LOGIN 5
 #define REQUEST_TO_PLAY 6
 #define UPLOAD_GAME_RESPONSE 7
+#define GET_RANDOM_OPPONENT 8
 
 //Reasons for failure...
 #define USERNAME_TAKEN 1
@@ -33,6 +34,7 @@
 #define NOT_LOGGED_IN 5
 #define CONNECTION_ERROR 6
 #define NOT_VALID_OPPONENT 7
+#define NO_UNPLAYED_OPP 8
 
 #define MAIN_PORT 35412
 
@@ -85,13 +87,4 @@ typedef struct cli_request_game {
     char pass[50];
     char opponent[50];
 } cli_request_game;
-
-typedef struct stat_data {
-    int type;
-    char u1[50];
-    char u2[50];
-    int u1wins;
-    int u2wins;
-    int turn;
-} stat_data;
 #endif

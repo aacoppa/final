@@ -89,14 +89,20 @@ int main(int argc, char ** argv) {
             printf("usage: race play [username]\n");
             exit(0);
         }
-        verify_opponent(argv[2]);
-        to_be_sent->opponent = malloc(strlen(argv[2]));
-        strcpy(to_be_sent->opponent, argv[2]);
-        exec_action( REQUEST_TO_PLAY, NULL, NULL );
-    /*} else if(strcmp(argv[1], "pull") == 0) {
         
-        exec_action( CHECK_FOR_GAME, NULL, NULL );
-        //Checks if there are any games available for you */
+        if( !strcmp(argv[2], "-r") ) {
+            exec_action( GET_RANDOM_OPPONENT, NULL, NULL );   
+            to_be_sent->opponent = malloc(50);
+            printf("%s\n", random_opponent);
+            strcpy(to_be_sent->opponent, random_opponent);
+        } else {
+            verify_opponent(argv[2]);
+            to_be_sent->opponent = malloc(strlen(argv[2]));
+            strcpy(to_be_sent->opponent, argv[2]);
+        }
+
+        exec_action( REQUEST_TO_PLAY, NULL, NULL );
+
     } else if(strcmp(argv[1], "games") == 0) {
         exec_action( GAME_STATS, NULL, NULL );
 
@@ -235,6 +241,9 @@ int exec_action(int type, char * name, char * password) {
             i++;
         }
 
+    }
+    if( type == GET_RANDOM_OPPONENT ) {
+        return 1;
     }
     return 0;
 }   
